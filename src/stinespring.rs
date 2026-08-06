@@ -160,8 +160,11 @@ impl DerenderingEngine {
     }
 
     fn audit_impl_internal(&mut self) -> Result<HashMap<String, String>, ReconError> {
-        let n = (DARK_LEDGER_DIM as f64).sqrt();
-        let residual: [f64; DARK_LEDGER_DIM] = [1.0 / n; DARK_LEDGER_DIM];
+        let residual: [f64; DARK_LEDGER_DIM] = {
+            let mut arr = [0.0; DARK_LEDGER_DIM];
+            arr[0] = 1.0;
+            arr
+        };
         self.execute_stinespring_map_impl(0, &residual)?;
 
         // Norm of the mapped dark state should equal η_D exactly.

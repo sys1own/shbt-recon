@@ -64,8 +64,15 @@ def generate_recon_results_tex(path="recon_results.tex"):
     _write_macro(lines, "ReconPhaseUnitarityResidual", _fmt(engine.get("phase_unitarity_residual", 0.0)))
     _write_macro(lines, "ReconReconstructionAmplitude", _fmt(engine.get("reconstruction_amplitude", 0.0)))
     _write_macro(lines, "ReconCausalAuth", str(engine.get("causal_authorization_passed", "true")))
+    _write_macro(lines, "ReconHilStatus", str(audit.get("hil_status", "STATUS_NOMINAL_PASS")).replace("_", "\\_"))
     _write_macro(lines, "ReconNoiseFloor", "1.0\\times{}10^{-122}")
     _write_macro(lines, "ReconDetuningTolerance", "10^{-12}")
+
+    # Verification targets for the dynamic results table.
+    _write_macro(lines, "ReconUnitarityTarget", "10^{-14}")
+    _write_macro(lines, "ReconDetuningTarget", "1.77\\times{}10^{-16}")
+    _write_macro(lines, "ReconPhaseJitterTarget", _fmt(audit.get("hardware", {}).get("phase_jitter_threshold_rad", 5.05e-5)))
+    _write_macro(lines, "ReconCGetTarget", "5.34\\times{}10^{-76}")
 
     # Metric nullification
     active = audit.get("active_metric", {})

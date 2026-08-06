@@ -89,12 +89,43 @@ def plot_phase_rotation():
     return path
 
 
+def plot_metric_nullification():
+    """Lorentzian determinant residual over an Alcubierre shift grid."""
+    auditor = shbt_recon.MetricNullificationAuditor()
+    velocities = np.linspace(0.0, 2.0, 65)
+    active_errors = []
+    nullified_errors = []
+    for v in velocities:
+        active = auditor.audit(float(v))
+        nullified = auditor.audit(0.0)
+        active_errors.append(active["determinant_error"])
+        nullified_errors.append(nullified["determinant_error"])
+
+    fig, ax = plt.subplots(figsize=(6, 3.5))
+    ax.semilogy(velocities, active_errors, "o-", color="navy", markersize=2,
+                label="Active metric $\\beta=v f(r_s)$")
+    ax.semilogy(velocities, nullified_errors, "s--", color="crimson", markersize=2,
+                label="Nullified metric $\\beta=0$")
+    ax.axhline(1.0e-12, color="gray", ls=":", label="Audit threshold")
+    ax.set_xlabel("Target velocity $v$ ($c$)")
+    ax.set_ylabel("$|\\det(g)+1|$")
+    ax.set_title("Metric nullification: Lorentzian determinant residual")
+    ax.legend(loc="best")
+    ax.set_ylim(bottom=1.0e-16)
+    fig.tight_layout()
+    path = figure_path("metric_nullification.pdf")
+    fig.savefig(path, bbox_inches="tight")
+    plt.close(fig)
+    return path
+
+
 def generate_all():
     """Regenerate all manuscript figures."""
     return [
         plot_stinespring_state(),
         plot_causal_cone(),
         plot_phase_rotation(),
+        plot_metric_nullification(),
     ]
 
 
