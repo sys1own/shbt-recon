@@ -41,19 +41,19 @@ def test_stinespring_map_and_reconstruct():
     assert abs(amp2 - (23.0 / 33.0) ** 2) < 1.0e-12
 
 
-def test_causal_violation():
-    """A target outside the future light cone raises CausalViolationError."""
+def test_causal_violation_raises_anomaly_closure():
+    """A target outside the future light cone raises AnomalyClosureError."""
     engine = shbt_recon.DerenderingEngine()
     residual = unit_residual()
     engine.execute_stinespring_map(0, residual)
 
     src = shbt_recon.CausalCoordinate(0.0, 0.0, 0.0, 0.0)
     tar = shbt_recon.CausalCoordinate(-1.0, 0.0, 0.0, 0.0)
-    with pytest.raises((shbt_recon.CausalViolationError, ValueError)):
+    with pytest.raises(shbt_recon.AnomalyClosureError):
         engine.reconstruct(src, tar, 0.0, 0, 1)
 
 
-def test_spacelike_violation():
+def test_spacelike_violation_raises_anomaly_closure():
     """A spacelike separated target is rejected."""
     engine = shbt_recon.DerenderingEngine()
     residual = unit_residual()
@@ -61,7 +61,7 @@ def test_spacelike_violation():
 
     src = shbt_recon.CausalCoordinate(0.0, 0.0, 0.0, 0.0)
     tar = shbt_recon.CausalCoordinate(0.0, 2.0, 0.0, 0.0)
-    with pytest.raises((shbt_recon.CausalViolationError, ValueError)):
+    with pytest.raises(shbt_recon.AnomalyClosureError):
         engine.reconstruct(src, tar, 0.0, 0, 1)
 
 
@@ -95,3 +95,64 @@ def test_run_pipeline_helper():
     assert len(result) == 8
     amp2 = sum(re**2 + im**2 for re, im in result)
     assert abs(amp2 - (23.0 / 33.0) ** 2) < 1.0e-12
+
+
+def test_modular_state_translocator_translocate():
+    """The production translocator runs the full pipeline end-to-end."""
+    trans = shbt_recon.ModularStateTranslocator()
+    src = shbt_recon.CausalCoordinate(0.0, 0.0, 0.0, 0.0)
+    tar = shbt_recon.CausalCoordinate(1.0, 0.0, 0.0, 0.0)
+    result = trans.translocate(unit_residual(), src, tar, 0.421, 0, 1, 1.071186)
+    assert len(result) == 8
+    amp2 = sum(re**2 + im**2 for re, im in result)
+    assert abs(amp2 - (23.0 / 33.0) ** 2) < 1.0e-12
+
+
+def test_modular_state_translocator_rejects_spacelike():
+    """The translocator raises AnomalyClosureError for spacelike targets."""
+    trans = shbt_recon.ModularStateTranslocator()
+    src = shbt_recon.CausalCoordinate(0.0, 0.0, 0.0, 0.0)
+    tar = shbt_recon.CausalCoordinate(0.0, 2.0, 0.0, 0.0)
+    with pytest.raises(shbt_recon.AnomalyClosureError):
+        trans.translocate(unit_residual(), src, tar, 0.0, 0, 1, 0.0)
+
+
+def test_modular_state_translocator_audit_sections():
+    """The translocator audit contains all production sections."""
+    trans = shbt_recon.ModularStateTranslocator()
+    audit = trans.audit()
+    assert "engine" in audit
+    assert "active_metric" in audit
+    assert "nullified_metric" in audit
+    assert "hardware" in audit
+    assert "thermodynamics" in audit
+    assert audit["active_metric"]["passed"]
+    assert audit["hardware"]["phase_jitter_passes"]
+    assert audit["hardware"]["thermal_noise_passes"]
+
+
+def test_metric_nullification_auditor():
+    """The metric nullification auditor confirms det = -1.0."""
+    auditor = shbt_recon.MetricNullificationAuditor()
+    result = auditor.audit(1.071186)
+    assert result["passed"]
+    assert abs(result["determinant_error"]) < 1.0e-12
+    assert result["minimum_abs_determinant"] > 0.99
+
+
+def test_hardware_synthesis_auditor():
+    """The hardware-synthesis auditor stays within jitter and thermal limits."""
+    hsa = shbt_recon.HardwareSynthesisAuditor()
+    assert hsa.phase_jitter_passes()
+    assert hsa.thermal_noise_passes()
+    assert hsa.c_get_j < hsa.thermal_noise_limit_j
+
+
+def test_thermodynamic_cost():
+    """The thermodynamic cost uses the benchmark N_local, N_sat and temperature."""
+    tc = shbt_recon.ThermodynamicCost()
+    assert tc.n_local_bits == pytest.approx(1.20e72, rel=1.0e-15)
+    assert tc.n_sat_bits == pytest.approx(3.31e122, rel=1.0e-15)
+    assert tc.temperature_k == pytest.approx(15.4e-3, rel=1.0e-15)
+    assert tc.c_get_j > 0.0
+    assert tc.c_get_j < tc.landauer_limit_j

@@ -286,7 +286,7 @@ mod tests {
             0,
             1,
         );
-        assert!(matches!(result, Err(ReconError::CausalViolationError(_))));
+        assert!(matches!(result, Err(ReconError::AnomalyClosureError(_))));
 
         let tar = CausalCoordinate::new(1.0, 0.0, 0.0, 0.0);
         let result = reconstruct_state(

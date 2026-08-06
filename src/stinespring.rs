@@ -151,9 +151,20 @@ impl DerenderingEngine {
         Ok(())
     }
 
-    fn audit_impl(&mut self) -> Result<HashMap<String, String>, ReconError> {
-        let n = (DARK_LEDGER_DIM as f64).sqrt();
-        let residual: Vec<f64> = vec![1.0 / n; DARK_LEDGER_DIM];
+    pub(crate) fn audit_impl(&mut self) -> Result<HashMap<String, String>, ReconError> {
+        self.audit_impl_internal()
+    }
+
+    pub(crate) fn state_vector_mut(&mut self) -> &mut [[Complex; DARK_LEDGER_DIM]; VISIBLE_STATE_DIM] {
+        &mut self.state_vector
+    }
+
+    fn audit_impl_internal(&mut self) -> Result<HashMap<String, String>, ReconError> {
+        let residual: [f64; DARK_LEDGER_DIM] = {
+            let mut arr = [0.0; DARK_LEDGER_DIM];
+            arr[0] = 1.0;
+            arr
+        };
         self.execute_stinespring_map_impl(0, &residual)?;
 
         // Norm of the mapped dark state should equal η_D exactly.
@@ -178,7 +189,7 @@ impl DerenderingEngine {
 
         // Eigenvector rigidity detuning measured at input.
         let mut residual_norm_sq = Float::with_val(PREC, 0);
-        for &v in residual.iter() {
+        for v in residual {
             let f = Float::with_val(PREC, v);
             let mut f2 = Float::with_val(PREC, &f);
             f2.square_mut();
@@ -229,11 +240,6 @@ impl DerenderingEngine {
         results.insert("phase_unitarity_residual".to_string(), fmt(phase_residual));
         results.insert("causal_authorization_passed".to_string(), "true".to_string());
         Ok(results)
-    }
-
-    #[allow(dead_code)]
-    pub(crate) fn state_vector_mut(&mut self) -> &mut [[Complex; DARK_LEDGER_DIM]; VISIBLE_STATE_DIM] {
-        &mut self.state_vector
     }
 }
 
