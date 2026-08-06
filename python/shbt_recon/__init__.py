@@ -7,9 +7,13 @@ from shbt_recon._core import (
     CausalViolationError,
     DarkLedger,
     DerenderingEngine,
+    HardwareSynthesisAuditor,
     HilSafetyMonitor,
+    MetricNullificationAuditor,
+    ModularStateTranslocator,
     PhaseLockedExcitation,
     ReconstructionOperator,
+    ThermodynamicCost,
 )
 
 __version__ = "0.1.0"
@@ -20,9 +24,13 @@ __all__ = [
     "CausalViolationError",
     "DarkLedger",
     "DerenderingEngine",
+    "HardwareSynthesisAuditor",
     "HilSafetyMonitor",
+    "MetricNullificationAuditor",
+    "ModularStateTranslocator",
     "PhaseLockedExcitation",
     "ReconstructionOperator",
+    "ThermodynamicCost",
     "run_reconstruction",
 ]
 

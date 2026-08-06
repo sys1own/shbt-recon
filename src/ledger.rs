@@ -30,32 +30,32 @@ impl DarkLedger {
     }
 
     /// Residual capacity c_dark^res = 10/33.
-    fn residual_fraction(&self) -> f64 {
+    pub fn residual_fraction(&self) -> f64 {
         Float::with_val(PREC, &self.residual).to_f64()
     }
 
     /// Completed capacity c_dark^comp = 23/33.
-    fn completed_fraction(&self) -> f64 {
+    pub fn completed_fraction(&self) -> f64 {
         Float::with_val(PREC, &self.completed).to_f64()
     }
 
     /// Isometric Stinespring amplitude η_D = 23/33.
-    fn stinespring_amplitude(&self) -> f64 {
+    pub fn stinespring_amplitude(&self) -> f64 {
         Float::with_val(PREC, &self.amplitude).to_f64()
     }
 
     /// 512-bit decimal string of the residual fraction.
-    fn residual_float512(&self) -> String {
+    pub fn residual_float512(&self) -> String {
         Float::with_val(PREC, &self.residual).to_string()
     }
 
     /// 512-bit decimal string of the completed fraction.
-    fn completed_float512(&self) -> String {
+    pub fn completed_float512(&self) -> String {
         Float::with_val(PREC, &self.completed).to_string()
     }
 
     /// 512-bit decimal string of the Stinespring amplitude.
-    fn amplitude_float512(&self) -> String {
+    pub fn amplitude_float512(&self) -> String {
         Float::with_val(PREC, &self.amplitude).to_string()
     }
 }

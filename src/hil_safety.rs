@@ -5,6 +5,7 @@ use pyo3::prelude::*;
 /// Real-time safety monitor with configurable Gram-eigenvalue and
 /// eigenvector-rigidity thresholds.
 #[pyclass(name = "HilSafetyMonitor")]
+#[derive(Debug, Clone)]
 pub struct HilSafetyMonitor {
     #[pyo3(get, set)]
     pub min_gram_threshold: f64,
@@ -37,7 +38,7 @@ impl HilSafetyMonitor {
     /// Returns `"STATUS_NOMINAL_PASS"` when all checks are within bounds;
     /// otherwise returns an emergency trigger identifier.
     #[pyo3(signature = (min_gram_eig, max_det_err, eigenvector_rigidity_detuning, max_info_density, budget_limit))]
-    fn audit_hil_step(
+    pub fn audit_hil_step(
         &self,
         min_gram_eig: f64,
         max_det_err: f64,
@@ -63,7 +64,7 @@ impl HilSafetyMonitor {
 
     /// Standalone eigenvector-rigidity check used by the de-render loop.
     #[pyo3(signature = (detuning))]
-    fn check_anomaly_closure(&self, detuning: f64) -> String {
+    pub fn check_anomaly_closure(&self, detuning: f64) -> String {
         if detuning > self.detuning_tolerance {
             "EMERGENCY_ANOMALY_CLOSURE".to_string()
         } else {

@@ -23,3 +23,41 @@ pub const EIGENVECTOR_DETUNING_TOLERANCE: f64 = 1.0e-12;
 
 /// Holographic noise floor for amplitude validation.
 pub const HOLOGRAPHIC_NOISE_FLOOR: f64 = 1.0e-122;
+
+// ---------------------------------------------------------------------------
+// Thermodynamic and hardware-synthesis constants
+// ---------------------------------------------------------------------------
+
+/// Boltzmann constant in J/K.
+pub const KB_J_PER_K: f64 = 1.380_649e-23;
+
+/// Natural logarithm of 2.
+pub const LN2: f64 = 0.693_147_180_559_945_3;
+
+/// Canonical operating temperature for the hardware-synthesis audit (15.4 mK).
+pub const TEMPERATURE_K: f64 = 15.4e-3;
+
+/// Local boundary register size used for thermodynamic costing (bits).
+pub const N_LOCAL_BITS: f64 = 1.20e72;
+
+/// Saturated holographic horizon register size (bits).
+pub const N_SAT_BITS: f64 = 3.31e122;
+
+/// Acceptable phase-jitter limit for the hardware-synthesis auditor (rad).
+pub const PHASE_JITTER_THRESHOLD_RAD: f64 = 5.05e-5;
+
+// ---------------------------------------------------------------------------
+// Metric nullification grid constants
+// ---------------------------------------------------------------------------
+
+/// Maximum number of points in the 1-D metric-nullification audit grid.
+pub const MAX_METRIC_GRID: usize = 129;
+
+/// Default metric audit domain radius in metres.
+pub const METRIC_DOMAIN_RADIUS_M: f64 = 10.0;
+
+/// Default metric bubble radius in metres.
+pub const METRIC_BUBBLE_RADIUS_M: f64 = 2.0;
+
+/// Default metric wall steepness parameter (1/m).
+pub const METRIC_WALL_STEEPNESS_PER_M: f64 = 2.0;

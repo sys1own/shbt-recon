@@ -49,8 +49,13 @@ impl CausalCoordinate {
 
 /// Verify that `tar` is in the future causal cone of `src`.
 pub fn verify_future_cone(src: &CausalCoordinate, tar: &CausalCoordinate) -> Result<(), ReconError> {
+    verify_future_cone_fatal(src, tar)
+}
+
+/// Fatal causal-cone check.  Spacelike or past targets raise `AnomalyClosureError`.
+pub fn verify_future_cone_fatal(src: &CausalCoordinate, tar: &CausalCoordinate) -> Result<(), ReconError> {
     if !src.is_causally_authorized_ref(tar) {
-        return Err(ReconError::CausalViolationError(
+        return Err(ReconError::AnomalyClosureError(
             "Target coordinate is outside the future causal cone of the source".to_string(),
         ));
     }

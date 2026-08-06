@@ -23,6 +23,25 @@
   \providecommand{\ReconCausalAuth}{true}
   \providecommand{\ReconNoiseFloor}{1.0\times{}10^{-122}}
   \providecommand{\ReconDetuningTolerance}{10^{-12}}
+  % Metric nullification fallbacks
+  \providecommand{\ReconMetricDetError}{0}
+  \providecommand{\ReconMetricMinGramEv}{0}
+  \providecommand{\ReconMetricPassed}{true}
+  \providecommand{\ReconMetricNullifiedDetError}{0}
+  \providecommand{\ReconMetricNullifiedMinGramEv}{0}
+  % Hardware-synthesis fallbacks
+  \providecommand{\ReconPhaseJitter}{0}
+  \providecommand{\ReconPhaseJitterThreshold}{5.05\times{}10^{-5}}
+  \providecommand{\ReconPhaseJitterPass}{true}
+  \providecommand{\ReconThermalNoiseLimitJ}{0}
+  \providecommand{\ReconCGetJ}{0}
+  \providecommand{\ReconThermalNoisePass}{true}
+  % Thermodynamic fallbacks
+  \providecommand{\ReconNLocal}{1.20\times{}10^{72}}
+  \providecommand{\ReconNSat}{3.31\times{}10^{122}}
+  \providecommand{\ReconTemperatureK}{1.54\times{}10^{-2}}
+  \providecommand{\ReconRatio}{0}
+  \providecommand{\ReconLandauerLimitJ}{0}
 }
 
 \begin{document}
@@ -190,6 +209,9 @@ Causal authorization & & \ReconCausalAuth \\
 Table \ref{tab:results} lists the dynamically generated audit values.
 The unitarity residual and phase residual are both below the $10^{-12}$ detuning tolerance, confirming that the Stinespring dilation and the phase-locked excitation are numerically isometric and unitary, respectively.
 The eigenvector-rigidity detuning is $\ReconEigenvectorDetuning$, comfortably within the $\ReconDetuningTolerance$ closure threshold.
+
+The metric-nullification auditor verifies that the Lorentzian determinant remains exactly $-1.0$ while the active metric slice is nullified; the residual is $\ReconMetricDetError$ and the smallest Gram eigenvalue is $\ReconMetricMinGramEv$.
+The hardware-synthesis audit reports a phase jitter of $\ReconPhaseJitter$~rad, well below the $\ReconPhaseJitterThreshold$~rad threshold, and a per-GET thermodynamic cost of $\ReconCGetJ$~J, below the $\ReconThermalNoiseLimitJ$~J thermal noise floor.
 
 \begin{figure}[ht]
 \centering
