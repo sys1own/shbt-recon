@@ -29,7 +29,7 @@
   \providecommand{\ReconUnitarityTarget}{10^{-14}}
   \providecommand{\ReconDetuningTarget}{1.77\times{}10^{-16}}
   \providecommand{\ReconPhaseJitterTarget}{5.05\times{}10^{-5}}
-  \providecommand{\ReconCGetTarget}{5.3429\times{}10^{-76}}
+  \providecommand{\ReconCGetTarget}{5.34296976800\times{}10^{-76}}
   % Metric nullification fallbacks
   \providecommand{\ReconMetricDetError}{0}
   \providecommand{\ReconMetricMinGramEv}{0}
@@ -54,7 +54,6 @@
 \begin{document}
 
 \title{Non-Local Boundary Address Relabeling and the Modular State Translocator in Static Holographic Boundary Theory}
-\author{}
 \date{\today}
 
 \begin{abstract}
@@ -275,7 +274,7 @@ Using Eqs.~\eqref{eq:geodesic-radius} and \eqref{eq:minimal-interval}, the entro
 S_A(z) = \frac{c}{3} \log\frac{2z}{\epsilon}.
 \end{equation}
 
-In the SHBT register, the boundary interval $A$ is represented by the contiguous set of visible character blocks that subtend the source and target boundary addresses.
+In the SHBT register, the boundary interval $A$ is represented by the contiguous set of visible character blocks that subtends the source and target boundary addresses.
 The boundary relabeling $T^{\partial}$ translates the support interval from the source address $x_{\mathrm{src}}$ to the target address $x_{\mathrm{tar}}$ while preserving the entanglement wedge, so the re-rendered state remains within the same holographic code subspace.
 
 \subsection{Causal authorization and non-locality}
@@ -356,7 +355,7 @@ The reference implementation, \texttt{shbt-recon}, is written in Rust with PyO3 
 It uses the \texttt{rug} crate to perform 512-bit rational and floating-point arithmetic, keeping all register operations above the holographic noise floor.
 The visible state vector is a stack-allocated array of $16$ visible blocks, each carrying an $8$-component dark ledger, avoiding heap allocations during braiding loops.
 All bit-budget figures are calibrated for a $10$-metre radius translocation zone, i.e. $N_{\mathrm{local}}\approx1.20\times10^{72}$ bits corresponds to the information capacity of the boundary register at that scale.
-The per-GET thermodynamic cost computed by the simulator is $C_{\text{get}} \approx 5.3429\times10^{-76}$~J/bit, using $T=15.4$~mK and $N_{\mathrm{sat}}\approx3.31\times10^{122}$ bits.
+The per-GET thermodynamic cost computed by the simulator is $\ReconCGetJ$~J/bit, using $T=15.4$~mK and $N_{\mathrm{sat}}\approx3.31\times10^{122}$ bits.
 
 \begin{figure}[ht]
 \centering

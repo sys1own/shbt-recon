@@ -91,7 +91,7 @@ Spacelike or past targets raise a fatal `AnomalyClosureError`.
 ### Entanglement wedge mapping
 
 A bulk point at radial depth $z$ is dual to the minimal spatial boundary interval $A$ whose entanglement wedge contains the point.
-For a Poincar\'{e} upper-half-plane geodesic whose boundary endpoints are separated by $\ell_A$, the geodesic radius is $R_A = \ell_A/2$ and its deepest point is at $z = R_A$.
+For a Poincaré upper-half-plane geodesic whose boundary endpoints are separated by $\ell_A$, the geodesic radius is $R_A = \ell_A/2$ and its deepest point is at $z = R_A$.
 The minimal boundary support interval required for reconstruction at bulk depth $z$ is therefore
 
 $$
@@ -124,14 +124,14 @@ so the passive stress-energy stored in the boundary register is conserved.
 ### High-speed boundary driver
 
 The phase-locked boundary character excitations are modulated by an InP/InGaAs single heterojunction bipolar transistor (SHBT) with a micro-airbridge structure and quasi-coplanar contacts.
-For a $1.5\times5\,\mu\mathrm{m}^2$ emitter, the measured current-gain cutoff frequency is $f_T = 53$~GHz and the maximum oscillation frequency reaches
+For a $1.5\times5\,\mu\mathrm{m}^2$ emitter, the measured current-gain cutoff frequency is $f_T = 53$ GHz and the maximum oscillation frequency reaches
 
 $$
 f_{\max} = 72\ \mathrm{GHz}.
 $$
 
 This bandwidth supports gating of the $U(1)$ phase rotation at microwave-clock rates.
-The driver is operated at a cryogenic base temperature of $T = 15.4$~mK to suppress thermal phase jitter.
+The driver is operated at a cryogenic base temperature of $T = 15.4$ mK to suppress thermal phase jitter.
 
 ### Ballistic routing
 
@@ -160,14 +160,14 @@ N_{\mathrm{local}} \le N_{\mathrm{sat}}.
 $$
 
 If any inequality is violated, the monitor asserts `EMERGENCY_ANOMALY_CLOSURE` and a hard-wired emergency shunt clamps the active shift field $\beta = v f(r_s)$ to zero.
-The shutdown latency is hard-coded at $<2.5$~ns.
-At $f_{\max} = 72$~GHz, one clock cycle is
+The shutdown latency is hard-coded at $<2.5$ ns.
+At $f_{\max} = 72$ GHz, one clock cycle is
 
 $$
 \tau_{\mathrm{clk}} = \frac{1}{f_{\max}} \approx 13.9\ \mathrm{ps},
 $$
 
-so the $2.5$~ns budget spans roughly $180$ gate cycles, sufficient for sensor readout, comparator logic, shunt driver, and field-collapse confirmation.
+so the $2.5$ ns budget spans roughly $180$ gate cycles, sufficient for sensor readout, comparator logic, shunt driver, and field-collapse confirmation.
 
 ## Audit Benchmarks
 
@@ -185,9 +185,9 @@ All bit-budget figures are calibrated for a $10$-metre radius translocation zone
 | Phase unitarity residual | $\epsilon_{\mathrm{phase}}$ | $<10^{-14}$ | $<10^{-14}$ |
 | Causal authorization | | `true` | `true` |
 | HIL status | | `STATUS_NOMINAL_PASS` | `STATUS_NOMINAL_PASS` |
-| Lorentzian determinant residual | $|\det(g)+1|$ | $<10^{-12}$ | $<10^{-12}$ |
-| Phase jitter | $\Delta\phi$ | $<5.05\times10^{-5}$~rad | $<5.05\times10^{-5}$~rad |
-| GET thermodynamic cost | $C_{\text{get}}$ | $5.3429\times10^{-76}$~J/bit | $5.3429\times10^{-76}$~J/bit |
+| Lorentzian determinant residual | $\| \det(g)+1 \|$ | $<10^{-12}$ | $<10^{-12}$ |
+| Phase jitter | $\Delta\phi$ | $<5.05\times10^{-5}$ rad | $<5.05\times10^{-5}$ rad |
+| GET thermodynamic cost | $C_{\text{get}}$ | $5.34296976800\times10^{-76}$ J/bit | $5.34296976800\times10^{-76}$ J/bit |
 
 The GET cost is computed as
 
@@ -195,7 +195,7 @@ $$
 C_{\text{get}} = k_B T \ln 2 \cdot \frac{N_{\mathrm{local}}}{N_{\mathrm{sat}}},
 $$
 
-with $T = 15.4$~mK, $N_{\mathrm{local}} \approx 1.20\times10^{72}$ bits (calibrated for $R = 10$~m), and $N_{\mathrm{sat}} \approx 3.31\times10^{122}$ bits.
+with $T = 15.4$ mK, $N_{\mathrm{local}} \approx 1.20\times10^{72}$ bits (calibrated for $R = 10$ m), and $N_{\mathrm{sat}} \approx 3.31\times10^{122}$ bits.
 
 ## Quick Start
 
@@ -248,7 +248,7 @@ shbt-recon --tar-t 1.0 --theta 0.421
 
 1. `shbt-recon`: SHBT Destination Reconstruction and State Decoupling Simulator, https://github.com/sys1own/shbt-recon.
 2. `shbt-precision`: SHBT Precision Simulator (canonical $(26,8,312)$ kernel and cosmology module), https://github.com/sys1own/shbt-precision.
-3. `shbt-warp`: SHBT Warp Drive Simulator (Alcubierre-type metric engineering and the $142.08$~MW benchmark), https://github.com/sys1own/shbt-warp.
+3. `shbt-warp`: SHBT Warp Drive Simulator (Alcubierre-type metric engineering and the $142.08$ MW benchmark), https://github.com/sys1own/shbt-warp.
 4. S. Ryu and T. Takayanagi, "Holographic derivation of entanglement entropy from the anti--de Sitter/conformal field theory correspondence," *Phys. Rev. Lett.* **96**, 181602 (2006).
 5. C. L. Kane and E. J. Mele, "Quantum spin Hall effect in graphene," *Phys. Rev. Lett.* **95**, 226801 (2005).
 6. M. K\"onig, S. Wiedmann, C. Br\"une, A. Roth, H. Buhmann, L. W. Molenkamp, X.-L. Qi, and S.-C. Zhang, "Quantum spin Hall insulator state in HgTe quantum wells," *Science* **318**, 766 (2007).
