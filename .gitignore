@@ -1,0 +1,16 @@
+/.venv
+/target
+*.so
+*.egg-info
+__pycache__
+.pytest_cache
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*Notes.bib
+recon_results.tex
+figures/*.pdf
+test_*.pdf
+
