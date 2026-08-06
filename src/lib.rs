@@ -9,6 +9,7 @@
 pub mod causal_audit;
 pub mod constants;
 pub mod error;
+pub mod hardware;
 pub mod hardware_synthesis;
 pub mod hil_safety;
 pub mod ledger;
@@ -20,6 +21,7 @@ pub mod thermodynamics;
 
 pub use causal_audit::*;
 pub use error::*;
+pub use hardware::*;
 pub use hardware_synthesis::*;
 pub use hil_safety::*;
 pub use ledger::*;
@@ -43,6 +45,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<reconstruction::PhaseLockedExcitation>()?;
     m.add_class::<hil_safety::HilSafetyMonitor>()?;
     m.add_class::<metric_nullification::MetricNullificationAuditor>()?;
+    m.add_class::<hardware::TopologicalProtectionAuditor>()?;
     m.add_class::<hardware_synthesis::HardwareSynthesisAuditor>()?;
     m.add_class::<thermodynamics::ThermodynamicCost>()?;
     m.add_class::<modular_translocator::ModularStateTranslocator>()?;
