@@ -10,6 +10,21 @@ use crate::stinespring::DerenderingEngine;
 /// Apply the phase-locked excitation operator O^excitation(θ) = exp(-i θ Q)
 /// to a single complex amplitude.  The topological charge Q is taken to be 1
 /// for the canonical anyon lattice; the phase is therefore a uniform rotation.
+pub fn phase_unitarity_residual(theta: f64) -> f64 {
+    let angle = Float::with_val(PREC, theta);
+    let cos = angle.clone().cos();
+    let sin = angle.sin();
+    let mut c2 = Float::with_val(PREC, &cos);
+    c2.square_mut();
+    let mut s2 = Float::with_val(PREC, &sin);
+    s2.square_mut();
+    let mut sum = c2;
+    sum += s2;
+    let one = Float::with_val(PREC, 1);
+    sum -= &one;
+    sum.abs().to_f64()
+}
+
 fn apply_phase(state: &Complex, theta: f64) -> Complex {
     let angle = Float::with_val(PREC, theta);
     let cos = angle.clone().cos();
@@ -163,6 +178,11 @@ impl PhaseLockedExcitation {
     #[new]
     pub fn new() -> Self {
         PhaseLockedExcitation
+    }
+
+    /// Return | |exp(-iθ)|^2 - 1 | computed at 512-bit precision.
+    fn audit(&self, theta: f64) -> f64 {
+        phase_unitarity_residual(theta)
     }
 
     /// Apply O^excitation(θ) = exp(-i θ) to a single complex amplitude.

@@ -9,3 +9,8 @@ __pycache__
 *.out
 *.toc
 *.synctex.gz
+*Notes.bib
+recon_results.tex
+figures/*.pdf
+test_*.pdf
+
