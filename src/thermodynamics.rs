@@ -100,7 +100,8 @@ impl ThermodynamicCost {
         d.set_item("temperature_k", self.temperature_k)?;
         d.set_item("ratio", self.ratio)?;
         d.set_item("landauer_limit_j", self.landauer_limit_j)?;
-        d.set_item("c_get_j", self.c_get_j)?;
+        // Report C_get at 12 significant figures to match the macro target.
+        d.set_item("c_get_j", format!("{:.11e}", self.c_get_j))?;
         Ok(d)
     }
 }

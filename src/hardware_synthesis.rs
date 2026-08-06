@@ -102,7 +102,8 @@ impl HardwareSynthesisAuditor {
         d.set_item("phase_jitter_threshold_rad", self.phase_jitter_threshold_rad)?;
         d.set_item("phase_jitter_passes", self.phase_jitter_passes())?;
         d.set_item("thermal_noise_limit_j", self.compute_thermal_noise_limit_j())?;
-        d.set_item("c_get_j", self.compute_c_get_j())?;
+        // Report C_get at 12 significant figures to match the macro target.
+        d.set_item("c_get_j", format!("{:.11e}", self.compute_c_get_j()))?;
         d.set_item("thermal_noise_passes", self.thermal_noise_passes())?;
         Ok(d)
     }

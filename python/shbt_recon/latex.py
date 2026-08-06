@@ -72,7 +72,7 @@ def generate_recon_results_tex(path="recon_results.tex"):
     _write_macro(lines, "ReconUnitarityTarget", "10^{-14}")
     _write_macro(lines, "ReconDetuningTarget", "1.77\\times{}10^{-16}")
     _write_macro(lines, "ReconPhaseJitterTarget", _fmt(audit.get("hardware", {}).get("phase_jitter_threshold_rad", 5.05e-5)))
-    _write_macro(lines, "ReconCGetTarget", "5.3429\\times{}10^{-76}")
+    _write_macro(lines, "ReconCGetTarget", "5.34296976800\\times{}10^{-76}")
 
     # Metric nullification
     active = audit.get("active_metric", {})
