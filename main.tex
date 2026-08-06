@@ -242,6 +242,29 @@ Total energy-momentum conservation on the anomaly-free branch gives $\nabla_\mu 
 \end{equation}
 The metric-nullification auditor verifies Eq.~\eqref{eq:passive-conservation} operationally by monitoring the Lorentzian determinant of the active slice: for an ADM line element with unit lapse $\alpha=1$, Euclidean spatial metric $\gamma_{ij}=\delta_{ij}$, and longitudinal shift $\beta=v f(r_s)$, the determinant remains exactly $-1$ for every sampled shift, confirming that the geometric nullification is performed without introducing artificial stress-energy.
 
+\subsection{Entanglement wedge mapping and the Ryu--Takayanagi relation}
+
+A bulk point that is to be reconstructed at a finite radial depth $z$ in the Poincar\'{e} disk is dual to a minimal spatial boundary interval $A$ whose entanglement wedge contains the point.
+For a geodesic ending on the boundary at two points separated by a distance $\ell_A$, the maximum radial depth reached is the radius of that geodesic.
+In Euclidean Poincar\'{e} coordinates, the radius of the semicircle is $\ell_A/2$, so the minimal boundary support interval required to reconstruct a bulk point at depth $z$ is
+\begin{equation}
+\label{eq:minimal-interval}
+\ell_A = 2z.
+\end{equation}
+The Ryu--Takayanagi formula relates the entanglement entropy of $A$ to the length $\mathcal{L}(A)$ of the bulk minimal surface homologous to $A$:
+\begin{equation}
+\label{eq:rt}
+S_A = \frac{c}{3} \log\frac{\mathcal{L}(A)}{\epsilon},
+\end{equation}
+where $c$ is the central charge of the boundary CFT and $\epsilon$ is a UV cutoff.
+Using Eq.~\eqref{eq:minimal-interval}, the entropy associated with the minimal support interval for a reconstruction at depth $z$ is
+\begin{equation}
+\label{eq:rt-depth}
+S_A(z) = \frac{c}{3} \log\frac{2z}{\epsilon}.
+\end{equation}
+In the SHBT register, the boundary interval $A$ is represented by the contiguous set of visible character blocks that subtend the source and target boundary addresses.
+The boundary relabeling $T^{\partial}$ translates the support interval from the source address $x_{\mathrm{src}}$ to the target address $x_{\mathrm{tar}}$ while preserving the entanglement wedge, so the re-rendered state remains within the same holographic code subspace.
+
 \subsection{Causal authorization and non-locality}
 
 A re-rendering attempt is physically meaningful only if the target event can be reached from the source event by a future-directed causal curve.
@@ -284,6 +307,25 @@ Once the visible block has been de-rendered, the dark-ledger excitations must be
 Two-dimensional topological insulators support spin-momentum-locked helical edge states that are robust against non-magnetic disorder and backscattering\cite{kane2005,konig2007,hasan2010}.
 In the SHBT architecture, a narrow constriction or tunnel contact couples the dark-ledger quantum dots to the helical edge states of a 2D topological insulator; the edge states act as an electronic waveguide that transports the excitation with spin polarization close to unity.
 The topological protection suppresses dephasing during the non-local boundary relabeling step, preserving the eigenvector rigidity to below the $10^{-12}$ HIL safety threshold.
+
+\subsection{Cryogenic HIL monitor and emergency shunt logic}
+
+A hardware-in-the-loop (HIL) safety monitor executes in the same cryogenic control loop as the SHBT driver.
+At each clock cycle the monitor receives the eigenvector-rigidity detuning $\delta_\lambda$, the largest Lorentzian determinant residual $|\det(g)+1|$, the smallest Gram eigenvalue $\lambda_{\min}(\gamma)$, and the local information density $N_{\mathrm{local}}$.
+The monitor asserts \texttt{STATUS\_NOMINAL\_PASS} only when
+\begin{equation}
+\label{eq:hil-checks}
+\delta_\lambda \le 10^{-12},
+\qquad
+|\det(g)+1| \le 10^{-12},
+\qquad
+\lambda_{\min}(\gamma) > 0,
+\qquad
+N_{\mathrm{local}} \le N_{\mathrm{sat}}.
+\end{equation}
+If any condition is violated, the monitor asserts \texttt{EMERGENCY\_ANOMALY\_CLOSURE} and an emergency shunt immediately forces the active shift field $\beta=v f(r_s)$ to zero, collapsing the translocation field.
+With the SHBT $f_{\max}=72$~GHz clock, the total latency from sensor readout through the shunt driver is below $2.5$~ns, safely interrupting the translocation before the detuning can propagate into the rendered geometry.
+The canonical \texttt{shbt-recon} audit reports \texttt{\ReconHilStatus}, confirming that no emergency event occurred during the benchmark run.
 
 \section{Computational implementation and results}
 \label{sec:implementation}

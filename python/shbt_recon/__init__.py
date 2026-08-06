@@ -14,6 +14,7 @@ from shbt_recon._core import (
     PhaseLockedExcitation,
     ReconstructionOperator,
     ThermodynamicCost,
+    TopologicalProtectionAuditor,
 )
 
 __version__ = "0.1.0"
@@ -31,6 +32,7 @@ __all__ = [
     "PhaseLockedExcitation",
     "ReconstructionOperator",
     "ThermodynamicCost",
+    "TopologicalProtectionAuditor",
     "run_reconstruction",
 ]
 
