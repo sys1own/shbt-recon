@@ -284,4 +284,18 @@ mod tests {
         let result = engine.execute_stinespring_map(0, bad);
         assert!(result.is_err());
     }
+
+    #[test]
+    fn state_vector_is_fixed_size_stack_array() {
+        let engine = DerenderingEngine::with_kernel(BENCHMARK_KERNEL).unwrap();
+        // The coupled state vector is a stack-allocated fixed-size array.
+        // No heap allocation is introduced by the state container itself,
+        // guaranteeing deterministic access time during the Stinespring/re-render loops.
+        assert_eq!(engine.state_vector.len(), VISIBLE_STATE_DIM);
+        assert_eq!(engine.state_vector[0].len(), DARK_LEDGER_DIM);
+        assert_eq!(
+            std::mem::size_of_val(&engine.state_vector),
+            VISIBLE_STATE_DIM * DARK_LEDGER_DIM * std::mem::size_of::<Complex>()
+        );
+    }
 }

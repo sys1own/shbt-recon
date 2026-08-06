@@ -38,6 +38,7 @@ pub const LN2: f64 = 0.693_147_180_559_945_3;
 pub const TEMPERATURE_K: f64 = 15.4e-3;
 
 /// Local boundary register size used for thermodynamic costing (bits).
+/// This value is calibrated for a 10-metre radius translocation zone.
 pub const N_LOCAL_BITS: f64 = 1.20e72;
 
 /// Saturated holographic horizon register size (bits).
