@@ -108,7 +108,11 @@ where $c$ is the boundary central charge and $\epsilon$ is a UV cutoff [4].
 
 ### Passive stress-energy preservation
 
-De-rendering sends the active metric slice to zero, $g^{\mathrm{active}}_{\mu\nu} \to 0$, while total energy-momentum conservation gives $\nabla_\mu T^{\mu\nu}_{\mathrm{total}} = 0$.
+De-rendering sends the active metric slice to zero, g 
+μν
+active
+​
+ →0g , while total energy-momentum conservation gives $\nabla_\mu T^{\mu\nu}_{\mathrm{total}} = 0$.
 Taking the nullification limit yields
 
 $$
