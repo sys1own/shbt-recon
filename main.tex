@@ -29,7 +29,7 @@
   \providecommand{\ReconUnitarityTarget}{10^{-14}}
   \providecommand{\ReconDetuningTarget}{1.77\times{}10^{-16}}
   \providecommand{\ReconPhaseJitterTarget}{5.05\times{}10^{-5}}
-  \providecommand{\ReconCGetTarget}{5.34\times{}10^{-76}}
+  \providecommand{\ReconCGetTarget}{5.3429\times{}10^{-76}}
   % Metric nullification fallbacks
   \providecommand{\ReconMetricDetError}{0}
   \providecommand{\ReconMetricMinGramEv}{0}
@@ -54,7 +54,8 @@
 \begin{document}
 
 \title{Non-Local Boundary Address Relabeling and the Modular State Translocator in Static Holographic Boundary Theory}
-\author{}
+\author{SHBT Collaboration}
+\noaffiliation
 \date{\today}
 
 \begin{abstract}
@@ -243,24 +244,38 @@ The metric-nullification auditor verifies Eq.~\eqref{eq:passive-conservation} op
 
 \subsection{Entanglement wedge mapping and the Ryu--Takayanagi relation}
 
-A bulk point that is to be reconstructed at a finite radial depth $z$ in the Poincar\'{e} disk is dual to a minimal spatial boundary interval $A$ whose entanglement wedge contains the point.
-For a geodesic ending on the boundary at two points separated by a distance $\ell_A$, the maximum radial depth reached is the radius of that geodesic.
-In Euclidean Poincar\'{e} coordinates, the radius of the semicircle is $\ell_A/2$, so the minimal boundary support interval required to reconstruct a bulk point at depth $z$ is
+A bulk point at finite radial depth $z$ in the Poincar\'{e} disk is reconstructable only from a spatial boundary interval $A$ whose entanglement wedge contains the point.
+In the Poincar\'{e} upper-half-plane metric
+\begin{equation}
+\label{eq:poincare}
+d s^{2} = \frac{L^{2}}{z^{2}}\bigl(dz^{2} + dx_{\mu}\,dx^{\mu}\bigr),
+\end{equation}
+bulk geodesics that end on the boundary are semicircles orthogonal to the $z=0$ plane.
+Consider a geodesic whose boundary endpoints are separated by a distance $\ell_A$ along the $x$ direction.
+The semicircle is centered on the boundary at the midpoint of the interval and has radius
+\begin{equation}
+\label{eq:geodesic-radius}
+R_{A} = \frac{\ell_A}{2}.
+\end{equation}
+The deepest point of the geodesic is at $z = R_A$; therefore the minimal boundary support interval required to reconstruct a bulk point at depth $z$ is
 \begin{equation}
 \label{eq:minimal-interval}
 \ell_A = 2z.
 \end{equation}
+Any interval shorter than $\ell_A$ cannot support a bulk geodesic reaching depth $z$, and the corresponding boundary data are insufficient for holographic reconstruction.
+
 The Ryu--Takayanagi formula relates the entanglement entropy of $A$ to the length $\mathcal{L}(A)$ of the bulk minimal surface homologous to $A$:
 \begin{equation}
 \label{eq:rt}
 S_A = \frac{c}{3} \log\frac{\mathcal{L}(A)}{\epsilon},
 \end{equation}
 where $c$ is the central charge of the boundary CFT and $\epsilon$ is a UV cutoff.
-Using Eq.~\eqref{eq:minimal-interval}, the entropy associated with the minimal support interval for a reconstruction at depth $z$ is
+Using Eqs.~\eqref{eq:geodesic-radius} and \eqref{eq:minimal-interval}, the entropy associated with the minimal support interval for a reconstruction at depth $z$ is
 \begin{equation}
 \label{eq:rt-depth}
 S_A(z) = \frac{c}{3} \log\frac{2z}{\epsilon}.
 \end{equation}
+
 In the SHBT register, the boundary interval $A$ is represented by the contiguous set of visible character blocks that subtend the source and target boundary addresses.
 The boundary relabeling $T^{\partial}$ translates the support interval from the source address $x_{\mathrm{src}}$ to the target address $x_{\mathrm{tar}}$ while preserving the entanglement wedge, so the re-rendered state remains within the same holographic code subspace.
 
@@ -309,12 +324,12 @@ The topological protection suppresses dephasing during the non-local boundary re
 
 \subsection{Cryogenic HIL monitor and emergency shunt logic}
 
-A hardware-in-the-loop (HIL) safety monitor executes in the same cryogenic control loop as the SHBT driver.
-At each clock cycle the monitor receives the eigenvector-rigidity detuning $\delta_\lambda$, the largest Lorentzian determinant residual $|\det(g)+1|$, the smallest Gram eigenvalue $\lambda_{\min}(\gamma)$, and the local information density $N_{\mathrm{local}}$.
-The monitor asserts \texttt{STATUS\_NOMINAL\_PASS} only when
+A hardware-in-the-loop (HIL) safety monitor executes in the same 15.4~mK cryogenic control loop as the InP/InGaAs SHBT driver.
+At every clock cycle the monitor samples four critical observables: the eigenvector-rigidity detuning $\delta\Phi$, the Lorentzian determinant residual $|\det(g)+1|$, the smallest Gram eigenvalue $\lambda_{\min}(\gamma)$, and the local information-density budget $N_{\mathrm{local}}$.
+The pass condition is
 \begin{equation}
-\label{eq:hil-checks}
-\delta_\lambda \le 10^{-12},
+\label{eq:hil-pass}
+\delta\Phi \le 10^{-12},
 \qquad
 |\det(g)+1| \le 10^{-12},
 \qquad
@@ -322,8 +337,17 @@ The monitor asserts \texttt{STATUS\_NOMINAL\_PASS} only when
 \qquad
 N_{\mathrm{local}} \le N_{\mathrm{sat}}.
 \end{equation}
-If any condition is violated, the monitor asserts \texttt{EMERGENCY\_ANOMALY\_CLOSURE} and an emergency shunt immediately forces the active shift field $\beta=v f(r_s)$ to zero, collapsing the translocation field.
-With the SHBT $f_{\max}=72$~GHz clock, the total latency from sensor readout through the shunt driver is below $2.5$~ns, safely interrupting the translocation before the detuning can propagate into the rendered geometry.
+If any inequality in Eq.~\eqref{eq:hil-pass} is violated, the monitor immediately asserts \texttt{EMERGENCY\_ANOMALY\_CLOSURE}.
+The assertion is routed to a hard-wired emergency shunt that clamps the active shift field $\beta=v f(r_s)$ to zero, thereby collapsing the translocation field before the anomaly can propagate into the rendered geometry.
+
+The shutdown latency is hard-coded at $2.5$~ns.
+At the SHBT $f_{\max}=72$~GHz clock frequency, one cycle lasts
+\begin{equation}
+\label{eq:cycle}
+\tau_{\mathrm{clk}} = \frac{1}{f_{\max}} \approx 13.9\ \mathrm{ps},
+\end{equation}
+so the $2.5$~ns budget corresponds to roughly $180$ gate cycles, sufficient for the sensor multiplexer, comparator bank, shunt driver, and field-collapse confirmation path.
+Because the clamp is direct hardware and does not traverse the boundary-rendering pipeline, the $10^{-12}$ detuning threshold is enforced well before the rendered causal structure can be modified.
 The canonical \texttt{shbt-recon} audit reports \texttt{\ReconHilStatus}, confirming that no emergency event occurred during the benchmark run.
 
 \section{Computational implementation and results}
@@ -332,6 +356,8 @@ The canonical \texttt{shbt-recon} audit reports \texttt{\ReconHilStatus}, confir
 The reference implementation, \texttt{shbt-recon}, is written in Rust with PyO3 bindings and exposes a Python package.
 It uses the \texttt{rug} crate to perform 512-bit rational and floating-point arithmetic, keeping all register operations above the holographic noise floor.
 The visible state vector is a stack-allocated array of $16$ visible blocks, each carrying an $8$-component dark ledger, avoiding heap allocations during braiding loops.
+All bit-budget figures are calibrated for a $10$-metre radius translocation zone, i.e. $N_{\mathrm{local}}\approx1.20\times10^{72}$ bits corresponds to the information capacity of the boundary register at that scale.
+The per-GET thermodynamic cost computed by the simulator is $C_{\text{get}} \approx 5.3429\times10^{-76}$~J/bit, using $T=15.4$~mK and $N_{\mathrm{sat}}\approx3.31\times10^{122}$ bits.
 
 \begin{figure}[ht]
 \centering
@@ -369,7 +395,7 @@ Residual dark capacity & $c_{\mathrm{dark}}^{\mathrm{res}}$ & $10/33$ & \ReconRe
 Completed dark capacity & $c_{\mathrm{dark}}^{\mathrm{comp}}$ & $23/33$ & \ReconCompletedFraction \\
 Stinespring ratio & $\eta_D$ & $23/33$ & \ReconStinespringRatio \\
 Unitarity residual & $\epsilon_{\mathrm{unitary}}$ & $<\ReconUnitarityTarget$ & $\ReconUnitarityResidual$ \\
-Eigenvector rigidity detuning & $\delta_\lambda$ & $<\ReconDetuningTarget$ & $\ReconEigenvectorDetuning$ \\
+Eigenvector rigidity detuning & $\delta\Phi$ & $<\ReconDetuningTarget$ & $\ReconEigenvectorDetuning$ \\
 Phase unitarity residual & $\epsilon_{\mathrm{phase}}$ & $<10^{-14}$ & $\ReconPhaseUnitarityResidual$ \\
 Reconstruction amplitude & $\|R^{\text{rerender}}|\psi\rangle\|$ & $23/33$ & $\ReconReconstructionAmplitude$ \\
 Causal authorization & & true & \ReconCausalAuth \\
