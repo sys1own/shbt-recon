@@ -112,7 +112,7 @@ De-rendering sends the active metric slice to zero, g
 μν
 active
 ​
- →0g , while total energy-momentum conservation gives $\nabla_\mu T^{\mu\nu}_{\mathrm{total}} = 0$.
+ →0 , while total energy-momentum conservation gives $\nabla_\mu T^{\mu\nu}_{\mathrm{total}} = 0$.
 Taking the nullification limit yields
 
 $$
@@ -253,7 +253,7 @@ shbt-recon --tar-t 1.0 --theta 0.421
 1. `shbt-recon`: SHBT Destination Reconstruction and State Decoupling Simulator, https://github.com/sys1own/shbt-recon.
 2. `shbt-precision`: SHBT Precision Simulator (canonical $(26,8,312)$ kernel and cosmology module), https://github.com/sys1own/shbt-precision.
 3. `shbt-warp`: SHBT Warp Drive Simulator (Alcubierre-type metric engineering and the $142.08$ MW benchmark), https://github.com/sys1own/shbt-warp.
-4. S. Ryu and T. Takayanagi, "Holographic derivation of entanglement entropy from the anti--de Sitter/conformal field theory correspondence," *Phys. Rev. Lett.* **96**, 181602 (2006).
+4. S. Ryu and T. Takayanagi, "Holographic derivation of entanglement entropy from the anti-de Sitter/conformal field theory correspondence," *Phys. Rev. Lett.* **96**, 181602 (2006).
 5. C. L. Kane and E. J. Mele, "Quantum spin Hall effect in graphene," *Phys. Rev. Lett.* **95**, 226801 (2005).
 6. M. K\"onig, S. Wiedmann, C. Br\"une, A. Roth, H. Buhmann, L. W. Molenkamp, X.-L. Qi, and S.-C. Zhang, "Quantum spin Hall insulator state in HgTe quantum wells," *Science* **318**, 766 (2007).
 7. M. Z. Hasan and C. L. Kane, "Topological insulators," *Rev. Mod. Phys.* **82**, 3045 (2010).
