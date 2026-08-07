@@ -91,8 +91,8 @@ Spacelike or past targets raise a fatal `AnomalyClosureError`.
 ### Entanglement wedge mapping
 
 A bulk point at radial depth $z$ is dual to the minimal spatial boundary interval $A$ whose entanglement wedge contains the point.
-For a Poincaré upper-half-plane geodesic whose boundary endpoints are separated by $\ell_A$, the geodesic radius is $R_A = \ell_A/2$ and its deepest point is at $z = R_A$.
-The minimal boundary support interval required for reconstruction at bulk depth $z$ is therefore
+For a Poincaré upper-half-plane geodesic whose boundary endpoints are separated by $\ell_A$, the geodesic radius is $R_A = \ell_A/2$ and its deepest point 
+is at $z = R_A$. The minimal boundary support interval required for reconstruction at bulk depth $z$ is therefore
 
 $$
 \ell_A = 2z.
