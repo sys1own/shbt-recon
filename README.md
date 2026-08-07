@@ -70,7 +70,7 @@ R^{\text{rerender}}
 \bigl(I_{\mathrm{vis}} \otimes O^{\text{excitation}}(\theta)\bigr),
 $$
 
-where $T^{\partial}$ is the Heegaard--Floer boundary relabeling map and $O^{\text{excitation}}(\theta) = e^{-i\theta Q_{\text{topological}}}$ is the phase-locked $U(1)$ excitation operator.
+where $T^{\partial}$ is the Heegaard-Floer boundary relabeling map and $O^{\text{excitation}}(\theta) = e^{-i\theta Q_{\text{topological}}}$ is the phase-locked $U(1)$ excitation operator.
 For the canonical anyon lattice $Q_{\text{topological}} = 1$.
 
 ### Causal authorization
