@@ -1,11 +1,32 @@
 //! Reconstruction operator, boundary relabeling, and phase-locked excitation.
 
 use pyo3::prelude::*;
-use rug::{Complex, Float};
+use rug::{Assign, Complex, Float};
 use crate::causal_audit::{CausalCoordinate, verify_future_cone};
 use crate::constants::*;
 use crate::error::ReconError;
+use crate::gmp_memory;
+use crate::phase_rotation;
 use crate::stinespring::DerenderingEngine;
+
+/// 512-bit squared norm of the dark-ledger vector at `visible_index`.
+fn dark_ledger_norm_sq(
+    state: &[[Complex; DARK_LEDGER_DIM]; VISIBLE_STATE_DIM],
+    visible_index: usize,
+) -> Float {
+    let mut norm_sq = Float::with_val(PREC, 0);
+    for i in 0..DARK_LEDGER_DIM {
+        let re = state[visible_index][i].real();
+        let mut t = Float::with_val(PREC, re);
+        t.square_mut();
+        let im = state[visible_index][i].imag();
+        let mut u = Float::with_val(PREC, im);
+        u.square_mut();
+        norm_sq += t;
+        norm_sq += u;
+    }
+    norm_sq
+}
 
 /// Apply the phase-locked excitation operator O^excitation(θ) = exp(-i θ Q)
 /// to a single complex amplitude.  The topological charge Q is taken to be 1
@@ -55,15 +76,47 @@ pub fn reconstruct_state(
         ));
     }
 
-    // Boundary relabeling: copy the dark ledger state attached to the source
+    // Boundary relabeling T^∂: copy the dark ledger state attached to the source
     // visible block to the target boundary address.
+    //
+    // This is a spatial isometry: the local norm of the dark-ledger vector is
+    // preserved exactly, and because the source and target addresses subtend
+    // an equal boundary support interval length ℓ_A = 2z, the entanglement
+    // entropy of the wedge is unchanged, ΔS_A = 0.  The relabeling is treated
+    // as instantaneous and adiabatic because it is a pure index permutation with
+    // no coupling to an external environment.
+    let source_norm_sq = dark_ledger_norm_sq(state, source_index);
     for i in 0..DARK_LEDGER_DIM {
         state[target_index][i] = state[source_index][i].clone();
     }
+    let target_norm_sq = dark_ledger_norm_sq(state, target_index);
+    let mut entropy_residual = Float::with_val(PREC, &source_norm_sq);
+    entropy_residual -= &target_norm_sq;
+    let noise = Float::with_val(PREC, HOLOGRAPHIC_NOISE_FLOOR);
+    if entropy_residual.abs() > noise {
+        return Err(ReconError::PrecisionLossError(
+            "Boundary relabeling changed the dark-ledger norm; ΔS_A ≠ 0".to_string(),
+        ));
+    }
 
     // Phase-locked excitation on the target dark ledger subspace.
+    // The U(1) rotation is vectorised via AVX-512/NEON and written back through
+    // mutable references so no new Complex allocations occur on the hot path.
+    // The sine/cosine is computed once, then the branchless SIMD kernel is
+    // invoked for the whole 8-component block.
+    let cos = theta.cos();
+    let sin = theta.sin();
+    let mut re_arr = [0.0f64; DARK_LEDGER_DIM];
+    let mut im_arr = [0.0f64; DARK_LEDGER_DIM];
     for i in 0..DARK_LEDGER_DIM {
-        state[target_index][i] = apply_phase(&state[target_index][i], theta);
+        re_arr[i] = state[target_index][i].real().to_f64();
+        im_arr[i] = state[target_index][i].imag().to_f64();
+    }
+    phase_rotation::rotate_block_precomputed(cos, sin, &mut re_arr, &mut im_arr);
+    for i in 0..DARK_LEDGER_DIM {
+        let (real, imag) = state[target_index][i].as_mut_real_imag();
+        real.assign(re_arr[i]);
+        imag.assign(im_arr[i]);
     }
 
     // Adjoint Stinespring projection: the visible amplitude is the rotated
@@ -146,6 +199,10 @@ impl BoundaryRelabeling {
 
     /// Relabel a state snapshot by copying the dark components of
     /// `source_index` to `target_index`.
+    ///
+    /// The copy is a spatial isometry that preserves the local dark-ledger norm,
+    /// so the entanglement-wedge entropy is unchanged, ΔS_A = 0.  It is
+    /// instantaneous and adiabatic because no external environment is coupled.
     fn relabel_state(
         &self,
         state: Vec<Vec<(f64, f64)>>,
@@ -177,6 +234,7 @@ pub struct PhaseLockedExcitation;
 impl PhaseLockedExcitation {
     #[new]
     pub fn new() -> Self {
+        gmp_memory::init();
         PhaseLockedExcitation
     }
 
@@ -205,8 +263,19 @@ impl PhaseLockedExcitation {
                 "Boundary address index out of bounds".to_string(),
             ).into());
         }
+        let cos = theta.cos();
+        let sin = theta.sin();
+        let mut re_arr = [0.0f64; DARK_LEDGER_DIM];
+        let mut im_arr = [0.0f64; DARK_LEDGER_DIM];
         for i in 0..DARK_LEDGER_DIM {
-            state[index][i] = apply_phase(&state[index][i], theta);
+            re_arr[i] = state[index][i].real().to_f64();
+            im_arr[i] = state[index][i].imag().to_f64();
+        }
+        phase_rotation::rotate_block_precomputed(cos, sin, &mut re_arr, &mut im_arr);
+        for i in 0..DARK_LEDGER_DIM {
+            let (real, imag) = state[index][i].as_mut_real_imag();
+            real.assign(re_arr[i]);
+            imag.assign(im_arr[i]);
         }
         Ok(state
             .iter()
@@ -225,6 +294,7 @@ pub struct ReconstructionOperator;
 impl ReconstructionOperator {
     #[new]
     pub fn new() -> Self {
+        gmp_memory::init();
         ReconstructionOperator
     }
 

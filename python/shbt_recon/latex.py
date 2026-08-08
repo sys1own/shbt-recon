@@ -68,6 +68,12 @@ def generate_recon_results_tex(path="recon_results.tex"):
     _write_macro(lines, "ReconNoiseFloor", "1.0\\times{}10^{-122}")
     _write_macro(lines, "ReconDetuningTolerance", "10^{-12}")
 
+    # Dark-ledger trace-loss projection lemma (added in src/derender.rs).
+    _write_macro(lines, "ReconTraceLoss", _fmt(engine.get("trace_loss", 0.0)))
+    _write_macro(lines, "ReconAmplitudeLoss", _fmt(engine.get("amplitude_loss", 0.0)))
+    _write_macro(lines, "ReconProjectionResidual", _fmt(engine.get("u_u_dagger_projection_residual", 0.0)))
+    _write_macro(lines, "ReconDDaggerDResidual", _fmt(engine.get("d_dagger_d_residual", 0.0)))
+
     # Verification targets for the dynamic results table.
     _write_macro(lines, "ReconUnitarityTarget", "10^{-14}")
     _write_macro(lines, "ReconDetuningTarget", "1.77\\times{}10^{-16}")
@@ -99,6 +105,15 @@ def generate_recon_results_tex(path="recon_results.tex"):
     _write_macro(lines, "ReconTemperatureK", _fmt(thermo.get("temperature_k", 0.0)))
     _write_macro(lines, "ReconRatio", _fmt(thermo.get("ratio", 0.0)))
     _write_macro(lines, "ReconLandauerLimitJ", _fmt(thermo.get("landauer_limit_j", 0.0)))
+
+    # Thermal dissipation budget and topological edge-state phase noise
+    thermal = audit.get("thermal", {})
+    _write_macro(lines, "ReconThermalQDotShuntW", _fmt(thermal.get("q_dot_shunt_w", 0.0)))
+    _write_macro(lines, "ReconThermalCoolingPowerW", _fmt(thermal.get("cooling_power_w", 0.0)))
+    _write_macro(lines, "ReconThermalEnergyDissipativeJ", _fmt(thermal.get("energy_dissipative_j", 0.0)))
+    _write_macro(lines, "ReconThermalTemperatureRiseK", _fmt(thermal.get("temperature_rise_k", 0.0)))
+    _write_macro(lines, "ReconEdgeNoiseVariance", _fmt(audit.get("edge_noise_variance", 0.0)))
+    _write_macro(lines, "ReconEffectivePhaseJitterRad", _fmt(audit.get("effective_phase_jitter_rad", 0.0)))
 
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)

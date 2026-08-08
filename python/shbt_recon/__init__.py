@@ -6,6 +6,7 @@ from shbt_recon._core import (
     CausalCoordinate,
     CausalViolationError,
     DarkLedger,
+    DarkLedgerTraceLoss,
     DerenderingEngine,
     HardwareSynthesisAuditor,
     HilSafetyMonitor,
@@ -13,7 +14,9 @@ from shbt_recon._core import (
     ModularStateTranslocator,
     PhaseLockedExcitation,
     ReconstructionOperator,
+    ThermalDissipationAuditor,
     ThermodynamicCost,
+    TopologicalEdgeNoise,
     TopologicalProtectionAuditor,
 )
 
@@ -24,6 +27,7 @@ __all__ = [
     "CausalCoordinate",
     "CausalViolationError",
     "DarkLedger",
+    "DarkLedgerTraceLoss",
     "DerenderingEngine",
     "HardwareSynthesisAuditor",
     "HilSafetyMonitor",
@@ -31,7 +35,9 @@ __all__ = [
     "ModularStateTranslocator",
     "PhaseLockedExcitation",
     "ReconstructionOperator",
+    "ThermalDissipationAuditor",
     "ThermodynamicCost",
+    "TopologicalEdgeNoise",
     "TopologicalProtectionAuditor",
     "run_reconstruction",
 ]
