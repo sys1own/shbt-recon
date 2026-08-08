@@ -54,6 +54,13 @@
   \providecommand{\ReconTemperatureK}{1.54\times{}10^{-2}}
   \providecommand{\ReconRatio}{0}
   \providecommand{\ReconLandauerLimitJ}{0}
+  % Thermal dissipation and edge-state phase-noise fallbacks
+  \providecommand{\ReconThermalQDotShuntW}{0}
+  \providecommand{\ReconThermalCoolingPowerW}{0}
+  \providecommand{\ReconThermalEnergyDissipativeJ}{0}
+  \providecommand{\ReconThermalTemperatureRiseK}{0}
+  \providecommand{\ReconEdgeNoiseVariance}{0}
+  \providecommand{\ReconEffectivePhaseJitterRad}{0}
 }
 
 \begin{document}
@@ -398,6 +405,21 @@ N_{\mathrm{local}} \le N_{\mathrm{sat}}.
 If any inequality in Eq.~\eqref{eq:hil-pass} is violated, the monitor immediately asserts \texttt{EMERGENCY\_ANOMALY\_CLOSURE}.
 The assertion is routed to a hard-wired emergency shunt that clamps the active shift field $\beta=v f(r_s)$ to zero, thereby collapsing the translocation field before the anomaly can propagate into the rendered geometry.
 
+The emergency shunt must also satisfy a cryogenic thermal-flux budget.
+The field-collapse energy of a $142.08$~MW translocation pulse removed over a hard-coded latency $\tau_{\mathrm{latency}}=2.5$~ns is
+\begin{equation}
+\label{eq:shunt-energy}
+E_{\mathrm{dissipative}} = P_{\mathrm{op}} \tau_{\mathrm{latency}},
+\end{equation}
+while the holographic cooling power of the local boundary register is
+\begin{equation}
+\label{eq:cooling-power}
+P_{\mathrm{cooling}}(T) = \frac{C_{\mathrm{thermal}} T}{\tau_{\mathrm{latency}}},
+\qquad
+C_{\mathrm{thermal}} = N_{\mathrm{local}} k_{B} \ln 2.
+\end{equation}
+At $T=15.4$~mK this gives $\dot{Q}_{\mathrm{shunt}}=P_{\mathrm{op}}\ll P_{\mathrm{cooling}}(T)$ and a temperature rise $\Delta T=E_{\mathrm{dissipative}}/C_{\mathrm{thermal}}$ far below the base temperature, so the dilution-refrigerator stage does not quench (see Table~\ref{tab:results}).
+
 The shutdown latency is hard-coded at $2.5$~ns.
 At the SHBT $f_{\max}=72$~GHz clock frequency, one cycle lasts
 \begin{equation}
@@ -407,6 +429,14 @@ At the SHBT $f_{\max}=72$~GHz clock frequency, one cycle lasts
 so the $2.5$~ns budget corresponds to roughly $180$ gate cycles, sufficient for the sensor multiplexer, comparator bank, shunt driver, and field-collapse confirmation path.
 Because the clamp is direct hardware and does not traverse the boundary-rendering pipeline, the $10^{-12}$ detuning threshold is enforced well before the rendered causal structure can be modified.
 The canonical \texttt{shbt-recon} audit reports \texttt{\ReconHilStatus}, confirming that no emergency event occurred during the benchmark run.
+
+Finally, the 2D topological-insulator waveguide is subject to weak backscattering near constriction and tunnel contacts, which contributes a topological edge-state phase noise of variance $\sigma_{\theta}^{2}$.
+The HIL monitor combines this noise in quadrature with the base quantum projection jitter $\Delta\varphi$ and requires
+\begin{equation}
+\label{eq:phase-noise}
+\sqrt{(\Delta\varphi)^{2}+\sigma_{\theta}^{2}} \le 5.05\times10^{-5}\ \mathrm{rad}.
+\end{equation}
+The default edge-noise variance $\ReconEdgeNoiseVariance$~rad$^{2}$ yields an effective jitter of $\ReconEffectivePhaseJitterRad$~rad, well below the threshold in Eq.~\eqref{eq:phase-noise}.
 
 \section{Computational implementation and results}
 \label{sec:implementation}
@@ -465,6 +495,13 @@ Active minimum Gram eigenvalue & $\lambda_{\min}(\gamma)$ & $>0$ & $\ReconMetric
 Nullified minimum Gram eigenvalue & $\lambda_{\min}(\gamma)$ & $>0$ & $\ReconMetricNullifiedMinGramEv$ \\
 \midrule
 Phase jitter & $\Delta\phi$ & $<\ReconPhaseJitterTarget$~rad & $\ReconPhaseJitter$~rad \\
+Effective phase jitter & $\sqrt{(\Delta\phi)^2+\sigma_\theta^2}$ & $<\ReconPhaseJitterTarget$~rad & $\ReconEffectivePhaseJitterRad$~rad \\
+Edge-state phase-noise variance & $\sigma_\theta^2$ & -- & $\ReconEdgeNoiseVariance$~rad$^2$ \\
+\midrule
+Thermal shunt flux & $\dot{Q}_{\mathrm{shunt}}$ & $<P_{\mathrm{cooling}}$ & $\ReconThermalQDotShuntW$~W \\
+Holographic cooling power & $P_{\mathrm{cooling}}(15.4\,\mathrm{mK})$ & -- & $\ReconThermalCoolingPowerW$~W \\
+Shunt energy & $E_{\mathrm{dissipative}}$ & -- & $\ReconThermalEnergyDissipativeJ$~J \\
+Temperature rise & $\Delta T$ & $<15.4$~mK & $\ReconThermalTemperatureRiseK$~K \\
 Thermal noise floor & $k_B T$ & $>C_{\text{get}}$ & $\ReconThermalNoiseLimitJ$~J \\
 GET thermodynamic cost & $C_{\text{get}}$ & $\sim\ReconCGetTarget$ & $\ReconCGetJ$~J/bit \\
 Information ratio & $N_{\mathrm{local}}/N_{\mathrm{sat}}$ & & $\ReconRatio$ \\

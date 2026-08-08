@@ -17,6 +17,7 @@ pub mod ledger;
 pub mod metric_nullification;
 pub mod modular_translocator;
 pub mod reconstruction;
+pub mod shbt;
 pub mod stinespring;
 pub mod thermodynamics;
 
@@ -30,6 +31,7 @@ pub use ledger::*;
 pub use metric_nullification::*;
 pub use modular_translocator::*;
 pub use reconstruction::*;
+pub use shbt::emitter_array::*;
 pub use stinespring::*;
 pub use thermodynamics::*;
 
@@ -51,6 +53,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<hardware::TopologicalProtectionAuditor>()?;
     m.add_class::<hardware_synthesis::HardwareSynthesisAuditor>()?;
     m.add_class::<thermodynamics::ThermodynamicCost>()?;
+    m.add_class::<shbt::emitter_array::ThermalDissipationAuditor>()?;
+    m.add_class::<shbt::emitter_array::TopologicalEdgeNoise>()?;
     m.add_class::<modular_translocator::ModularStateTranslocator>()?;
     m.add("AnomalyClosureError", m.py().get_type::<error::AnomalyClosureError>())?;
     m.add("CausalViolationError", m.py().get_type::<CausalViolationError>())?;

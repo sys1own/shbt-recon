@@ -14,7 +14,9 @@ from shbt_recon._core import (
     ModularStateTranslocator,
     PhaseLockedExcitation,
     ReconstructionOperator,
+    ThermalDissipationAuditor,
     ThermodynamicCost,
+    TopologicalEdgeNoise,
     TopologicalProtectionAuditor,
 )
 
@@ -33,7 +35,9 @@ __all__ = [
     "ModularStateTranslocator",
     "PhaseLockedExcitation",
     "ReconstructionOperator",
+    "ThermalDissipationAuditor",
     "ThermodynamicCost",
+    "TopologicalEdgeNoise",
     "TopologicalProtectionAuditor",
     "run_reconstruction",
 ]

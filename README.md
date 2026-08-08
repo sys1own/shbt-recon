@@ -173,7 +173,7 @@ The `TopologicalProtectionAuditor` simulates backscattering events on the helica
 ## HIL Safety
 
 A cryogenic Hardware-in-the-Loop (HIL) safety monitor runs in the same control loop as the SHBT driver.
-At every clock cycle the monitor samples the eigenvector-rigidity detuning $\delta\Phi$, the Lorentzian determinant residual $|\det(g)+1|$, the smallest Gram eigenvalue $\lambda_{\min}(\gamma)$, and the local information density $N_{\mathrm{local}}$.
+At every clock cycle the monitor samples the eigenvector-rigidity detuning $\delta\Phi$, the Lorentzian determinant residual $|\det(g)+1|$, the smallest Gram eigenvalue $\lambda_{\min}(\gamma)$, the local information density $N_{\mathrm{local}}$, the thermal flux during an emergency shunt, and the total phase jitter including topological edge-state noise.
 The pass condition is
 
 $$
@@ -183,7 +183,11 @@ $$
 \qquad
 \lambda_{\min}(\gamma) > 0,
 \qquad
-N_{\mathrm{local}} \le N_{\mathrm{sat}}.
+N_{\mathrm{local}} \le N_{\mathrm{sat}},
+\qquad
+\dot{Q}_{\mathrm{shunt}} \le P_{\mathrm{cooling}}(T),
+\qquad
+\sqrt{(\Delta\phi)^2 + \sigma_\theta^2} \le 5.05\times10^{-5}\ \mathrm{rad}.
 $$
 
 If any inequality is violated, the monitor asserts `EMERGENCY_ANOMALY_CLOSURE` and a hard-wired emergency shunt clamps the active shift field $\beta = v f(r_s)$ to zero.
@@ -195,6 +199,17 @@ $$
 $$
 
 so the $2.5$ ns budget spans roughly $180$ gate cycles, sufficient for sensor readout, comparator logic, shunt driver, and field-collapse confirmation.
+
+The thermal-flux budget for a $142.08$ MW field collapse is
+
+$$
+\dot{Q}_{\mathrm{shunt}} = \frac{P_{\mathrm{op}} \tau_{\mathrm{latency}}}{\tau_{\mathrm{latency}}} = P_{\mathrm{op}},
+\qquad
+P_{\mathrm{cooling}}(T) = \frac{N_{\mathrm{local}} k_B \ln 2 \cdot T}{\tau_{\mathrm{latency}}},
+$$
+
+so the shunt heat load is far below the holographic cooling power and the dilution refrigerator does not quench.
+The 2D topological-insulator waveguide contributes a weak backscattering phase-noise variance $\sigma_\theta^2$; the HIL monitor adds this in quadrature to the base quantum projection jitter $\Delta\phi$.
 
 ## Audit Benchmarks
 
@@ -214,6 +229,10 @@ All bit-budget figures are calibrated for a $10$-metre radius translocation zone
 | HIL status | | `STATUS_NOMINAL_PASS` | `STATUS_NOMINAL_PASS` |
 | Lorentzian determinant residual | $\| \det(g)+1 \|$ | $<10^{-12}$ | $<10^{-12}$ |
 | Phase jitter | $\Delta\phi$ | $<5.05\times10^{-5}$ rad | $<5.05\times10^{-5}$ rad |
+| Effective phase jitter | $\sqrt{(\Delta\phi)^2 + \sigma_\theta^2}$ | $<5.05\times10^{-5}$ rad | $<5.05\times10^{-5}$ rad |
+| Edge-state phase-noise variance | $\sigma_\theta^2$ | -- | $0$ rad$^2$ |
+| Thermal shunt flux | $\dot{Q}_{\mathrm{shunt}}$ | $<P_{\mathrm{cooling}}$ | $142.08$ MW |
+| Temperature rise | $\Delta T$ | $<15.4$ mK | $\ll 15.4$ mK |
 | GET thermodynamic cost | $C_{\text{get}}$ | $5.34296976800\times10^{-76}$ J/bit | $5.34296976800\times10^{-76}$ J/bit |
 
 The GET cost is computed as
@@ -268,7 +287,11 @@ print(trans.audit())
 ### CLI
 
 ```bash
+# Nominal reconstruction
 shbt-recon --tar-t 1.0 --theta 0.421
+
+# Reconstruction with topological edge-state phase noise
+shbt-recon --tar-x 0.5 --edge-noise-variance 1e-12 --active-velocity 1.071186
 ```
 
 ## Citations

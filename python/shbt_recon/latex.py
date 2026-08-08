@@ -106,6 +106,15 @@ def generate_recon_results_tex(path="recon_results.tex"):
     _write_macro(lines, "ReconRatio", _fmt(thermo.get("ratio", 0.0)))
     _write_macro(lines, "ReconLandauerLimitJ", _fmt(thermo.get("landauer_limit_j", 0.0)))
 
+    # Thermal dissipation budget and topological edge-state phase noise
+    thermal = audit.get("thermal", {})
+    _write_macro(lines, "ReconThermalQDotShuntW", _fmt(thermal.get("q_dot_shunt_w", 0.0)))
+    _write_macro(lines, "ReconThermalCoolingPowerW", _fmt(thermal.get("cooling_power_w", 0.0)))
+    _write_macro(lines, "ReconThermalEnergyDissipativeJ", _fmt(thermal.get("energy_dissipative_j", 0.0)))
+    _write_macro(lines, "ReconThermalTemperatureRiseK", _fmt(thermal.get("temperature_rise_k", 0.0)))
+    _write_macro(lines, "ReconEdgeNoiseVariance", _fmt(audit.get("edge_noise_variance", 0.0)))
+    _write_macro(lines, "ReconEffectivePhaseJitterRad", _fmt(audit.get("effective_phase_jitter_rad", 0.0)))
+
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")

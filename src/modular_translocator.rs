@@ -12,6 +12,7 @@ use crate::hil_safety::HilSafetyMonitor;
 use crate::ledger::DarkLedger;
 use crate::metric_nullification::MetricNullificationAuditor;
 use crate::reconstruction::reconstruct_state;
+use crate::shbt::emitter_array::{ThermalDissipationAuditor, TopologicalEdgeNoise};
 use crate::stinespring::DerenderingEngine;
 use crate::thermodynamics::ThermodynamicCost;
 use rug::Float;
@@ -25,6 +26,8 @@ pub struct ModularStateTranslocator {
     metric: MetricNullificationAuditor,
     hardware: HardwareSynthesisAuditor,
     thermo: ThermodynamicCost,
+    thermal: ThermalDissipationAuditor,
+    edge_noise: f64,
 }
 
 impl ModularStateTranslocator {
@@ -35,12 +38,15 @@ impl ModularStateTranslocator {
         let metric = MetricNullificationAuditor::new();
         let hardware = HardwareSynthesisAuditor::new();
         let thermo = ThermodynamicCost::new();
+        let thermal = ThermalDissipationAuditor::new();
         Ok(ModularStateTranslocator {
             engine,
             hil,
             metric,
             hardware,
             thermo,
+            thermal,
+            edge_noise: 0.0,
         })
     }
 
@@ -92,22 +98,30 @@ impl ModularStateTranslocator {
         target_index: usize,
         active_velocity_c: f64,
     ) -> PyResult<Vec<(f64, f64)>> {
-        // HIL: eigenvector-rigidity detuning must remain below 1e-12.
+        // HIL pre-check: eigenvector rigidity, metric Gram/determinant,
+        // thermodynamic budget, and phase-jitter (including edge-state noise).
         let detuning = Self::eigen_detuning(&residual_state).map_err(PyErr::from)?;
-        let hil_status = self.hil.check_anomaly_closure(detuning);
-        if hil_status == "EMERGENCY_ANOMALY_CLOSURE" {
-            return Err(ReconError::AnomalyClosureError(
-                "HIL safety monitor: eigenvector rigidity detuning exceeds 10^-12".to_string(),
-            )
-            .into());
-        }
-
-        // Metric nullification: active metric must still have det = -1.0.
         let active_metric = self.metric.audit_velocity(active_velocity_c);
-        if !active_metric.passed {
-            return Err(ReconError::AnomalyClosureError(
-                "Metric nullification audit failed on active metric slice".to_string(),
-            )
+
+        let edge = TopologicalEdgeNoise::new(self.edge_noise);
+        let base_phase_jitter = self.hardware.compute_phase_jitter_rad();
+        let effective_phase_jitter = edge.effective_phase_jitter(base_phase_jitter);
+
+        let hil_status = self.hil.audit_hil_step(
+            active_metric.minimum_gram_eigenvalue,
+            active_metric.determinant_error,
+            detuning,
+            self.thermo.c_get_j(),
+            self.thermo.landauer_limit_j(),
+            effective_phase_jitter,
+            self.thermal.q_dot_shunt_w(),
+            self.thermal.cooling_power_w(self.thermal.base_temperature_k),
+        );
+        if hil_status != "STATUS_NOMINAL_PASS" {
+            return Err(ReconError::AnomalyClosureError(format!(
+                "HIL safety monitor triggered: {}",
+                hil_status
+            ))
             .into());
         }
 
@@ -171,6 +185,16 @@ impl ModularStateTranslocator {
         let hardware_audit = self.hardware.audit(py)?;
         let thermo_audit = self.thermo.audit(py)?;
 
+        // Edge-state phase noise combined with the base quantum projection jitter.
+        let edge = TopologicalEdgeNoise::new(self.edge_noise);
+        let base_phase_jitter = self.hardware.compute_phase_jitter_rad();
+        let effective_phase_jitter = edge.effective_phase_jitter(base_phase_jitter);
+
+        // Thermal-dissipation budget for the 2.5 ns emergency shunt.
+        let q_dot_shunt_w = self.thermal.q_dot_shunt_w();
+        let cooling_power_w = self.thermal.cooling_power_w(self.thermal.base_temperature_k);
+        let thermal_status = self.thermal.audit();
+
         // Run a nominal HIL step using the engine audit values.
         let eigen_detuning = engine_audit
             .get("eigenvector_rigidity_detuning")
@@ -182,6 +206,9 @@ impl ModularStateTranslocator {
             eigen_detuning,
             self.thermo.c_get_j(),
             self.thermo.landauer_limit_j(),
+            effective_phase_jitter,
+            q_dot_shunt_w,
+            cooling_power_w,
         );
 
         let d = PyDict::new(py);
@@ -191,11 +218,22 @@ impl ModularStateTranslocator {
         }
         d.set_item("engine", engine_dict)?;
         d.set_item("hil_status", hil_status)?;
+        d.set_item("thermal_status", thermal_status)?;
+        d.set_item("thermal", self.thermal.audit_py(py)?)?;
+        d.set_item("edge_noise_variance", self.edge_noise)?;
+        d.set_item("effective_phase_jitter_rad", effective_phase_jitter)?;
         d.set_item("active_metric", active_metric.to_dict(py)?)?;
         d.set_item("nullified_metric", nullified_metric.to_dict(py)?)?;
         d.set_item("hardware", hardware_audit)?;
         d.set_item("thermodynamics", thermo_audit)?;
         Ok(d)
+    }
+
+    /// Set the topological edge-state phase-noise variance (rad^2) used in
+    /// translocation and audit pipelines.
+    #[pyo3(signature = (variance))]
+    pub fn set_edge_noise_variance(&mut self, variance: f64) {
+        self.edge_noise = variance;
     }
 }
 
