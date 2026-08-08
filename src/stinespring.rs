@@ -239,6 +239,14 @@ impl DerenderingEngine {
         results.insert("reconstruction_amplitude".to_string(), fmt(reconstruction_amplitude));
         results.insert("phase_unitarity_residual".to_string(), fmt(phase_residual));
         results.insert("causal_authorization_passed".to_string(), "true".to_string());
+
+        // Dark-ledger trace-loss projection lemma: verify U†U = I, UU† = P_comp,
+        // and D†D = η_D² I at 512-bit precision.
+        let trace_loss_results = crate::derender::DarkLedgerTraceLoss::verify_projection_lemma()?;
+        for (k, v) in trace_loss_results {
+            results.insert(k, v);
+        }
+
         Ok(results)
     }
 }

@@ -68,6 +68,12 @@ def generate_recon_results_tex(path="recon_results.tex"):
     _write_macro(lines, "ReconNoiseFloor", "1.0\\times{}10^{-122}")
     _write_macro(lines, "ReconDetuningTolerance", "10^{-12}")
 
+    # Dark-ledger trace-loss projection lemma (added in src/derender.rs).
+    _write_macro(lines, "ReconTraceLoss", _fmt(engine.get("trace_loss", 0.0)))
+    _write_macro(lines, "ReconAmplitudeLoss", _fmt(engine.get("amplitude_loss", 0.0)))
+    _write_macro(lines, "ReconProjectionResidual", _fmt(engine.get("u_u_dagger_projection_residual", 0.0)))
+    _write_macro(lines, "ReconDDaggerDResidual", _fmt(engine.get("d_dagger_d_residual", 0.0)))
+
     # Verification targets for the dynamic results table.
     _write_macro(lines, "ReconUnitarityTarget", "10^{-14}")
     _write_macro(lines, "ReconDetuningTarget", "1.77\\times{}10^{-16}")

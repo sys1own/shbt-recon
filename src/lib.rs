@@ -8,6 +8,7 @@
 
 pub mod causal_audit;
 pub mod constants;
+pub mod derender;
 pub mod error;
 pub mod hardware;
 pub mod hardware_synthesis;
@@ -20,6 +21,7 @@ pub mod stinespring;
 pub mod thermodynamics;
 
 pub use causal_audit::*;
+pub use derender::*;
 pub use error::*;
 pub use hardware::*;
 pub use hardware_synthesis::*;
@@ -40,6 +42,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<causal_audit::CausalCoordinate>()?;
     m.add_class::<ledger::DarkLedger>()?;
     m.add_class::<stinespring::DerenderingEngine>()?;
+    m.add_class::<derender::DarkLedgerTraceLoss>()?;
     m.add_class::<reconstruction::ReconstructionOperator>()?;
     m.add_class::<reconstruction::BoundaryRelabeling>()?;
     m.add_class::<reconstruction::PhaseLockedExcitation>()?;

@@ -59,6 +59,20 @@ $$
 
 The de-rendered state therefore carries the full information density of the completed sector while the active metric slice is nullified.
 
+### Dark-ledger trace loss
+
+The Stinespring operator factorises as $D^{\text{derender}} = \eta_D U$, where $U$ is an isometry from the local visible Hilbert space onto the completed dark subspace.
+Consequently
+
+$$
+U^{\dagger} U = I_{\mathrm{vis}}, \qquad U U^{\dagger} = P_{\mathrm{comp}}, \qquad
+D^{\text{derender}\,\dagger} D^{\text{derender}} = \eta_D^{2} I_{\mathrm{vis}}.
+$$
+
+The unitarity residual vanishes, $\epsilon_{\mathrm{unitary}} = 0$, because $U$ preserves the inner product.
+The complementary trace $1 - \eta_D^{2}$ is deposited in the residual dark capacity $c_{\mathrm{dark}}^{\mathrm{res}} = 10/33$, so the total trace in the coupled visible$\otimes$dark space remains 1.
+All rational capacities are represented as exact `rug::Rational` values at 512-bit precision, well below the $10^{-122}$ holographic noise floor.
+
 ### Reconstruction operator
 
 Re-rendering at a future-authorized target boundary address is performed by
@@ -72,6 +86,15 @@ $$
 
 where $T^{\partial}$ is the Heegaard-Floer boundary relabeling map and $O^{\text{excitation}}(\theta) = e^{-i\theta Q_{\text{topological}}}$ is the phase-locked $U(1)$ excitation operator.
 For the canonical anyon lattice $Q_{\text{topological}} = 1$.
+
+$T^{\partial}$ is a spatial isometry: it copies the dark-ledger state from the source visible block to the target block without changing its norm.
+Because the source and target addresses subtend the same entanglement-wedge support interval length $\ell_A = 2z$, the transition is adiabatic and entropy-preserving,
+
+$$
+\Delta S_A = 0.
+$$
+
+No external environment is coupled during the relabeling, so the operation is instantaneous on the boundary-register clock.
 
 ### Causal authorization
 
