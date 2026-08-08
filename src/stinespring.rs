@@ -7,6 +7,7 @@ use std::collections::HashMap;
 use crate::causal_audit::CausalCoordinate;
 use crate::constants::*;
 use crate::error::ReconError;
+use crate::gmp_memory;
 use crate::ledger::DarkLedger;
 
 /// 512-bit-capable de-rendering engine for the SHBT boundary.
@@ -24,12 +25,14 @@ impl DerenderingEngine {
     /// Build the engine on the canonical (26, 8, 312) boundary kernel.
     #[new]
     pub fn new() -> PyResult<Self> {
+        gmp_memory::init();
         Self::with_kernel(BENCHMARK_KERNEL).map_err(|e| e.into())
     }
 
     /// Build the engine with an arbitrary kernel (only the benchmark is accepted).
     #[staticmethod]
     pub fn with_kernel(kernel: (u32, u32, u32)) -> Result<Self, ReconError> {
+        gmp_memory::init();
         if kernel != BENCHMARK_KERNEL {
             return Err(ReconError::AnomalyClosureError(
                 "Invalid boundary kernel dimensions. Kernel must be rigidly locked to (26, 8, 312).".to_string(),

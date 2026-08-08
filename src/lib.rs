@@ -10,12 +10,14 @@ pub mod causal_audit;
 pub mod constants;
 pub mod derender;
 pub mod error;
+pub mod gmp_memory;
 pub mod hardware;
 pub mod hardware_synthesis;
 pub mod hil_safety;
 pub mod ledger;
 pub mod metric_nullification;
 pub mod modular_translocator;
+pub mod phase_rotation;
 pub mod reconstruction;
 pub mod shbt;
 pub mod stinespring;
@@ -41,6 +43,7 @@ pyo3::create_exception!(shbt_recon, CausalViolationError, pyo3::exceptions::PyVa
 
 #[pymodule(name = "_core")]
 fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    gmp_memory::init();
     m.add_class::<causal_audit::CausalCoordinate>()?;
     m.add_class::<ledger::DarkLedger>()?;
     m.add_class::<stinespring::DerenderingEngine>()?;

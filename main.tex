@@ -444,6 +444,8 @@ The default edge-noise variance $\ReconEdgeNoiseVariance$~rad$^{2}$ yields an ef
 The reference implementation, \texttt{shbt-recon}, is written in Rust with PyO3 bindings and exposes a Python package.
 It uses the \texttt{rug} crate to perform 512-bit rational and floating-point arithmetic, keeping all register operations above the holographic noise floor.
 The visible state vector is a stack-allocated array of $16$ visible blocks, each carrying an $8$-component dark ledger, avoiding heap allocations during braiding loops.
+The GMP/MPFR memory functions used by \texttt{rug} are redirected through a custom size-class free-list allocator installed with \texttt{mp\_set\_memory\_functions}, so 512-bit limb allocations are served from a pre-resident $16$~MiB arena instead of the libc heap, removing allocator jitter from the HIL audit path.
+The $U(1)$ phase-locked excitation $O^{\text{excitation}}(\theta)=e^{-i\theta}$ is applied to a whole dark-ledger block with x86 AVX-512 or ARM Neon intrinsics; the branchless SIMD kernel rotates all eight complex amplitudes in approximately $4.5$~ns, i.e. well below one nanosecond per complex component, which is compatible with the $72$~GHz microwave clock budget.
 All bit-budget figures are calibrated for a $10$-metre radius translocation zone, i.e. $N_{\mathrm{local}}\approx1.20\times10^{72}$ bits corresponds to the information capacity of the boundary register at that scale.
 The per-GET thermodynamic cost computed by the simulator is $\ReconCGetJ$~J/bit, using $T=15.4$~mK and $N_{\mathrm{sat}}\approx3.31\times10^{122}$ bits.
 

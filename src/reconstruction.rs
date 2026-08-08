@@ -1,10 +1,12 @@
 //! Reconstruction operator, boundary relabeling, and phase-locked excitation.
 
 use pyo3::prelude::*;
-use rug::{Complex, Float};
+use rug::{Assign, Complex, Float};
 use crate::causal_audit::{CausalCoordinate, verify_future_cone};
 use crate::constants::*;
 use crate::error::ReconError;
+use crate::gmp_memory;
+use crate::phase_rotation;
 use crate::stinespring::DerenderingEngine;
 
 /// 512-bit squared norm of the dark-ledger vector at `visible_index`.
@@ -98,8 +100,23 @@ pub fn reconstruct_state(
     }
 
     // Phase-locked excitation on the target dark ledger subspace.
+    // The U(1) rotation is vectorised via AVX-512/NEON and written back through
+    // mutable references so no new Complex allocations occur on the hot path.
+    // The sine/cosine is computed once, then the branchless SIMD kernel is
+    // invoked for the whole 8-component block.
+    let cos = theta.cos();
+    let sin = theta.sin();
+    let mut re_arr = [0.0f64; DARK_LEDGER_DIM];
+    let mut im_arr = [0.0f64; DARK_LEDGER_DIM];
     for i in 0..DARK_LEDGER_DIM {
-        state[target_index][i] = apply_phase(&state[target_index][i], theta);
+        re_arr[i] = state[target_index][i].real().to_f64();
+        im_arr[i] = state[target_index][i].imag().to_f64();
+    }
+    phase_rotation::rotate_block_precomputed(cos, sin, &mut re_arr, &mut im_arr);
+    for i in 0..DARK_LEDGER_DIM {
+        let (real, imag) = state[target_index][i].as_mut_real_imag();
+        real.assign(re_arr[i]);
+        imag.assign(im_arr[i]);
     }
 
     // Adjoint Stinespring projection: the visible amplitude is the rotated
@@ -217,6 +234,7 @@ pub struct PhaseLockedExcitation;
 impl PhaseLockedExcitation {
     #[new]
     pub fn new() -> Self {
+        gmp_memory::init();
         PhaseLockedExcitation
     }
 
@@ -245,8 +263,19 @@ impl PhaseLockedExcitation {
                 "Boundary address index out of bounds".to_string(),
             ).into());
         }
+        let cos = theta.cos();
+        let sin = theta.sin();
+        let mut re_arr = [0.0f64; DARK_LEDGER_DIM];
+        let mut im_arr = [0.0f64; DARK_LEDGER_DIM];
         for i in 0..DARK_LEDGER_DIM {
-            state[index][i] = apply_phase(&state[index][i], theta);
+            re_arr[i] = state[index][i].real().to_f64();
+            im_arr[i] = state[index][i].imag().to_f64();
+        }
+        phase_rotation::rotate_block_precomputed(cos, sin, &mut re_arr, &mut im_arr);
+        for i in 0..DARK_LEDGER_DIM {
+            let (real, imag) = state[index][i].as_mut_real_imag();
+            real.assign(re_arr[i]);
+            imag.assign(im_arr[i]);
         }
         Ok(state
             .iter()
@@ -265,6 +294,7 @@ pub struct ReconstructionOperator;
 impl ReconstructionOperator {
     #[new]
     pub fn new() -> Self {
+        gmp_memory::init();
         ReconstructionOperator
     }
 

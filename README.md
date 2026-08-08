@@ -243,6 +243,12 @@ $$
 
 with $T = 15.4$ mK, $N_{\mathrm{local}} \approx 1.20\times10^{72}$ bits (calibrated for $R = 10$ m), and $N_{\mathrm{sat}} \approx 3.31\times10^{122}$ bits.
 
+## Numerical Engine
+
+The Rust core uses the `rug` crate for 512-bit arithmetic.  To keep the real-time HIL audit path deterministic, the GMP/MPFR memory functions used by `rug` are redirected through a custom size-class free-list allocator installed with `mp_set_memory_functions`; 512-bit limb allocations are served from a pre-resident 16 MiB arena instead of the libc heap.
+
+The $U(1)$ phase-locked excitation $O^{\text{excitation}}(\theta)=e^{-i\theta}$ is applied to the dark-ledger block with x86 AVX-512 or ARM Neon intrinsics.  The branchless SIMD kernel rotates all eight complex amplitudes in approximately 4.5 ns (well below one nanosecond per complex component), which is compatible with the 72 GHz microwave clock budget.
+
 ## Quick Start
 
 ### Build and test
