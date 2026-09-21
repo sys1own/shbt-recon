@@ -26,30 +26,30 @@ pub const SHUNT_TRIP_A: f32 = 7.5;
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default)]
 pub struct ShbtMmio1 {
-    /// 0x00 CTRL_REG — master enable / soft reset / mode flags (R/W).
-    pub ctrl_reg: u32,
-    /// 0x04 STATUS_REG — lock / metric stability / fault flags (R).
-    pub status_reg: u32,
-    /// 0x08 METRIC_DET_L — |det g| lower 32 bits (R).
-    pub metric_det_l: u32,
-    /// 0x0C METRIC_DET_H — |det g| upper 32 bits (R).
-    pub metric_det_h: u32,
-    /// 0x10 GRAM_LAMBDA_MIN — smallest Gram eigenvalue (R).
-    pub gram_lambda_min: u32,
-    /// 0x14 BETA_SHIFT_MAG — |β^i| during nullification (R/W).
-    pub beta_shift_mag: u32,
-    /// 0x18 KAPITZA_TEMP — mixing-chamber boundary readout (R).
-    pub kapitza_temp: u32,
-    /// 0x1C COOLING_PWR — entropic cooling offset P_cool (R/W).
-    pub cooling_pwr: u32,
-    /// 0x20 ECC_ERR_CNT — corrected single-bit error count (R).
-    pub ecc_err_cnt: u32,
-    /// 0x24 AVX_REMAP_ID — Givens vector remap table index (R/W).
-    pub avx_remap_id: u32,
-    /// 0x28 RECOVERY_STAGE — post-quench stage index 0..4 (R).
-    pub recovery_stage: u32,
-    /// 0x2C LANR_PWR_OUT — LANR net output reading (R).
-    pub lanr_pwr_out: u32,
+    /// 0x00 DERENDER_CTRL — derender/render master control (R/W).
+    pub derender_ctrl: u32,
+    /// 0x04 STINESPRING_STAT — isometry lock / overflow flags (R).
+    pub stinespring_stat: u32,
+    /// 0x08 RELABEL_ADDR_LO — relabel target address bits 31:0 (R/W).
+    pub relabel_addr_lo: u32,
+    /// 0x0C RELABEL_ADDR_HI — relabel target address bits 63:32 (R/W).
+    pub relabel_addr_hi: u32,
+    /// 0x10 RECON_PHASE_V_LO — excitation phase word 0 (R/W).
+    pub recon_phase_v_lo: u32,
+    /// 0x14 RECON_PHASE_V_HI — excitation phase word 1 (R/W).
+    pub recon_phase_v_hi: u32,
+    /// 0x18 CAUSAL_CONE_LO — causal cone lower bound word (R).
+    pub causal_cone_lo: u32,
+    /// 0x1C CAUSAL_CONE_HI — causal cone upper bound word (R).
+    pub causal_cone_hi: u32,
+    /// 0x20 SHUNT_TRIG — anomaly quench shunt trigger (W).
+    pub shunt_trig: u32,
+    /// 0x24 ECC_STAT — SECDED syndrome / corrected-error status (R).
+    pub ecc_stat: u32,
+    /// 0x28 TQEC_FRAME_PTR — dark-ledger TQEC frame pointer (R/W).
+    pub tqec_frame_ptr: u32,
+    /// 0x2C METROLOGY_SIG — metrology sigma readout (R/W).
+    pub metrology_sig: u32,
     /// 0x30 TEL_HEAD_PTR — SPSC ring head write pointer (R/W).
     pub tel_head_ptr: u32,
     /// 0x34 TEL_TAIL_PTR — SPSC ring tail read pointer (R/W).
@@ -296,9 +296,9 @@ mod tests {
     #[test]
     fn mmio1_register_map_layout() {
         assert_eq!(std::mem::size_of::<ShbtMmio1>(), 56);
-        assert_eq!(std::mem::offset_of!(ShbtMmio1, ctrl_reg), 0x00);
-        assert_eq!(std::mem::offset_of!(ShbtMmio1, gram_lambda_min), 0x10);
-        assert_eq!(std::mem::offset_of!(ShbtMmio1, recovery_stage), 0x28);
+        assert_eq!(std::mem::offset_of!(ShbtMmio1, derender_ctrl), 0x00);
+        assert_eq!(std::mem::offset_of!(ShbtMmio1, recon_phase_v_lo), 0x10);
+        assert_eq!(std::mem::offset_of!(ShbtMmio1, tqec_frame_ptr), 0x28);
         assert_eq!(std::mem::offset_of!(ShbtMmio1, tel_head_ptr), 0x30);
         assert_eq!(SHBT_MMIO_BASE, 0x7000_0000);
     }
