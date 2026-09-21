@@ -21,43 +21,39 @@ pub const RECOVERY_BUDGET_NS: f64 = 120.00;
 /// AVX-512 shunt trip current (A).
 pub const SHUNT_TRIP_A: f32 = 7.5;
 
-/// SHBT-MMIO-1 normative register map — 14 × u32, 56 bytes at
-/// 0x70000000 (rec1.txt register table).
+/// SHBT-MMIO-1 normative register map — packed 56-byte 2PN causal
+/// engine block at 0x70000000.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default)]
 pub struct ShbtMmio1 {
-    /// 0x00 DERENDER_CTRL — derender/render master control (R/W).
-    pub derender_ctrl: u32,
-    /// 0x04 STINESPRING_STAT — isometry lock / overflow flags (R).
-    pub stinespring_stat: u32,
-    /// 0x08 RELABEL_ADDR_LO — relabel target address bits 31:0 (R/W).
-    pub relabel_addr_lo: u32,
-    /// 0x0C RELABEL_ADDR_HI — relabel target address bits 63:32 (R/W).
-    pub relabel_addr_hi: u32,
-    /// 0x10 RECON_PHASE_V_LO — excitation phase word 0 (R/W).
-    pub recon_phase_v_lo: u32,
-    /// 0x14 RECON_PHASE_V_HI — excitation phase word 1 (R/W).
-    pub recon_phase_v_hi: u32,
-    /// 0x18 CAUSAL_CONE_LO — causal cone lower bound word (R).
+    /// 0x00 CAUSAL_CONE_LO — causal authorization control/status (R/W).
     pub causal_cone_lo: u32,
-    /// 0x1C CAUSAL_CONE_HI — causal cone upper bound word (R).
+    /// 0x04 CAUSAL_CONE_HI — bit 31 triggers 2PN evaluation (R/W).
     pub causal_cone_hi: u32,
-    /// 0x20 SHUNT_TRIG — anomaly quench shunt trigger (W).
-    pub shunt_trig: u32,
-    /// 0x24 ECC_STAT — SECDED syndrome / corrected-error status (R).
-    pub ecc_stat: u32,
-    /// 0x28 TQEC_FRAME_PTR — dark-ledger TQEC frame pointer (R/W).
-    pub tqec_frame_ptr: u32,
-    /// 0x2C METROLOGY_SIG — metrology sigma readout (R/W).
-    pub metrology_sig: u32,
-    /// 0x30 TEL_HEAD_PTR — SPSC ring head write pointer (R/W).
-    pub tel_head_ptr: u32,
-    /// 0x34 TEL_TAIL_PTR — SPSC ring tail read pointer (R/W).
-    pub tel_tail_ptr: u32,
+    /// 0x08 PN2_METRIC_M0 — central mass M_☉ (f64, kg) (R/W).
+    pub pn2_metric_m0: f64,
+    /// 0x10 PN2_METRIC_J2 — quadrupole coefficient J₂ (f64) (R/W).
+    pub pn2_metric_j2: f64,
+    /// 0x18 PN2_SPIN_VEC_X — gravitomagnetic spin S_x (f32) (R/W).
+    pub pn2_spin_x: f32,
+    /// 0x1C PN2_SPIN_VEC_Y — gravitomagnetic spin S_y (f32) (R/W).
+    pub pn2_spin_y: f32,
+    /// 0x20 PN2_SPIN_VEC_Z — gravitomagnetic spin S_z (f32) (R/W).
+    pub pn2_spin_z: f32,
+    /// 0x24 TARGET_VEL_GAMMA — Lorentz γ, 16.16 fixed point (R).
+    pub target_vel_gamma: u32,
+    /// 0x28 DS2_INTERVAL_LO — Δs²_2PN bits 31:0 (R).
+    pub ds2_interval_lo: u32,
+    /// 0x2C DS2_INTERVAL_HI — Δs²_2PN bits 63:32, signed (R).
+    pub ds2_interval_hi: i32,
+    /// 0x30 QUENCH_TIME_NS — anomaly→quench latch timer, ns (R).
+    pub quench_time_ns: u32,
+    /// 0x34 ANOMALY_FLAGS — bit0 spacelike, bit1 quench, bit2 spin (R/W).
+    pub anomaly_flags: u32,
 }
 
 const _: () = assert!(std::mem::size_of::<ShbtMmio1>() == 56);
-const _: () = assert!(std::mem::offset_of!(ShbtMmio1, tel_tail_ptr) == 0x34);
+const _: () = assert!(std::mem::offset_of!(ShbtMmio1, anomaly_flags) == 0x34);
 
 /// Register-file layout used by the transferred C runtime
 /// (`kernel/include/shbt_hardware.h` `ShbtRegisters`), mirrored for the
@@ -296,10 +292,10 @@ mod tests {
     #[test]
     fn mmio1_register_map_layout() {
         assert_eq!(std::mem::size_of::<ShbtMmio1>(), 56);
-        assert_eq!(std::mem::offset_of!(ShbtMmio1, derender_ctrl), 0x00);
-        assert_eq!(std::mem::offset_of!(ShbtMmio1, recon_phase_v_lo), 0x10);
-        assert_eq!(std::mem::offset_of!(ShbtMmio1, tqec_frame_ptr), 0x28);
-        assert_eq!(std::mem::offset_of!(ShbtMmio1, tel_head_ptr), 0x30);
+        assert_eq!(std::mem::offset_of!(ShbtMmio1, causal_cone_lo), 0x00);
+        assert_eq!(std::mem::offset_of!(ShbtMmio1, pn2_metric_j2), 0x10);
+        assert_eq!(std::mem::offset_of!(ShbtMmio1, ds2_interval_lo), 0x28);
+        assert_eq!(std::mem::offset_of!(ShbtMmio1, quench_time_ns), 0x30);
         assert_eq!(SHBT_MMIO_BASE, 0x7000_0000);
     }
 }

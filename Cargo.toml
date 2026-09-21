@@ -7,6 +7,12 @@ members = [
     "crates/shbt-recon-metrology",
     "crates/shbt-recon-eda",
     "crates/shbt-recon-cli",
+    "crates/sglt-translocator-core",
+    "crates/sglt-transducer-fea",
+    "crates/sglt-hil-microkernel",
+    "crates/sglt-lanr-power",
+    "crates/sglt-metrology-causal",
+    "crates/sglt-recon-deconv",
 ]
 
 [package]

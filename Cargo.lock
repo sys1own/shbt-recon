@@ -194,6 +194,46 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 
 [[package]]
+name = "sglt-hil-microkernel"
+version = "0.1.0"
+dependencies = [
+ "cc",
+]
+
+[[package]]
+name = "sglt-lanr-power"
+version = "0.1.0"
+dependencies = [
+ "shbt-recon-thermo",
+]
+
+[[package]]
+name = "sglt-metrology-causal"
+version = "0.1.0"
+dependencies = [
+ "sglt-hil-microkernel",
+ "shbt-recon-metrology",
+]
+
+[[package]]
+name = "sglt-recon-deconv"
+version = "0.1.0"
+
+[[package]]
+name = "sglt-transducer-fea"
+version = "0.1.0"
+dependencies = [
+ "shbt-recon-thermo",
+]
+
+[[package]]
+name = "sglt-translocator-core"
+version = "0.1.0"
+dependencies = [
+ "shbt-recon-core",
+]
+
+[[package]]
 name = "shbt-recon-cli"
 version = "0.1.0"
 dependencies = [

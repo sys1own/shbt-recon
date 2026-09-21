@@ -1,0 +1,7 @@
+[package]
+name = "sglt-transducer-fea"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+shbt-recon-thermo = { path = "../shbt-recon-thermo" }

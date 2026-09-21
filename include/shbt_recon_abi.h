@@ -18,25 +18,24 @@ extern "C" {
 #endif
 
 /* --------------------------------------------------------------------------
- * SHBT-MMIO-1 normative register map — 14 x uint32_t, 56 bytes at 0x70000000
+ * SHBT-MMIO-1 normative register map — packed 56-byte 2PN causal engine
+ * block at base 0x70000000
  * -------------------------------------------------------------------------- */
 #define SHBT_MMIO_BASE              0x70000000U
-#define SHBT_MMIO_ABI_VERSION       1U
+#define SHBT_MMIO_ABI_VERSION       2U
 
-#define SHBT_REG_DERENDER_CTRL      0x00U  /* derender/render control (R/W) */
-#define SHBT_REG_STINESPRING_STAT   0x04U  /* isometry lock / overflow (R) */
-#define SHBT_REG_RELABEL_ADDR_LO    0x08U  /* relabel addr bits 31:0 (R/W) */
-#define SHBT_REG_RELABEL_ADDR_HI    0x0CU  /* relabel addr bits 63:32 (R/W) */
-#define SHBT_REG_RECON_PHASE_V_LO   0x10U  /* excitation phase low (R/W) */
-#define SHBT_REG_RECON_PHASE_V_HI   0x14U  /* excitation phase high (R/W) */
-#define SHBT_REG_CAUSAL_CONE_LO     0x18U  /* causal cone lower word (R) */
-#define SHBT_REG_CAUSAL_CONE_HI     0x1CU  /* causal cone upper word (R) */
-#define SHBT_REG_SHUNT_TRIG         0x20U  /* quench shunt trigger (W) */
-#define SHBT_REG_ECC_STAT           0x24U  /* SECDED syndrome status (R) */
-#define SHBT_REG_TQEC_FRAME_PTR     0x28U  /* dark-ledger TQEC ptr (R/W) */
-#define SHBT_REG_METROLOGY_SIG      0x2CU  /* metrology sigma (R/W) */
-#define SHBT_REG_TEL_HEAD_PTR       0x30U  /* SPSC ring head (R/W) */
-#define SHBT_REG_TEL_TAIL_PTR       0x34U  /* SPSC ring tail (R/W) */
+#define SHBT_REG_CAUSAL_CONE_LO     0x00U  /* causal auth ctrl/status low (R/W) */
+#define SHBT_REG_CAUSAL_CONE_HI     0x04U  /* bit31: trigger 2PN eval (R/W) */
+#define SHBT_REG_PN2_METRIC_M0      0x08U  /* central mass M_sun (f64) (R/W) */
+#define SHBT_REG_PN2_METRIC_J2      0x10U  /* quadrupole J2 (f64) (R/W) */
+#define SHBT_REG_PN2_SPIN_VEC_X     0x18U  /* spin S_x (f32) (R/W) */
+#define SHBT_REG_PN2_SPIN_VEC_Y     0x1CU  /* spin S_y (f32) (R/W) */
+#define SHBT_REG_PN2_SPIN_VEC_Z     0x20U  /* spin S_z (f32) (R/W) */
+#define SHBT_REG_TARGET_VEL_GAMMA   0x24U  /* gamma, 16.16 fixed point (R) */
+#define SHBT_REG_DS2_INTERVAL_LO    0x28U  /* ds^2_2PN bits 31:0 (R) */
+#define SHBT_REG_DS2_INTERVAL_HI    0x2CU  /* ds^2_2PN bits 63:32, signed (R) */
+#define SHBT_REG_QUENCH_TIME_NS     0x30U  /* anomaly->quench latch ns (R) */
+#define SHBT_REG_ANOMALY_FLAGS      0x34U  /* bit0 spacelike bit1 quench bit2 spin (R/W) */
 
 /* --------------------------------------------------------------------------
  * UnifiedStinespringFrame SRAM arena (kernel/linker.ld): 2,112 bytes
