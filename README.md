@@ -290,6 +290,32 @@ print(result)
 print(trans.audit())
 ```
 
+### Multi-crate workspace (rec1 transfer matrix)
+
+The simulator is additionally organized as a six-crate Cargo workspace:
+
+| Crate | Contents |
+|---|---|
+| `crates/shbt-recon-core` | ADM 3+1 shift-field nullification + determinant auditor, Gram positivity verifier, wake-tensor momentum compensation, causal history projection, Stinespring 10/33-23/33 dilation, SPSC POSIX shm telemetry ring (`#[repr(C, align(64))]`). |
+| `crates/shbt-recon-kernel` | Freestanding C11 `shbt-os` wrapper: SECDED Hamming(72,64) ECC, AVX-512 Givens `shbt_remap`, 4-stage post-quench recovery (<= 120 ns), 14-register SHBT-MMIO-1 map at `0x70000000`. |
+| `crates/shbt-recon-thermo` | Kapitza interface solver (Z1 = 44.178 / Zm = 1.1512 MRayl), 1,800-module LANR ledger (913.18 kW, 33.804 % TEG), Landauer GET accounting. |
+| `crates/shbt-recon-metrology` | TMSV heterodyne metrology mesh, hardware lightcone authorization, GUM dual-number + Monte Carlo engine. |
+| `crates/shbt-recon-eda` | GDSII 8x8 InP/InGaAs mask exporter, ISO 10303-21 STEP sapphire waveguide, CVD Diamond-on-GaN thermal substrate. |
+| `crates/shbt-recon-cli` | Unified orchestrator library, `shbt-recon` binary, optional PyO3 bindings. |
+
+The freestanding C11 microkernel lives in `kernel/` (transferred from
+`shbt-qc`); the unified C-ABI surface is `include/shbt_recon_abi.h`.
+
+```bash
+# Build the C11 microkernel (shbt_reference.so + shbt_kernel.elf)
+python python/shbt_recon/cli/main.py build-kernel
+
+# Full workspace verification
+cargo test --workspace
+python tests/run_all_tests.py
+python python/shbt_recon/cli/main.py verify > verification_matrix.json
+```
+
 ### CLI
 
 ```bash

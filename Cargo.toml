@@ -1,3 +1,14 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/shbt-recon-core",
+    "crates/shbt-recon-kernel",
+    "crates/shbt-recon-thermo",
+    "crates/shbt-recon-metrology",
+    "crates/shbt-recon-eda",
+    "crates/shbt-recon-cli",
+]
+
 [package]
 name = "shbt_recon"
 version = "0.1.0"
@@ -12,5 +23,5 @@ default = []
 
 [dependencies]
 pyo3 = { version = "0.23" }
-rug = "1.24"
-gmp-mpfr-sys = "1.7"
+rug = { version = "1.24" }
+gmp-mpfr-sys = { version = "1.7" }

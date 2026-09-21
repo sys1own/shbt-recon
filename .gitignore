@@ -14,3 +14,10 @@ recon_results.tex
 figures/*.pdf
 test_*.pdf
 
+
+# generated build/verification artifacts
+/kernel/build/
+/crates/shbt-recon-kernel/bin/
+/eda_outputs/
+/sim_outputs/
+/verification_matrix.json
