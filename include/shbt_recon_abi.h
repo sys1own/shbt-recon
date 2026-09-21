@@ -23,18 +23,18 @@ extern "C" {
 #define SHBT_MMIO_BASE              0x70000000U
 #define SHBT_MMIO_ABI_VERSION       1U
 
-#define SHBT_REG_CTRL_REG           0x00U  /* master enable / soft reset (R/W) */
-#define SHBT_REG_STATUS_REG         0x04U  /* lock / metric stability (R) */
-#define SHBT_REG_METRIC_DET_L       0x08U  /* |det g| low word (R) */
-#define SHBT_REG_METRIC_DET_H       0x0CU  /* |det g| high word (R) */
-#define SHBT_REG_GRAM_LAMBDA_MIN    0x10U  /* min Gram eigenvalue (R) */
-#define SHBT_REG_BETA_SHIFT_MAG     0x14U  /* |beta^i| nullification (R/W) */
-#define SHBT_REG_KAPITZA_TEMP       0x18U  /* mixing-chamber temp (R) */
-#define SHBT_REG_COOLING_PWR        0x1CU  /* cooling offset P_cool (R/W) */
-#define SHBT_REG_ECC_ERR_CNT        0x20U  /* corrected ECC count (R) */
-#define SHBT_REG_AVX_REMAP_ID       0x24U  /* Givens remap index (R/W) */
-#define SHBT_REG_RECOVERY_STAGE     0x28U  /* quench recovery stage 0..4 (R) */
-#define SHBT_REG_LANR_PWR_OUT       0x2CU  /* LANR net output (R) */
+#define SHBT_REG_DERENDER_CTRL      0x00U  /* derender/render control (R/W) */
+#define SHBT_REG_STINESPRING_STAT   0x04U  /* isometry lock / overflow (R) */
+#define SHBT_REG_RELABEL_ADDR_LO    0x08U  /* relabel addr bits 31:0 (R/W) */
+#define SHBT_REG_RELABEL_ADDR_HI    0x0CU  /* relabel addr bits 63:32 (R/W) */
+#define SHBT_REG_RECON_PHASE_V_LO   0x10U  /* excitation phase low (R/W) */
+#define SHBT_REG_RECON_PHASE_V_HI   0x14U  /* excitation phase high (R/W) */
+#define SHBT_REG_CAUSAL_CONE_LO     0x18U  /* causal cone lower word (R) */
+#define SHBT_REG_CAUSAL_CONE_HI     0x1CU  /* causal cone upper word (R) */
+#define SHBT_REG_SHUNT_TRIG         0x20U  /* quench shunt trigger (W) */
+#define SHBT_REG_ECC_STAT           0x24U  /* SECDED syndrome status (R) */
+#define SHBT_REG_TQEC_FRAME_PTR     0x28U  /* dark-ledger TQEC ptr (R/W) */
+#define SHBT_REG_METROLOGY_SIG      0x2CU  /* metrology sigma (R/W) */
 #define SHBT_REG_TEL_HEAD_PTR       0x30U  /* SPSC ring head (R/W) */
 #define SHBT_REG_TEL_TAIL_PTR       0x34U  /* SPSC ring tail (R/W) */
 
