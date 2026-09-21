@@ -20,4 +20,3 @@ test_*.pdf
 /crates/shbt-recon-kernel/bin/
 /eda_outputs/
 /sim_outputs/
-/verification_matrix.json
