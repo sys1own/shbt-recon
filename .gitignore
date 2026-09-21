@@ -20,3 +20,7 @@ test_*.pdf
 /crates/shbt-recon-kernel/bin/
 /eda_outputs/
 /sim_outputs/
+
+# latexmk aux
+*.fdb_latexmk
+*.fls
