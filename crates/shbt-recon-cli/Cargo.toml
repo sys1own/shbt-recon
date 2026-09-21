@@ -1,0 +1,19 @@
+[package]
+name = "shbt-recon-cli"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+python = ["dep:pyo3"]
+
+[dependencies]
+shbt-recon-core = { path = "../shbt-recon-core" }
+shbt-recon-kernel = { path = "../shbt-recon-kernel" }
+shbt-recon-thermo = { path = "../shbt-recon-thermo" }
+shbt-recon-metrology = { path = "../shbt-recon-metrology" }
+shbt-recon-eda = { path = "../shbt-recon-eda" }
+pyo3 = { version = "0.23", optional = true }
+
+[[bin]]
+name = "shbt-recon"
+path = "src/main.rs"
