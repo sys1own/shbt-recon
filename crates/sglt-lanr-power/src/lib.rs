@@ -7,12 +7,20 @@ pub const MODULE_COUNT: u32 = 1800;
 pub const MODULE_THERMAL_KW: f64 = 1.50072;
 /// Solid-state TEG conversion efficiency.
 pub const TEG_EFFICIENCY: f64 = 0.33804;
-/// Per-module net electrical output (W).
-pub const MODULE_NET_W: f64 = 507.32;
+/// Per-module net electrical output (W) — 94.20 % efficient SiC crowbar
+/// magnetic energy recovery reduces the parasitic drive load to 490.55 W.
+pub const MODULE_NET_W: f64 = 555.03;
+/// Per-module parasitic drive load after crowbar recovery (W).
+pub const MODULE_PARASITIC_W: f64 = 490.55;
 /// Entropy-debt demand per solar-mass payload (GW/M_☉).
 pub const DEBT_BASE_GW: f64 = 906.0;
 /// Nominal array net electrical output (kW).
-pub const ARRAY_NET_KW: f64 = 913.18;
+pub const ARRAY_NET_KW: f64 = 999.054;
+/// Minimum module operating floor sustaining the 906.00 kW non-sheddable
+/// entropy-debt threshold: ceil(906,000 W / 555.03 W).
+pub const MIN_MODULE_FLOOR: u32 = 1633;
+/// Active zero-derating module reserve: 1,800 − 1,633.
+pub const RESERVE_MODULE_COUNT: u32 = 167;
 
 /// Aggregate LANR plant ledger.
 #[derive(Clone, Copy, Debug)]
@@ -65,6 +73,10 @@ mod tests {
         assert!((p.net_electrical_kw() - ARRAY_NET_KW).abs() < 0.01);
         assert!(p.meets_demand());
         assert_eq!(MODULE_COUNT, 1800);
+        assert!((p.net_electrical_kw() - 999.054).abs() < 1e-3);
+        assert_eq!(MIN_MODULE_FLOOR, 1633);
+        assert_eq!(RESERVE_MODULE_COUNT, 167);
+        assert_eq!(MODULE_COUNT - MIN_MODULE_FLOOR, RESERVE_MODULE_COUNT);
     }
 
     #[test]

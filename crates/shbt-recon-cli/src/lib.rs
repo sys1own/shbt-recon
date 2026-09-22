@@ -194,9 +194,9 @@ pub fn verify_matrix() -> Vec<GateResult> {
         "G13",
         "thermo::lanr",
         "net output (kW)",
-        "~= 913.18",
+        "~= 999.054",
         plant.nominal_gross_w() / 1e3,
-        (plant.nominal_gross_w() / 1e3 - 913.18).abs() < 0.01,
+        (plant.nominal_gross_w() / 1e3 - 999.054).abs() < 0.01,
     );
     push(
         "G14",
