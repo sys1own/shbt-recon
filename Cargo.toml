@@ -13,6 +13,10 @@ members = [
     "crates/sglt-lanr-power",
     "crates/sglt-metrology-causal",
     "crates/sglt-recon-deconv",
+    "crates/sglt-gst-metamaterial",
+    "crates/sglt-gpu-physics",
+    "crates/sglt-hyperdual-uq",
+    "crates/sglt-webgpu-vis",
 ]
 
 [package]

@@ -194,11 +194,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 
 [[package]]
+name = "sglt-gpu-physics"
+version = "0.1.0"
+
+[[package]]
+name = "sglt-gst-metamaterial"
+version = "0.1.0"
+
+[[package]]
 name = "sglt-hil-microkernel"
 version = "0.1.0"
 dependencies = [
  "cc",
 ]
+
+[[package]]
+name = "sglt-hyperdual-uq"
+version = "0.1.0"
 
 [[package]]
 name = "sglt-lanr-power"
@@ -232,6 +244,10 @@ version = "0.1.0"
 dependencies = [
  "shbt-recon-core",
 ]
+
+[[package]]
+name = "sglt-webgpu-vis"
+version = "0.1.0"
 
 [[package]]
 name = "shbt-recon-cli"

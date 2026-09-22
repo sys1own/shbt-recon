@@ -38,6 +38,24 @@ extern "C" {
 #define SHBT_REG_ANOMALY_FLAGS      0x34U  /* bit0 spacelike bit1 quench bit2 spin (R/W) */
 
 /* --------------------------------------------------------------------------
+ * TMSV metrology controller aperture — 0x7F001000
+ * -------------------------------------------------------------------------- */
+#define MMIO_TMSV_BASE              0x7F001000U
+#define SHBT_REG_TMSV_CTRL          0x1000U /* bit0 pump, bit1 lock, 2-5 squeeze (R/W) */
+#define SHBT_REG_TMSV_NOISE         0x1008U /* Q16.16 quadrature noise floor (R) */
+#define SHBT_REG_METRIC_G00         0x1010U /* f64 g00 metric term (R/W) */
+#define SHBT_REG_METRIC_DS2         0x1018U /* f64 ds^2_2PN result (R/W) */
+#define SHBT_REG_INTERLOCK_STAT     0x1020U /* bit0 causal, bit31 trip (R) */
+
+/* --------------------------------------------------------------------------
+ * GST metamaterial self-healing array aperture
+ * -------------------------------------------------------------------------- */
+#define SHBT_REG_GST_ARRAY_CFG      0x2000U /* bits0-15 channel sel, bit31 en (R/W) */
+#define SHBT_REG_GST_PULSE_GEN      0x2004U /* bits0-11 pulse ns, 12-31 fluence (R/W) */
+#define SHBT_REG_GST_SENSE_SIG      0x2008U /* Q8.24 conductivity sense (R) */
+#define SHBT_REG_GST_HEAL_STAT      0x200CU /* bit0 active, bit1 locked, bit2 err (R) */
+
+/* --------------------------------------------------------------------------
  * UnifiedStinespringFrame SRAM arena (kernel/linker.ld): 2,112 bytes
  *   0x70000000 - 0x7000027F   640 B  Active Operational Window
  *   0x70000280 - 0x7000083F  1472 B  Dark Ledger Log Space
