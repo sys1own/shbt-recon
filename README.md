@@ -52,7 +52,9 @@ causal targets.
   `0x70000000`, 2,112-byte `UnifiedStinespringFrame` SRAM arena,
   SECDED Hamming(72,64) ECC, AVX-512 Givens remapping,
   $T_{\text{recovery}} \le 120.00$~ns post-quench recovery, and a
-  1,800-module LANR cold fusion plant (913.18~kW net, 33.804% TEG).
+  1,800-module LANR cold fusion plant (999.054~kW net at
+  555.03~W/module, 33.804% TEG; 1,633-module demand floor, N+167
+  zero-derating reserve).
 - **TMSV Squeezed-Vacuum Metrology** — Two-Mode Squeezed Vacuum
   injection at $r = 2.50$ suppresses quadrature noise $21.715$~dB below
   shot noise ($S_r^{1/2} \le 0.010~\text{pm}/\sqrt{\text{Hz}}$,

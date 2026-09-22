@@ -31,7 +31,7 @@ REFERENCE_SO = REPO_ROOT / "crates/shbt-recon-kernel/bin/shbt_reference.so"
 CLI_CRATE = REPO_ROOT / "crates/shbt-recon-cli"
 
 # --- SGLT Modular State Translocator constants --------------------------------
-MODULE_NET_W = 507.32
+MODULE_NET_W = 555.03
 DEMAND_W = 906.00e3
 MODULE_COUNT = 1800
 TEG_EFFICIENCY = 0.33804

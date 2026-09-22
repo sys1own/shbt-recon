@@ -1,13 +1,19 @@
 //! 1,800-module LANR cold-fusion power plant ledger — `LANRPowerLedger`
 //! transferred from `sys1own/shbt-cf` (via `sglt-lanr-power/module_ledger.rs`).
 //!
-//! Gross output 1,800 × 507.32 W = 913.176 kW against a 906.00 GW→kW-class
-//! continuous entropy-debt demand baseline (913.18 kW net, 33.804 % TEG).
+//! Gross output 1,800 × 555.03 W = 999.054 kW against a 906.00 GW→kW-class
+//! continuous entropy-debt demand baseline (999.054 kW net, 33.804 % TEG).
 
 /// Number of LANR reactor modules.
 pub const MODULE_COUNT: u32 = 1800;
-/// Net electrical output per module (W).
-pub const MODULE_NET_W: f64 = 507.32;
+/// Net electrical output per module (W) — includes 94.20 % efficient
+/// SiC crowbar magnetic energy recovery reducing parasitic drive load.
+pub const MODULE_NET_W: f64 = 555.03;
+/// Minimum module operating floor sustaining the 906.00 kW demand:
+/// ceil(906,000 W / 555.03 W) = 1,633.
+pub const MIN_MODULE_FLOOR: u32 = 1633;
+/// Active zero-derating module reserve: 1,800 − 1,633 = 167.
+pub const RESERVE_MODULE_COUNT: u32 = 167;
 /// Continuous entropy-debt demand (W).
 pub const DEMAND_W: f64 = 906.00e3;
 /// Thermoelectric generator efficiency.
@@ -49,7 +55,7 @@ impl LanrPowerLedger {
         (MODULE_COUNT - self.failed_modules) as f64 * MODULE_NET_W
     }
 
-    /// Nominal gross output, zero failures (W) — 913.176 kW.
+    /// Nominal gross output, zero failures (W) — 999.054 kW.
     pub fn nominal_gross_w(&self) -> f64 {
         MODULE_COUNT as f64 * MODULE_NET_W
     }
@@ -59,7 +65,7 @@ impl LanrPowerLedger {
         self.gross_output_w() - DEMAND_W
     }
 
-    /// Active reserve-module equivalent (+14 nominal).
+    /// Active reserve-module equivalent (+167 nominal).
     pub fn reserve_modules(&self) -> i64 {
         (self.net_entropy_balance_w() / MODULE_NET_W).floor() as i64
     }
@@ -97,16 +103,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn nominal_gross_is_913kw() {
+    fn nominal_gross_is_999kw() {
         let l = LanrPowerLedger::new();
-        assert!((l.nominal_gross_w() - 913.18e3).abs() < 5.0);
+        assert!((l.nominal_gross_w() - 999.054e3).abs() < 5.0);
     }
 
     #[test]
     fn net_margin_and_reserves() {
         let l = LanrPowerLedger::new();
-        assert!((l.net_entropy_balance_w() - 7.176e3).abs() < 10.0);
-        assert_eq!(l.reserve_modules(), 14);
+        assert!((l.net_entropy_balance_w() - 93.054e3).abs() < 10.0);
+        assert_eq!(l.reserve_modules(), 167);
+        assert_eq!(MIN_MODULE_FLOOR, 1633);
+        assert_eq!(RESERVE_MODULE_COUNT, 167);
         assert!((l.teg_efficiency() - 0.33804).abs() < 1e-6);
     }
 

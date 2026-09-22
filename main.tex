@@ -58,7 +58,9 @@ routing ($100$~krad(Si) DDD, $27.9~\text{mJ/cm}^2$ anneal), a multi-GPU
 CUDA/ROCm Stinespring engine ($4096^2$ grids at $108.5$~Hz,
 $112.4$~GB/s GDS), a hyper-dual automatic-differentiation UQ engine
 ($10^7$ GUM-S1 samples, $99.73\%$ bounds), and a zero-dependency
-WebGPU/WGSL native visualizer at $60$~FPS. All seventy verification gates
+WebGPU/WGSL native visualizer at $60$~FPS. Station power is supplied by
+a $1{,}800$-module LANR cold-fusion plant delivering $999.054$~kW net
+($+555.03$~W/module). All seventy verification gates
 G-01--G-70 pass.
 \end{abstract}
 
@@ -429,6 +431,20 @@ bool verify_tmsv_causal_interlock(
     return true;
 }
 \end{lstlisting}
+
+Station power is supplied by the $1{,}800$-module LANR cold-fusion plant
+transferred from \texttt{sys1own/shbt-cf}
+(\texttt{sglt-lanr-power}/\texttt{shbt-recon-thermo::lanr}). Each
+nickel--hydrogen module nets $+555.03$~W after the parasitic drive load
+($490.55$~W) is discounted by the $94.20\%$-efficient SiC crowbar
+magnetic-energy-recovery stage, giving a nominal array net electrical
+output of $1{,}800 \times 555.03~\text{W} = 999.054$~kW against the
+non-sheddable $906.00$~kW continuous entropy-debt demand. The
+$N\text{-}k$ fault-derating ledger sheds load in $555.03$~W steps:
+the minimum operating floor is
+$N_{\min} = \lceil 906{,}000 / 555.03 \rceil = 1{,}633$ modules,
+expanding the active zero-derating reserve to $N{+}167$
+($1{,}800 - 1{,}633$).
 
 \section{Master 70-Gate Verification Matrix and Code Crosswalk}
 \label{sec:matrix}
