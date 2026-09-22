@@ -2,7 +2,7 @@
 //! fusion tree decomposes the left-descendant Hilbert space, with basis
 //! transitions governed by the F-matrix F_τττ^τ and the R-symbols.
 
-use crate::{PHI, TOTAL_DIM};
+use crate::PHI;
 
 /// F-matrix element F_τττ^τ = [[φ⁻¹, φ⁻¹ᐟ²], [φ⁻¹ᐟ², −φ⁻¹]].
 pub fn f_matrix() -> [[f64; 2]; 2] {
@@ -56,6 +56,7 @@ pub fn tree_depth() -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::TOTAL_DIM;
 
     #[test]
     fn quantum_dimensions() {

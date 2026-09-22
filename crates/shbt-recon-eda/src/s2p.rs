@@ -141,9 +141,6 @@ fn cadd(a: Cx, b: Cx) -> Cx {
 fn csub(a: Cx, b: Cx) -> Cx {
     (a.0 - b.0, a.1 - b.1)
 }
-fn cmul(a: Cx, b: Cx) -> Cx {
-    (a.0 * b.0 - a.1 * b.1, a.0 * b.1 + a.1 * b.0)
-}
 fn cdiv(a: Cx, b: Cx) -> Cx {
     let d = b.0 * b.0 + b.1 * b.1;
     ((a.0 * b.0 + a.1 * b.1) / d, (a.1 * b.0 - a.0 * b.1) / d)

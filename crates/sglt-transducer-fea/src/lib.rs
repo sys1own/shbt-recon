@@ -3,6 +3,7 @@
 //! NbN/MgB₂ superconducting routing, and quarter-wave acoustic tamping.
 
 pub mod boiling;
+pub mod debye;
 pub mod tamping;
 
 /// Saturated He-4 bath temperature (K).

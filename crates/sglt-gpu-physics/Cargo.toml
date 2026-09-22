@@ -1,0 +1,8 @@
+[package]
+name = "sglt-gpu-physics"
+version = "0.1.0"
+edition = "2021"
+description = "Multi-GPU CUDA/ROCm Stinespring physics engine fabric"
+license = "MIT"
+
+[dependencies]

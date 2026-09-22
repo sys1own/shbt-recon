@@ -105,3 +105,37 @@ mod tests {
         assert_ne!(mmio.causal_cone_hi & 0x8000_0000, 0);
     }
 }
+
+/// TMSV interlock state block (128 B, 64-byte aligned) — mirrors
+/// `tmsv_interlock_state_t` in `kernel/include/shbt_tmsv_kernel.h`.
+#[repr(C, align(64))]
+#[derive(Clone, Copy, Debug, Default)]
+pub struct TmsvInterlockState {
+    pub squeezing_r: f64,
+    pub attenuation_db: f64,
+    pub displacement_sd: f64,
+    pub r_3sigma_bound: f64,
+    pub metric_g00_g0i: [f64; 4],
+    pub metric_gij_diag: [f64; 4],
+    pub interlock_status: u32,
+    pub reserved_pad: [u8; 28],
+}
+
+const _: () = assert!(std::mem::size_of::<TmsvInterlockState>() == 128);
+const _: () = assert!(std::mem::align_of::<TmsvInterlockState>() == 64);
+
+extern "C" {
+    /// TMSV phase noise evaluation + 2PN causal interlock trip.
+    pub fn verify_tmsv_causal_interlock(
+        state: *mut TmsvInterlockState,
+        dt: f64,
+        dx: *const f64,
+    ) -> bool;
+    /// Debye T^3 volumetric energy density at T (J/m^3).
+    pub fn calculate_diamond_volumetric_energy(t_k: f64) -> f64;
+    /// NbN quench headroom verification; 0 = safe.
+    pub fn verify_cryogenic_quench_headroom(
+        t_peak: f64,
+        headroom_out: *mut f64,
+    ) -> i32;
+}

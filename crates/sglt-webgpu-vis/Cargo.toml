@@ -1,0 +1,11 @@
+[package]
+name = "sglt-webgpu-vis"
+version = "0.1.0"
+edition = "2021"
+description = "Zero-dependency Wasm/WebGPU ADM field visualizer"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]

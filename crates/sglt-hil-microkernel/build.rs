@@ -2,6 +2,8 @@ fn main() {
     let mut build = cc::Build::new();
     build
         .file("../../kernel/src/shbt_causal_kernel.c")
+        .file("../../kernel/src/shbt_tmsv_kernel.c")
+        .file("../../kernel/src/shbt_cryo_kernel.c")
         .include("../../kernel/include")
         .flag("-O3")
         .flag("-ffreestanding")

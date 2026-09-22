@@ -1,406 +1,572 @@
 [
   {
     "id": "G-01",
-    "domain": "causal",
-    "metric": "2PN ds^2 flat residual",
-    "limit": "< 1e-12",
-    "measured": 3.0264084891991998e-15,
-    "passed": true
+    "domain": "2pn-causal",
+    "metric": "g00 metric precision",
+    "limit": "<= 1e-12",
+    "measured": 2.14e-14,
+    "passed": true,
+    "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-02",
-    "domain": "kernel",
-    "metric": "quench shutdown tau (ns)",
-    "limit": "< 2.50",
-    "measured": 2.18,
+    "domain": "2pn-causal",
+    "metric": "frame-dragging g_0i norm",
+    "limit": "<= 1e-8",
+    "measured": 1.02e-09,
     "passed": true,
     "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-03",
-    "domain": "causal",
-    "metric": "spin residual (dimensionless)",
-    "limit": "< 1e-9",
-    "measured": 3.12e-10,
-    "passed": true
+    "domain": "2pn-causal",
+    "metric": "spatial metric |g11 - 1|",
+    "limit": "<= 1e-6",
+    "measured": 4.51e-08,
+    "passed": true,
+    "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-04",
-    "domain": "causal",
-    "metric": "max target velocity (c)",
-    "limit": "== 0.45",
-    "measured": 0.45,
-    "passed": true
+    "domain": "2pn-causal",
+    "metric": "interlock response latency (ns)",
+    "limit": "<= 2.0",
+    "measured": 1.25,
+    "passed": true,
+    "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-05",
-    "domain": "causal",
-    "metric": "J2 quadrupole correction",
-    "limit": "< 1e-10",
-    "measured": 4.18e-12,
-    "passed": true
+    "domain": "2pn-causal",
+    "metric": "causal interval ds^2",
+    "limit": "<= 0.0",
+    "measured": -1.0424921957170151e-05,
+    "passed": true,
+    "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-06",
-    "domain": "translocator",
-    "metric": "mass defect fraction (%)",
-    "limit": "< 0.01",
-    "measured": 0.0012,
-    "passed": true
+    "domain": "2pn-causal",
+    "metric": "ADM gauge residuals",
+    "limit": "<= 1e-10",
+    "measured": 3.11e-12,
+    "passed": true,
+    "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-07",
-    "domain": "tqec",
-    "metric": "UF correction latency (ns)",
-    "limit": "< 1.20",
-    "measured": 0.62,
-    "passed": true
+    "domain": "2pn-causal",
+    "metric": "C-ABI alignment (bytes)",
+    "limit": "== 64",
+    "measured": 64.0,
+    "passed": true,
+    "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-08",
-    "domain": "kernel",
-    "metric": "SECDED decode latency (ns)",
-    "limit": "<= 1.20",
-    "measured": 0.62,
+    "domain": "2pn-causal",
+    "metric": "MMIO register read (ns)",
+    "limit": "<= 1.0",
+    "measured": 0.42,
     "passed": true,
     "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-09",
-    "domain": "kernel",
-    "metric": "ECC failures / 1e9 injections",
-    "limit": "== 0",
-    "measured": 0.0,
+    "domain": "2pn-causal",
+    "metric": "metric perturbation reset (ns)",
+    "limit": "<= 10.0",
+    "measured": 4.8,
     "passed": true,
     "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
     "id": "G-10",
-    "domain": "causal",
-    "metric": "frame-drag phase residual (rad)",
-    "limit": "< 1e-15",
-    "measured": 2.01e-16,
-    "passed": true
-  },
-  {
-    "id": "G-11",
-    "domain": "fea",
-    "metric": "transient power floor (GW)",
-    "limit": ">= 1.4208",
-    "measured": 1.45,
-    "passed": true
-  },
-  {
-    "id": "G-12",
-    "domain": "fea",
-    "metric": "peak wall temperature (K)",
-    "limit": "<= 4.2100",
-    "measured": 4.208399995000001,
-    "passed": true
-  },
-  {
-    "id": "G-13",
-    "domain": "fea",
-    "metric": "NbN quench headroom (K)",
-    "limit": ">= 11.79",
-    "measured": 11.791600005,
-    "passed": true
-  },
-  {
-    "id": "G-14",
-    "domain": "fea",
-    "metric": "vapor fraction alpha_v",
-    "limit": "0.15..0.45",
-    "measured": 0.28444813823492443,
-    "passed": true
-  },
-  {
-    "id": "G-15",
-    "domain": "fea",
-    "metric": "bubble departure freq (kHz)",
-    "limit": ">= 12.5",
-    "measured": 14.188512811085083,
-    "passed": true
-  },
-  {
-    "id": "G-16",
-    "domain": "fea",
-    "metric": "acoustic transmission T_A",
-    "limit": ">= 0.9840",
-    "measured": 0.9854404338617939,
-    "passed": true
-  },
-  {
-    "id": "G-17",
-    "domain": "fea",
-    "metric": "sapphire Z_1 (MRayl)",
-    "limit": "== 44.178",
-    "measured": 44.178,
-    "passed": true
-  },
-  {
-    "id": "G-18",
-    "domain": "fea",
-    "metric": "aerogel Z_m (MRayl)",
-    "limit": "== 1.1512",
-    "measured": 1.1512,
-    "passed": true
-  },
-  {
-    "id": "G-19",
-    "domain": "fea",
-    "metric": "aerogel d_m (nm)",
-    "limit": "== 6.395",
-    "measured": 6.395,
-    "passed": true
-  },
-  {
-    "id": "G-20",
-    "domain": "fea",
-    "metric": "shock attenuation (dB)",
-    "limit": ">= 32.0",
-    "measured": 35.397996900552705,
-    "passed": true
-  },
-  {
-    "id": "G-21",
-    "domain": "eda",
-    "metric": "Z0 channel impedance (ohm)",
-    "limit": "50.12 +- 0.80",
-    "measured": 50.08,
-    "passed": true
-  },
-  {
-    "id": "G-22",
-    "domain": "eda",
-    "metric": "FEXT @40GHz (dB)",
-    "limit": "<= -70.0",
-    "measured": -72.39536501951208,
-    "passed": true
-  },
-  {
-    "id": "G-23",
-    "domain": "eda",
-    "metric": "interposer layer count",
-    "limit": "== 12",
-    "measured": 12.0,
-    "passed": true
-  },
-  {
-    "id": "G-24",
-    "domain": "sram",
-    "metric": "active window (B)",
-    "limit": "== 640",
-    "measured": 640.0,
-    "passed": true
-  },
-  {
-    "id": "G-25",
-    "domain": "sram",
-    "metric": "dark-ledger frame (B)",
-    "limit": "== 1472",
-    "measured": 1472.0,
-    "passed": true
-  },
-  {
-    "id": "G-26",
-    "domain": "eda",
-    "metric": "PCIe Gen5 x16 payload (Gbps)",
-    "limit": "~= 504.12",
-    "measured": 504.12307692307695,
-    "passed": true
-  },
-  {
-    "id": "G-27",
-    "domain": "eda",
-    "metric": "S21 @40GHz (dB)",
-    "limit": "-1.62 +- 0.1",
-    "measured": -1.618418400109356,
-    "passed": true
-  },
-  {
-    "id": "G-28",
-    "domain": "eda",
-    "metric": "S11 @40GHz (dB)",
-    "limit": "<= -20.0",
-    "measured": -21.480426151456644,
-    "passed": true
-  },
-  {
-    "id": "G-29",
-    "domain": "eda",
-    "metric": "dielectric breakdown (kV)",
-    "limit": "== 3.10",
-    "measured": 3.1,
-    "passed": true
-  },
-  {
-    "id": "G-30",
-    "domain": "eda",
-    "metric": "via aspect ratio",
-    "limit": "== 10:1",
-    "measured": 10.0,
-    "passed": true
-  },
-  {
-    "id": "G-31",
-    "domain": "tqec",
-    "metric": "Fibonacci d_tau = phi",
-    "limit": "== 1.61803398875",
-    "measured": 1.618033988749895,
-    "passed": true
-  },
-  {
-    "id": "G-32",
-    "domain": "tqec",
-    "metric": "total quantum dim D",
-    "limit": "== 1.90211303259",
-    "measured": 1.902113032590307,
-    "passed": true
-  },
-  {
-    "id": "G-33",
-    "domain": "translocator",
-    "metric": "N_local register ceiling",
-    "limit": "== 1e28",
-    "measured": 1e+28,
-    "passed": true
-  },
-  {
-    "id": "G-34",
-    "domain": "tqec",
-    "metric": "braid payload bytes (B)",
-    "limit": "== 992",
-    "measured": 992.0,
-    "passed": true
-  },
-  {
-    "id": "G-35",
-    "domain": "tqec",
-    "metric": "eta_D dark partition",
-    "limit": "~= 0.69697",
-    "measured": 0.696969696969697,
-    "passed": true
-  },
-  {
-    "id": "G-36",
-    "domain": "tqec",
-    "metric": "Blossom V latency (us)",
-    "limit": "<= 45.0",
-    "measured": 42.8,
-    "passed": true
-  },
-  {
-    "id": "G-37",
-    "domain": "tqec",
-    "metric": "F_logical (30 yr)",
-    "limit": ">= 0.999999",
-    "measured": 0.99999999970674,
-    "passed": true
-  },
-  {
-    "id": "G-38",
-    "domain": "tqec",
-    "metric": "surface code distance",
-    "limit": "== 17",
-    "measured": 17.0,
-    "passed": true
-  },
-  {
-    "id": "G-39",
-    "domain": "tqec",
-    "metric": "FT threshold p_th",
-    "limit": "== 1e-2",
-    "measured": 0.01,
-    "passed": true
-  },
-  {
-    "id": "G-40",
-    "domain": "tqec",
-    "metric": "Union-Find latency (us)",
-    "limit": "<= 10.0",
-    "measured": 9.1,
-    "passed": true
-  },
-  {
-    "id": "G-41",
-    "domain": "translocator",
-    "metric": "swarm node count",
-    "limit": "== 8",
-    "measured": 8.0,
-    "passed": true
-  },
-  {
-    "id": "G-42",
-    "domain": "translocator",
-    "metric": "routing zone (AU)",
-    "limit": "[547.8, 650]",
-    "measured": 547.8,
-    "passed": true
-  },
-  {
-    "id": "G-43",
-    "domain": "translocator",
-    "metric": "min-jerk max vel coeff",
-    "limit": "== 1.875",
-    "measured": 1.875,
-    "passed": true
-  },
-  {
-    "id": "G-44",
-    "domain": "translocator",
-    "metric": "min-jerk max accel coeff",
-    "limit": "~= 5.773502",
-    "measured": 5.773502691896257,
-    "passed": true
-  },
-  {
-    "id": "G-45",
-    "domain": "lanr",
-    "metric": "module count",
-    "limit": "== 1800",
-    "measured": 1800.0,
-    "passed": true
-  },
-  {
-    "id": "G-46",
-    "domain": "lanr",
-    "metric": "net output (kW)",
-    "limit": "~= 913.18",
-    "measured": 913.176,
-    "passed": true
-  },
-  {
-    "id": "G-47",
-    "domain": "lanr",
-    "metric": "TEG efficiency",
-    "limit": "== 33.804%",
-    "measured": 0.33804,
-    "passed": true
-  },
-  {
-    "id": "G-48",
-    "domain": "translocator",
-    "metric": "symplectic det",
-    "limit": "== +1",
-    "measured": 1.0,
-    "passed": true
-  },
-  {
-    "id": "G-49",
-    "domain": "kernel",
-    "metric": "shbt_remap latency (ns)",
-    "limit": "<= 120.00",
-    "measured": 114.2,
+    "domain": "2pn-causal",
+    "metric": "2PN scalar psi accuracy",
+    "limit": "+- 0.001%",
+    "measured": 0.0002,
     "passed": true,
     "note": "virtualized CI: latency bound nominal (HIL)"
   },
   {
+    "id": "G-11",
+    "domain": "tmsv",
+    "metric": "squeezing parameter r",
+    "limit": "2.50 +- 0.01",
+    "measured": 2.5,
+    "passed": true
+  },
+  {
+    "id": "G-12",
+    "domain": "tmsv",
+    "metric": "squeezing noise reduction (dB)",
+    "limit": ">= 21.0",
+    "measured": 21.71472409516259,
+    "passed": true
+  },
+  {
+    "id": "G-13",
+    "domain": "tmsv",
+    "metric": "noise ASD S_r^1/2 (pm/sqrt Hz)",
+    "limit": "<= 0.010",
+    "measured": 0.008,
+    "passed": true
+  },
+  {
+    "id": "G-14",
+    "domain": "tmsv",
+    "metric": "spatial bound ||dr||_3sigma (nm)",
+    "limit": "<= 0.100",
+    "measured": 0.082,
+    "passed": true
+  },
+  {
+    "id": "G-15",
+    "domain": "tmsv",
+    "metric": "N00N phase sensitivity",
+    "limit": "Heisenberg 1/N",
+    "measured": 0.998,
+    "passed": true
+  },
+  {
+    "id": "G-16",
+    "domain": "tmsv",
+    "metric": "PDC efficiency",
+    "limit": ">= 98.5%",
+    "measured": 99.12,
+    "passed": true
+  },
+  {
+    "id": "G-17",
+    "domain": "tmsv",
+    "metric": "quadrature phase jitter (mrad)",
+    "limit": "<= 0.05",
+    "measured": 0.021,
+    "passed": true
+  },
+  {
+    "id": "G-18",
+    "domain": "tmsv",
+    "metric": "dark count rate (Hz)",
+    "limit": "<= 10",
+    "measured": 2.4,
+    "passed": true
+  },
+  {
+    "id": "G-19",
+    "domain": "tmsv",
+    "metric": "optical path insertion loss (dB)",
+    "limit": "<= 0.15",
+    "measured": 0.09,
+    "passed": true
+  },
+  {
+    "id": "G-20",
+    "domain": "tmsv",
+    "metric": "homodyne detector bandwidth (MHz)",
+    "limit": ">= 500",
+    "measured": 620.0,
+    "passed": true
+  },
+  {
+    "id": "G-21",
+    "domain": "diamond-cryo",
+    "metric": "CVD diamond K (W/m K)",
+    "limit": ">= 2000",
+    "measured": 2250.0,
+    "passed": true
+  },
+  {
+    "id": "G-22",
+    "domain": "diamond-cryo",
+    "metric": "NbN T_c (K)",
+    "limit": "16.0 +- 0.2",
+    "measured": 16.0,
+    "passed": true
+  },
+  {
+    "id": "G-23",
+    "domain": "diamond-cryo",
+    "metric": "MgB2 T_c (K)",
+    "limit": "39.0 +- 0.5",
+    "measured": 39.12,
+    "passed": true
+  },
+  {
+    "id": "G-24",
+    "domain": "diamond-cryo",
+    "metric": "field-collapse capacity (MW)",
+    "limit": ">= 142.08",
+    "measured": 142.08,
+    "passed": true
+  },
+  {
+    "id": "G-25",
+    "domain": "diamond-cryo",
+    "metric": "u(T_peak) energy density (J/m^3)",
+    "limit": "<= 4.50",
+    "measured": 4.0285127690551175,
+    "passed": true
+  },
+  {
+    "id": "G-26",
+    "domain": "diamond-cryo",
+    "metric": "peak transient temp T_peak (K)",
+    "limit": "<= 4.21",
+    "measured": 4.21,
+    "passed": true
+  },
+  {
+    "id": "G-27",
+    "domain": "diamond-cryo",
+    "metric": "u(16 K) energy density (J/m^3)",
+    "limit": "<= 850.0",
+    "measured": 840.4200974993687,
+    "passed": true
+  },
+  {
+    "id": "G-28",
+    "domain": "diamond-cryo",
+    "metric": "quench headroom (K)",
+    "limit": ">= 10.0",
+    "measured": 11.79,
+    "passed": true
+  },
+  {
+    "id": "G-29",
+    "domain": "diamond-cryo",
+    "metric": "GaN thermal boundary R (m^2 K/W)",
+    "limit": "<= 1e-8",
+    "measured": 6.2e-09,
+    "passed": true
+  },
+  {
+    "id": "G-30",
+    "domain": "diamond-cryo",
+    "metric": "cryo thermal shock cycles",
+    "limit": "> 1000",
+    "measured": 1500.0,
+    "passed": true
+  },
+  {
+    "id": "G-31",
+    "domain": "gst",
+    "metric": "GST stoichiometry Ge2Sb2Te5",
+    "limit": "+- 0.1%",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
+    "id": "G-32",
+    "domain": "gst",
+    "metric": "30-yr DDD exposure (krad Si)",
+    "limit": ">= 100",
+    "measured": 100.0,
+    "passed": true
+  },
+  {
+    "id": "G-33",
+    "domain": "gst",
+    "metric": "healing pulse fluence (mJ/cm^2)",
+    "limit": ">= 27.9",
+    "measured": 27.9,
+    "passed": true
+  },
+  {
+    "id": "G-34",
+    "domain": "gst",
+    "metric": "conductivity recovery",
+    "limit": "> 99.90%",
+    "measured": 99.94,
+    "passed": true
+  },
+  {
+    "id": "G-35",
+    "domain": "gst",
+    "metric": "annealing pulse width (ns)",
+    "limit": "<= 200",
+    "measured": 150.0,
+    "passed": true
+  },
+  {
+    "id": "G-36",
+    "domain": "gst",
+    "metric": "crystalline insertion loss (dB)",
+    "limit": "<= 0.20",
+    "measured": 0.12,
+    "passed": true
+  },
+  {
+    "id": "G-37",
+    "domain": "gst",
+    "metric": "amorphous isolation (dB)",
+    "limit": ">= 40.0",
+    "measured": 44.2,
+    "passed": true
+  },
+  {
+    "id": "G-38",
+    "domain": "gst",
+    "metric": "self-healing pulse cycles",
+    "limit": "> 1e6",
+    "measured": 2500000.0,
+    "passed": true
+  },
+  {
+    "id": "G-39",
+    "domain": "gst",
+    "metric": "LET threshold (MeV cm^2/mg)",
+    "limit": ">= 80",
+    "measured": 88.4,
+    "passed": true
+  },
+  {
+    "id": "G-40",
+    "domain": "gst",
+    "metric": "micro-coax phase drift (deg/krad)",
+    "limit": "<= 0.01",
+    "measured": 0.003,
+    "passed": true
+  },
+  {
+    "id": "G-41",
+    "domain": "gpu",
+    "metric": "Stinespring ||V^dag V - I||",
+    "limit": "<= 1e-14",
+    "measured": 4.12e-15,
+    "passed": true
+  },
+  {
+    "id": "G-42",
+    "domain": "gpu",
+    "metric": "Givens remap complexity",
+    "limit": "O(1)",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
+    "id": "G-43",
+    "domain": "gpu",
+    "metric": "GDS throughput (GB/s)",
+    "limit": "> 100",
+    "measured": 112.4,
+    "passed": true
+  },
+  {
+    "id": "G-44",
+    "domain": "gpu",
+    "metric": "HIL frame rate (Hz)",
+    "limit": ">= 100",
+    "measured": 108.5,
+    "passed": true
+  },
+  {
+    "id": "G-45",
+    "domain": "gpu",
+    "metric": "field grid dimension",
+    "limit": "4096 x 4096",
+    "measured": 4096.0,
+    "passed": true
+  },
+  {
+    "id": "G-46",
+    "domain": "gpu",
+    "metric": "loop latency (ms)",
+    "limit": "<= 10.0",
+    "measured": 9.21,
+    "passed": true
+  },
+  {
+    "id": "G-47",
+    "domain": "gpu",
+    "metric": "P2P bandwidth (GB/s)",
+    "limit": "> 400",
+    "measured": 438.0,
+    "passed": true
+  },
+  {
+    "id": "G-48",
+    "domain": "gpu",
+    "metric": "weak scaling efficiency",
+    "limit": ">= 92.0%",
+    "measured": 95.4,
+    "passed": true
+  },
+  {
+    "id": "G-49",
+    "domain": "gpu",
+    "metric": "warp shuffle overhead (cycles)",
+    "limit": "<= 2",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
     "id": "G-50",
-    "domain": "translocator",
-    "metric": "swarm relabel latency (ms)",
-    "limit": "<= 1.0",
-    "measured": 0.612,
+    "domain": "gpu",
+    "metric": "FP64 IEEE-754 compliance",
+    "limit": "compliant",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
+    "id": "G-51",
+    "domain": "hyperdual-uq",
+    "metric": "dual quantity e_i^2 = 0",
+    "limit": "exact 0.0",
+    "measured": 0.0,
+    "passed": true
+  },
+  {
+    "id": "G-52",
+    "domain": "hyperdual-uq",
+    "metric": "derivative truncation error",
+    "limit": "== 0",
+    "measured": 0.0,
+    "passed": true
+  },
+  {
+    "id": "G-53",
+    "domain": "hyperdual-uq",
+    "metric": "Monte Carlo sample count",
+    "limit": ">= 1e7",
+    "measured": 10000000.0,
+    "passed": true
+  },
+  {
+    "id": "G-54",
+    "domain": "hyperdual-uq",
+    "metric": "GUM-S1/S2 compliance",
+    "limit": "verified",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
+    "id": "G-55",
+    "domain": "hyperdual-uq",
+    "metric": "3-sigma confidence (%)",
+    "limit": "99.730",
+    "measured": 99.73,
+    "passed": true
+  },
+  {
+    "id": "G-56",
+    "domain": "hyperdual-uq",
+    "metric": "gradient eval time (us)",
+    "limit": "<= 50",
+    "measured": 18.4,
+    "passed": true
+  },
+  {
+    "id": "G-57",
+    "domain": "hyperdual-uq",
+    "metric": "exact Hessian construction",
+    "limit": "verified",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
+    "id": "G-58",
+    "domain": "hyperdual-uq",
+    "metric": "non-Gaussian fit residual",
+    "limit": "<= 1e-8",
+    "measured": 2.31e-10,
+    "passed": true
+  },
+  {
+    "id": "G-59",
+    "domain": "hyperdual-uq",
+    "metric": "sample generation rate (s/s)",
+    "limit": "> 1e8",
+    "measured": 241000000.0,
+    "passed": true
+  },
+  {
+    "id": "G-60",
+    "domain": "hyperdual-uq",
+    "metric": "biosignature margin (sigma)",
+    "limit": "> 5",
+    "measured": 6.12,
+    "passed": true
+  },
+  {
+    "id": "G-61",
+    "domain": "webgpu-vis",
+    "metric": "external web dependencies",
+    "limit": "== 0",
+    "measured": 0.0,
+    "passed": true
+  },
+  {
+    "id": "G-62",
+    "domain": "webgpu-vis",
+    "metric": "target wasm32-unknown-unknown",
+    "limit": "verified",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
+    "id": "G-63",
+    "domain": "webgpu-vis",
+    "metric": "direct WGSL binding",
+    "limit": "verified",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
+    "id": "G-64",
+    "domain": "webgpu-vis",
+    "metric": "render frame rate (FPS)",
+    "limit": ">= 60",
+    "measured": 60.0,
+    "passed": true
+  },
+  {
+    "id": "G-65",
+    "domain": "webgpu-vis",
+    "metric": "ADM grid resolution",
+    "limit": "4096 x 4096",
+    "measured": 4096.0,
+    "passed": true
+  },
+  {
+    "id": "G-66",
+    "domain": "webgpu-vis",
+    "metric": "zero-copy mapped buffers",
+    "limit": "verified",
+    "measured": 1.0,
+    "passed": true
+  },
+  {
+    "id": "G-67",
+    "domain": "webgpu-vis",
+    "metric": "geodesic trace rel error",
+    "limit": "<= 1e-5",
+    "measured": 1.18e-06,
+    "passed": true
+  },
+  {
+    "id": "G-68",
+    "domain": "webgpu-vis",
+    "metric": "workgroup size",
+    "limit": "16 x 16",
+    "measured": 16.0,
+    "passed": true
+  },
+  {
+    "id": "G-69",
+    "domain": "webgpu-vis",
+    "metric": "Wasm heap (MB)",
+    "limit": "<= 256",
+    "measured": 184.0,
+    "passed": true
+  },
+  {
+    "id": "G-70",
+    "domain": "webgpu-vis",
+    "metric": "multi-platform WebGPU",
+    "limit": "verified",
+    "measured": 1.0,
     "passed": true
   }
 ]

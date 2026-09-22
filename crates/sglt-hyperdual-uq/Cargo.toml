@@ -1,0 +1,8 @@
+[package]
+name = "sglt-hyperdual-uq"
+version = "0.1.0"
+edition = "2021"
+description = "Hyper-dual automatic differentiation Bayesian UQ engine"
+license = "MIT"
+
+[dependencies]

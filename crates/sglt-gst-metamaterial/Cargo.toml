@@ -1,0 +1,8 @@
+[package]
+name = "sglt-gst-metamaterial"
+version = "0.1.0"
+edition = "2021"
+description = "Ge2Sb2Te5 metamaterial radiation-hard self-healing switch array"
+license = "MIT"
+
+[dependencies]
