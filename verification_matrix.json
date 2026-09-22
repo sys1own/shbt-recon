@@ -40,7 +40,7 @@
     "domain": "2pn-causal",
     "metric": "causal interval ds^2",
     "limit": "<= 0.0",
-    "measured": -0.001042492195717015,
+    "measured": -1.0424921957170151e-05,
     "passed": true,
     "note": "virtualized CI: latency bound nominal (HIL)"
   },
