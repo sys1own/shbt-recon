@@ -208,8 +208,8 @@ All seventy gates (`G-01`–`G-70`) pass against live simulation output (`verifi
 | Sub-engine | Repository |
 | --- | --- |
 | Transducer / HBT array | [`sys1own/shbt-exotic`](https://github.com/sys1own/shbt-exotic.git) |
-| C11 microkernel / QC runtime | [`sys1own/shbt-qc`](https://www.google.com/search?q=https://github.com/sys1own/shbt-qc&utm_source=gemini) |
-| Cold-fusion / thermo solver | [`sys1own/shbt-cf`](https://www.google.com/search?q=https://github.com/sys1own/shbt-cf&utm_source=gemini) |
-| SGLT platform & CLI | [`sys1own/shbt-sglt`](https://www.google.com/search?q=https://github.com/sys1own/shbt-sglt&utm_source=gemini) |
-| Precision cosmology & audits | [`sys1own/shbt-precision`](https://www.google.com/search?q=https://github.com/sys1own/shbt-precision&utm_source=gemini) |
-| Unified translocator workspace | [`sys1own/shbt-recon`](https://www.google.com/search?q=https://github.com/sys1own/shbt-recon&utm_source=gemini) |
+| C11 microkernel / QC runtime | [`sys1own/shbt-qc`](https://github.com/sys1own/shbt-qc) |
+| Cold-fusion / thermo solver | [`sys1own/shbt-cf`](https://github.com/sys1own/shbt-cf) |
+| SGLT platform & CLI | [`sys1own/shbt-sglt`](https://github.com/sys1own/shbt-sglt) |
+| Precision cosmology & audits | [`sys1own/shbt-precision`](https://github.com/sys1own/shbt-precision) |
+| Unified translocator workspace | [`sys1own/shbt-recon`](https://github.com/sys1own/shbt-recon) |
