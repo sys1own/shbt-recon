@@ -24,7 +24,6 @@ shbt-recon/
 ├── Cargo.toml                      # Cargo workspace manifest
 ├── main.tex                        # Unified LaTeX manuscript
 ├── recon.pdf                       # Compiled publication specification
-├── verification_matrix.json        # Live 70-gate audit output
 ├── crates/
 │   ├── sglt-translocator-core/     # Stinespring isometry, min-jerk, swarm relabeling
 │   ├── sglt-transducer-fea/        # Two-phase He-4 boiling FEA, Diamond-on-GaN, tamping
