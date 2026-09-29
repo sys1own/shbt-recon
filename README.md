@@ -151,7 +151,7 @@ All seventy gates (`G-01`–`G-70`) pass against live simulation output (`verifi
 | G-18 | tmsv | Dark count rate (Hz) | $\le 10$ | 2.4 |
 | G-19 | tmsv | Optical path insertion loss (dB) | $\le 0.15$ | 0.09 |
 | G-20 | tmsv | Homodyne detector bandwidth (MHz) | $\ge 500$ | 620 |
-| G-21 | diamond-cryo | CVD diamond $K$ ($\text{W}/(\text{m}\cdot\text{K})$) | $\ge 2000$ | 2250 |
+| G-21 | diamond-cryo | CVD diamond $K\ (\text{W}/(\text{m}\cdot\text{K}))$ | $\ge 2000$ | 2250 |
 | G-22 | diamond-cryo | NbN $T_c$ (K) | $16.0 \pm 0.2$ | 16 |
 | G-23 | diamond-cryo | MgB₂ $T_c$ (K) | $39.0 \pm 0.5$ | 39.12 |
 | G-24 | diamond-cryo | Field-collapse capacity (MW) | $\ge 142.08$ | 142.08 |
