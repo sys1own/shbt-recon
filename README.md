@@ -203,13 +203,17 @@ All seventy gates (`G-01`–`G-70`) pass against live simulation output (`verifi
 | G-69 | webgpu-vis | Wasm heap (MB) | $\le 256$ | 184 |
 | G-70 | webgpu-vis | Multi-platform WebGPU | verified | 1 |
 
-## Code Repository Crosswalk
+## SHBT Ecosystem Crosswalk
 
-| Sub-engine | Repository |
-| --- | --- |
-| Transducer / HBT array | [`sys1own/shbt-exotic`](https://github.com/sys1own/shbt-exotic.git) |
-| C11 microkernel / QC runtime | [`sys1own/shbt-qc`](https://github.com/sys1own/shbt-qc) |
-| Cold-fusion / thermo solver | [`sys1own/shbt-cf`](https://github.com/sys1own/shbt-cf) |
-| SGLT platform & CLI | [`sys1own/shbt-sglt`](https://github.com/sys1own/shbt-sglt) |
-| Precision cosmology & audits | [`sys1own/shbt-precision`](https://github.com/sys1own/shbt-precision) |
-| Unified translocator workspace | [`sys1own/shbt-recon`](https://github.com/sys1own/shbt-recon) |
+The `shbt-recon` digital twin integrates logic supplied by all eight repositories of the SHBT ecosystem:
+
+| Repository | Domain Role | Direct Integration into `shbt-recon` |
+| :--- | :--- | :--- |
+| [`sys1own/shbt-recon`](https://github.com/sys1own/shbt-recon) | Macroscopic State Translocator | Unified translocator reference engine; 512-bit $V_{\text{unified}}^{\text{macro}}$ dilation, 128-byte dual-cacheline C-ABI mapping, and 70-gate audit harness. |
+| [`sys1own/shbt-power`](https://github.com/sys1own/shbt-power) | Master Fusion Power Plant | Aneutronic p-11B fusion power plant digital twin (8,750 MW fusion / 7,832.903 MW net export) providing plant-level grid integration constraints. |
+| [`sys1own/shbt-cf`](https://github.com/sys1own/shbt-cf) | Cold Fusion & Thermal Hydraulics | 1,800-module LANR starter grid ($555.03\text{ W}$ net/cell, $999.054\text{ kW}$ array), dual-stage TEG enthalpy recovery, and 3D Eulerian-Eulerian helium coolant modeling. |
+| [`sys1own/shbt-ghost`](https://github.com/sys1own/shbt-ghost) | Fast Interlocks & Metric Control | Sub-2.5 ns PCSS crowbar interlocks, 94.20% SiC recovery shunts, and ADM 3+1 metric stabilization ($\beta^i \to 0, |\det(g)+1| \le 10^{-12}$). |
+| [`sys1own/shbt-exotic`](https://github.com/sys1own/shbt-exotic) | Boundary CFT & Dark Ledger | Boundary CFT state tensors, Heegaard-Floer symplectic boundary relabeling ($T^\partial_{ij}$), and dark ledger capacity partitioning ($\eta_D = 23/33$). |
+| [`sys1own/shbt-qc`](https://github.com/sys1own/shbt-qc) | Bare-Metal Runtime & HIL Microkernel | Freestanding C11 `shbt-os` microkernel execution environment, normative base 56-byte `SHBT-MMIO-1` register layout at `0x70000000`, and SECDED Hamming(72,64) ECC. |
+| [`sys1own/shbt-sglt`](https://github.com/sys1own/shbt-sglt) | Relativistic Optics & Cryogenics | 2PN relativistic electron beam optics, CVD Diamond-on-GaN high-heat-flux substrate limits, and $\text{NbN}/\text{MgB}_2$ quench margin safeguards. |
+| [`sys1own/shbt-precision`](https://github.com/sys1own/shbt-precision) | Arbitrary-Precision Numerics | 512-bit arbitrary-precision hybrid numeric framework (`rug`/MPFR), canonical WZW affine branch $(26, 8, 312)$ arithmetic, and zero-allocation audit primitives. |
