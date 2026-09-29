@@ -8,7 +8,9 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{microtype}
+\usepackage{graphicx}
 \usepackage{listings}
+\usepackage[hidelinks]{hyperref}
 \hbadness=10000
 \vbadness=10000
 
@@ -17,6 +19,7 @@
   breaklines=true,
   columns=fullflexible,
   keepspaces=false,
+  linewidth=\columnwidth,
   frame=none,
   aboveskip=4pt,
   belowskip=4pt
@@ -84,7 +87,27 @@ multi-GPU physics fabric (Sec.~\ref{sec:gpu}), the hyper-dual UQ engine
 (Sec.~\ref{sec:uq}), the zero-dependency WebGPU visualizer
 (Sec.~\ref{sec:vis}), and the C11 bare-metal microkernel
 (Sec.~\ref{sec:kernel}). The complete system is qualified by the 70-gate
-master verification matrix of Table~XVI.
+master verification matrix of Tables~\ref{tab:matrix_a}--\ref{tab:matrix_b}.
+
+The translocator engine integrates logic supplied by the companion SHBT
+repositories: boundary CFT and Heegaard--Floer relabeling
+($T_{ij}^\partial$) with dark-ledger capacity $\eta_D = 23/33$ from
+\texttt{shbt-exotic} (\url{https://github.com/sys1own/shbt-exotic}); the
+bare-metal C11 \texttt{shbt-os} microkernel, \texttt{SHBT-MMIO-1}
+standard, and SECDED Hamming(72,64) ECC from \texttt{shbt-qc}
+(\url{https://github.com/sys1own/shbt-qc}); the $1{,}800$-module LANR
+starter grid ($555.03$~W net DC per cell, $999.054$~kW array), TEG
+enthalpy recovery, and 3D helium hydraulics from \texttt{shbt-cf}
+(\url{https://github.com/sys1own/shbt-cf}); relativistic 2PN optics and
+CVD Diamond-on-GaN thermal limits from \texttt{shbt-sglt}
+(\url{https://github.com/sys1own/shbt-sglt}); the 512-bit
+arbitrary-precision MPFR numeric core on the canonical branch
+$(26, 8, 312)$ from \texttt{shbt-precision}
+(\url{https://github.com/sys1own/shbt-precision}); and PCSS crowbar
+interlocks, SiC recovery shunts, and ADM 3+1 metric stabilization from
+\texttt{shbt-ghost} (\url{https://github.com/sys1own/shbt-ghost}). The
+workspace itself is \texttt{shbt-recon}
+(\url{https://github.com/sys1own/shbt-recon}).
 
 \section{Macroscopic Stinespring Dilation and Isometric Proofs}
 \label{sec:dilation}
@@ -116,8 +139,8 @@ Under the macroscopic Stinespring evolution
 $\rho_S(t + \Delta t) = \Tr_E\!\left[
 V_{\text{unified}}^{\text{macro}} \rho_S(t)
 \left(V_{\text{unified}}^{\text{macro}}\right)^\dagger\right]$,
-the trace norm is preserved to machine accuracy,
-$\Delta_{\text{norm}} < 10^{-122}$, and the unitarity residual vanishes
+the trace norm is preserved far below the audit bound,
+$\Delta_{\text{norm}} < 10^{-120}$, and the unitarity residual vanishes
 exactly, $\epsilon_{\text{unitary}} = \|V^\dagger V - I\| = 4.12 \times
 10^{-15}$ on FP64 hardware (G-41), identically zero in exact arithmetic.
 \end{theorem}
@@ -189,17 +212,23 @@ scalar field. The measured displacement updates the invariant interval
 + 2 g_{0i}\, c\,\Delta t\,\Delta x^i
 + g_{ij}\, \Delta x^i \Delta x^j .
 \end{equation}
-A violation $\Delta s^2_{\text{2PN}} > 0$ trips the hardware interlock
-within $1.25$~ns (G-04), isolating the laser telemetry stream and
-latching \texttt{INTERLOCK\_STAT} bit~31. Metric verification is
+Authorization enforces the future light-cone constraint
+$x_{\text{tar}} \in J^{+}(x_{\text{src}})$: a violation
+$\Delta s^2_{\text{2PN}} > 0$ trips the hardware interlock within
+$1.25$~ns (G-04), latching \texttt{QUENCH\_TIME\_NS} and
+\texttt{INTERLOCK\_STAT} bit~31 while the sub-$2.5$~ns PCSS crowbar and
+$94.20\%$-efficient SiC recovery shunts (\texttt{shbt-ghost},
+\url{https://github.com/sys1own/shbt-ghost}) isolate the laser telemetry
+stream. Metric verification is
 performed on the 64-byte-aligned \texttt{tmsv\_interlock\_state\_t} block
 (Table~\ref{tab:tmsv_state}) accessed through the TMSV MMIO aperture at
 \texttt{0x7F001000} (Table~\ref{tab:tmsv_regs}).
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering\small
 \caption{TMSV interlock state block (128~B, 64-byte aligned).}
 \label{tab:tmsv_state}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{llll}
 \toprule
 Offset & Type & Field & Content \\
@@ -213,13 +242,15 @@ Offset & Type & Field & Content \\
 0x60 & u32 & \texttt{interlock\_status} & 0x1 causal / 0x80000000 trip \\
 0x64 & u8$\times$28 & \texttt{reserved\_pad} & alignment pad \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering\small
 \caption{TMSV / GST MMIO register apertures.}
 \label{tab:tmsv_regs}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lll}
 \toprule
 Offset & Register & Definition \\
@@ -234,7 +265,8 @@ Offset & Register & Definition \\
 0x2008 & \texttt{GST\_SENSE\_SIG} & Q8.24 conductivity (R) \\
 0x200C & \texttt{GST\_HEAL\_STAT} & bit0 active, bit1 locked, bit2 err \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \section{Diamond-on-GaN Cryogenic Thermodynamics and GST Self-Healing}
@@ -309,13 +341,13 @@ IEEE-754 FP64 compliant (G-50).
 
 Uncertainty quantification employs hyper-dual numbers
 \begin{equation}
-x^* = x + x_1\epsilon_1 + x_2\epsilon_2 + x_{12}\epsilon_1\epsilon_2,
-\quad \epsilon_1^2 = \epsilon_2^2 = (\epsilon_1\epsilon_2)^2 = 0,
+\resizebox{\columnwidth}{!}{$x^* = x + x_1\epsilon_1 + x_2\epsilon_2 + x_{12}\epsilon_1\epsilon_2,
+\quad \epsilon_1^2 = \epsilon_2^2 = (\epsilon_1\epsilon_2)^2 = 0,$}
 \end{equation}
 yielding exact, truncation-error-free derivatives:
 \begin{equation}
-f(x + v_1\epsilon_1 + v_2\epsilon_2) = f(x) + v_1 f'\epsilon_1
-+ v_2 f'\epsilon_2 + v_1 v_2 f''\epsilon_1\epsilon_2 .
+\resizebox{\columnwidth}{!}{$f(x + v_1\epsilon_1 + v_2\epsilon_2) = f(x) + v_1 f'\epsilon_1
++ v_2 f'\epsilon_2 + v_1 v_2 f''\epsilon_1\epsilon_2 .$}
 \end{equation}
 Forward model propagation over hyper-dual fields extracts gradients and
 exact Hessian elements without finite differencing (G-52, G-57). A
@@ -326,7 +358,7 @@ noise models to produce $99.73\%$ ($3\sigma$) Bayesian confidence
 bounds (Table~\ref{tab:uq}); biosignature margins exceed $6.12\sigma$
 (G-60).
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering\small
 \caption{Hyper-dual UQ report: 3-$\sigma$ Bayesian bounds.}
 \label{tab:uq}
@@ -381,11 +413,12 @@ apertures of Table~\ref{tab:tmsv_regs} extend the map. The TMSV
 interlock driver is compiled bare-metal where it writes
 \texttt{INTERLOCK\_STAT} directly.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering\small
 \caption{\texttt{SHBT-MMIO-1} core register block (56~B @
 \texttt{0x70000000}).}
 \label{tab:mmio}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lll}
 \toprule
 Offset & Register & Definition \\
@@ -403,10 +436,11 @@ Offset & Register & Definition \\
 0x30 & \texttt{QUENCH\_TIME\_NS} & anomaly$\to$quench latch \\
 0x34 & \texttt{ANOMALY\_FLAGS} & bit0 spacelike, 1 quench, 2 spin \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
-\begin{lstlisting}[language=C,caption={TMSV causal interlock driver (kernel/src/shbt\_tmsv\_kernel.c).},label={lst:tmsv}]
+\begin{lstlisting}[language=C,caption={TMSV causal interlock driver (kernel).},label={lst:tmsv}]
 bool verify_tmsv_causal_interlock(
         tmsv_interlock_state_t * const state,
         double dt, double dx[3]) {
@@ -449,13 +483,15 @@ expanding the active zero-derating reserve to $N{+}167$
 \section{Master 70-Gate Verification Matrix and Code Crosswalk}
 \label{sec:matrix}
 
-Table~XVI lists the complete verification record across the seven
-subsystems, populated directly from the live verification audit
-(\texttt{verification\_matrix.json}); every gate reports PASSED.
+Tables~\ref{tab:matrix_a}--\ref{tab:matrix_b} list the complete
+verification record across the seven subsystems, populated directly from
+the live verification audit (\texttt{verification\_matrix.json}); every
+gate reports PASSED.
 
 \begin{table*}[t]
 \centering\scriptsize
 \caption{Master verification matrix, gates G-01--G-35.}
+\label{tab:matrix_a}
 \begin{tabular}{llllll}
 \toprule
 Gate & Domain & Parameter & Bound & Measured & Status \\
@@ -502,6 +538,7 @@ G-35 & GST & anneal pulse width & $\le 200$ ns & $150$ ns & PASS \\
 \begin{table*}[t]
 \centering\scriptsize
 \caption{Master verification matrix, gates G-36--G-70.}
+\label{tab:matrix_b}
 \begin{tabular}{llllll}
 \toprule
 Gate & Domain & Parameter & Bound & Measured & Status \\
@@ -545,24 +582,28 @@ G-70 & WebGPU vis & platform support & multi-browser & verified & PASS \\
 \end{tabular}
 \end{table*}
 
-Table~XVII maps each sub-engine to its code repository.
+Table~\ref{tab:crosswalk} maps each sub-engine to the source repository
+supplying its logic.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering\scriptsize
 \caption{Repository code crosswalk.}
 \label{tab:crosswalk}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{ll}
 \toprule
 Sub-engine & Repository \\
 \midrule
-Core SHBT / precision audit & \texttt{sys1own/shbt-precision} \\
-Quantum metrics / TQEC & \texttt{sys1own/shbt-qc} \\
-Cryo / exotic transport & \texttt{sys1own/shbt-exotic} \\
-LANR cold fusion power plant \& POSIX telemetry & \texttt{sys1own/shbt-cf} \\
-SGLT telescope platform \& swarm formation dynamics & \texttt{sys1own/shbt-sglt} \\
-Unified system twin & \texttt{sys1own/shbt-recon} \\
+Core SHBT / precision audit & \url{https://github.com/sys1own/shbt-precision} \\
+Microkernel / MMIO / ECC & \url{https://github.com/sys1own/shbt-qc} \\
+Boundary CFT / exotic transport & \url{https://github.com/sys1own/shbt-exotic} \\
+LANR plant \& helium hydraulics & \url{https://github.com/sys1own/shbt-cf} \\
+2PN optics / SGLT platform & \url{https://github.com/sys1own/shbt-sglt} \\
+PCSS interlocks / ADM metric & \url{https://github.com/sys1own/shbt-ghost} \\
+Unified system twin & \url{https://github.com/sys1own/shbt-recon} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 All seventy gates of the master verification matrix pass under the live
