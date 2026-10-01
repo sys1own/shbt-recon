@@ -19,6 +19,9 @@ paper: figures macros
 	pdflatex -interaction=nonstopmode main.tex
 	pdflatex -interaction=nonstopmode main.tex
 
+recon.pdf: main.tex
+	latexmk -pdf -interaction=nonstopmode -jobname=recon main.tex
+
 test: rust
 	. .venv/bin/activate && pytest tests/ -q
 
