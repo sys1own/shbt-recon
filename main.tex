@@ -10,9 +10,19 @@
 \usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{titlesec}
+\usepackage{tabularx}
 \usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
 \hbadness=10000
 \vbadness=10000
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+\titlespacing*{\section}{0pt}{3.5ex plus 1.0ex minus 0.3ex}{1.5ex plus 0.3ex}
+\titlespacing*{\subsection}{0pt}{2.5ex plus 0.8ex minus 0.2ex}{1.0ex plus 0.2ex}
+\titlespacing*{\subsubsection}{0pt}{2.0ex plus 0.5ex minus 0.2ex}{0.8ex plus 0.2ex}
 
 \lstset{
   basicstyle=\scriptsize\ttfamily,
@@ -67,7 +77,7 @@ a $1{,}800$-module LANR cold-fusion plant delivering $999.054$~kW net
 G-01--G-70 pass.
 \end{abstract}
 
-\section{Introduction and SHBT Context}
+\section[Introduction and SHBT Context]{Introduction and SHBT Context}
 \label{sec:intro}
 
 Static Holographic Boundary Theory (SHBT) encodes the macroscopic state
@@ -109,7 +119,7 @@ interlocks, SiC recovery shunts, and ADM 3+1 metric stabilization from
 workspace itself is \texttt{shbt-recon}
 (\url{https://github.com/sys1own/shbt-recon}).
 
-\section{Macroscopic Stinespring Dilation and Isometric Proofs}
+\section[Stinespring Dilation and Isometric Proofs]{Macroscopic Stinespring Dilation and Isometric Proofs}
 \label{sec:dilation}
 
 \begin{definition}
@@ -164,7 +174,7 @@ active shunt transient governed by the causal interlock of
 Sec.~\ref{sec:tmsv}.
 \end{theorem}
 
-\section{TMSV Quantum Metrology and the Relativistic Causal Interlock}
+\section[TMSV Metrology and Causal Interlock]{TMSV Quantum Metrology and the Relativistic Causal Interlock}
 \label{sec:tmsv}
 
 Inter-node laser metrology injects a Two-Mode Squeezed Vacuum state into
@@ -269,7 +279,7 @@ Offset & Register & Definition \\
 }
 \end{table}
 
-\section{Diamond-on-GaN Cryogenic Thermodynamics and GST Self-Healing}
+\section[Diamond-on-GaN Cryogenics and GST Self-Healing]{Diamond-on-GaN Cryogenic Thermodynamics and GST Self-Healing}
 \label{sec:cryo}
 
 The transducer layer bonds CVD synthetic diamond thin-film substrates
@@ -311,7 +321,7 @@ $99.94\%$, G-34) with single-event immunity to LET
 $88.4~\text{MeV}\cdot\text{cm}^2/\text{mg}$ (G-39) and phase drift
 $0.003^\circ/\text{krad}$ (G-40).
 
-\section{Distributed Multi-GPU CUDA/ROCm Physics Engine}
+\section[Multi-GPU Physics Engine]{Distributed Multi-GPU CUDA/ROCm Physics Engine}
 \label{sec:gpu}
 
 Quantum density-matrix dynamics scale across multi-GPU nodes via a
@@ -336,7 +346,7 @@ sustains $108.5$~Hz HIL frame rate with $9.21$~ms loop latency and
 $95.4\%$ weak-scaling efficiency (G-44--G-48); all arithmetic is
 IEEE-754 FP64 compliant (G-50).
 
-\section{Hyper-Dual Automatic Differentiation Bayesian UQ Engine}
+\section[Hyper-Dual Bayesian UQ Engine]{Hyper-Dual Automatic Differentiation Bayesian UQ Engine}
 \label{sec:uq}
 
 Uncertainty quantification employs hyper-dual numbers
@@ -376,7 +386,7 @@ Fidelity $\mathcal{F}$ & 0.9998 & 0.9973 & 1.0000 \\
 \end{tabular}
 \end{table}
 
-\section{Zero-Dependency WebAssembly/WebGPU Native Visualizer}
+\section[WebAssembly/WebGPU Visualizer]{Zero-Dependency WebAssembly/WebGPU Native Visualizer}
 \label{sec:vis}
 
 Real-time field visualization is compiled from Rust to
@@ -392,7 +402,7 @@ interlock display. Geodesic trace relative error is $1.18\times10^{-6}$
 (G-67); the deployment targets Chrome, Firefox, and Safari WebGPU
 backends (G-70).
 
-\section{Swarm Network, Bare-Metal C11 Microkernel, and MMIO Standard}
+\section[Swarm Network and C11 Microkernel]{Swarm Network, Bare-Metal C11 Microkernel, and MMIO Standard}
 \label{sec:kernel}
 
 The multi-node swarm ($M = 8$ verified nodes) executes Heegaard-Floer
@@ -480,7 +490,7 @@ $N_{\min} = \lceil 906{,}000 / 555.03 \rceil = 1{,}633$ modules,
 expanding the active zero-derating reserve to $N{+}167$
 ($1{,}800 - 1{,}633$).
 
-\section{Master 70-Gate Verification Matrix and Code Crosswalk}
+\section[Verification Matrix and Code Crosswalk]{Master 70-Gate Verification Matrix and Code Crosswalk}
 \label{sec:matrix}
 
 Tables~\ref{tab:matrix_a}--\ref{tab:matrix_b} list the complete
@@ -488,7 +498,7 @@ verification record across the seven subsystems, populated directly from
 the live verification audit (\texttt{verification\_matrix.json}); every
 gate reports PASSED.
 
-\begin{table*}[t]
+\begin{table*}[!t]
 \centering\scriptsize
 \caption{Master verification matrix, gates G-01--G-35.}
 \label{tab:matrix_a}
@@ -535,7 +545,7 @@ G-35 & GST & anneal pulse width & $\le 200$ ns & $150$ ns & PASS \\
 \end{tabular}
 \end{table*}
 
-\begin{table*}[t]
+\begin{table*}[!t]
 \centering\scriptsize
 \caption{Master verification matrix, gates G-36--G-70.}
 \label{tab:matrix_b}
@@ -585,25 +595,25 @@ G-70 & WebGPU vis & platform support & multi-browser & verified & PASS \\
 Table~\ref{tab:crosswalk} maps each sub-engine to the source repository
 supplying its logic.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering\scriptsize
-\caption{Repository code crosswalk.}
+\caption{SHBT ecosystem repository crosswalk.}
 \label{tab:crosswalk}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{ll}
+\begin{tabularx}{\columnwidth}{@{}lX@{}}
 \toprule
 Sub-engine & Repository \\
 \midrule
-Core SHBT / precision audit & \url{https://github.com/sys1own/shbt-precision} \\
-Microkernel / MMIO / ECC & \url{https://github.com/sys1own/shbt-qc} \\
-Boundary CFT / exotic transport & \url{https://github.com/sys1own/shbt-exotic} \\
-LANR plant \& helium hydraulics & \url{https://github.com/sys1own/shbt-cf} \\
-2PN optics / SGLT platform & \url{https://github.com/sys1own/shbt-sglt} \\
-PCSS interlocks / ADM metric & \url{https://github.com/sys1own/shbt-ghost} \\
-Unified system twin & \url{https://github.com/sys1own/shbt-recon} \\
+Core SHBT / precision audit & \href{https://github.com/sys1own/shbt-precision}{\texttt{sys1own/shbt-precision}} \\
+Microkernel / MMIO / ECC & \href{https://github.com/sys1own/shbt-qc}{\texttt{sys1own/shbt-qc}} \\
+LANR plant \& helium hydraulics & \href{https://github.com/sys1own/shbt-cf}{\texttt{sys1own/shbt-cf}} \\
+Fusion power plant / grid export & \href{https://github.com/sys1own/shbt-power}{\texttt{sys1own/shbt-power}} \\
+PCSS interlocks / ADM metric & \href{https://github.com/sys1own/shbt-ghost}{\texttt{sys1own/shbt-ghost}} \\
+Unified system twin & \href{https://github.com/sys1own/shbt-recon}{\texttt{sys1own/shbt-recon}} \\
+2PN optics / SGLT platform & \href{https://github.com/sys1own/shbt-sglt}{\texttt{sys1own/shbt-sglt}} \\
+Boundary CFT / exotic transport & \href{https://github.com/sys1own/shbt-exotic}{\texttt{sys1own/shbt-exotic}} \\
+Warp drive / spacetime engine & \href{https://github.com/sys1own/shbt-warp}{\texttt{sys1own/shbt-warp}} \\
 \bottomrule
-\end{tabular}%
-}
+\end{tabularx}
 \end{table}
 
 All seventy gates of the master verification matrix pass under the live
