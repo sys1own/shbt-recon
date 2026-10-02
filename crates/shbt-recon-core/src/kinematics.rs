@@ -10,7 +10,7 @@ pub const RIGIDITY_TOLERANCE: f64 = 1.0e-12;
 /// Wake tensor spectral coefficients (W₁, W₂, W₃), transferred verbatim from
 /// `shbt-exotic::mass_congestion_engine` (512-bit literal decimals reduced to
 /// f64 — the root crate keeps full `rug::Rational` precision).
-pub const WAKE_1: f64 = 1.7724538509055160;
+pub const WAKE_1: f64 = 1.772_453_850_905_516;
 pub const WAKE_2: f64 = 0.0342371948123984;
 pub const WAKE_3: f64 = 0.0000154091152918;
 

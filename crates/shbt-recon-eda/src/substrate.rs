@@ -55,7 +55,7 @@ impl SubstrateLayer {
 
     /// Layer is superconducting at `t` K.
     pub fn superconducting_at(&self, t: f64) -> bool {
-        self.critical_temp().map_or(false, |tc| t < tc)
+        self.critical_temp().is_some_and(|tc| t < tc)
     }
 }
 

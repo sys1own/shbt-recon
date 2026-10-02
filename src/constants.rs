@@ -32,7 +32,7 @@ pub const HOLOGRAPHIC_NOISE_FLOOR: f64 = 1.0e-122;
 pub const KB_J_PER_K: f64 = 1.380_649e-23;
 
 /// Natural logarithm of 2.
-pub const LN2: f64 = 0.693_147_180_559_945_3;
+pub const LN2: f64 = std::f64::consts::LN_2;
 
 /// Canonical operating temperature for the hardware-synthesis audit (15.4 mK).
 pub const TEMPERATURE_K: f64 = 15.4e-3;

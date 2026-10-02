@@ -2,6 +2,7 @@
 //! and entropy-debt power balancing for the translocator swarm, plus the
 //! pulsed ^178m2Hf isomer graser burst rail (upstream: sys1own/shbt-warp).
 
+pub mod enthalpy;
 pub mod isomer;
 
 /// Active LANR module count.

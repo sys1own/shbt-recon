@@ -55,7 +55,7 @@ impl DerenderingEngine {
     /// within 10^-12; any larger detuning raises `AnomalyClosureError`.
     pub fn execute_stinespring_map(&mut self, visible_index: usize, residual_state: Vec<f64>) -> PyResult<()> {
         self.execute_stinespring_map_impl(visible_index, &residual_state)
-            .map_err(|e| PyErr::from(e))
+            .map_err(PyErr::from)
     }
 
     /// Run a self-consistency audit and return a dictionary of benchmark values.

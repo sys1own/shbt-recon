@@ -47,7 +47,7 @@ mod tests {
 
     #[test]
     fn decoder_latencies() {
-        assert!(UF_LATENCY_US < 10.0);
-        assert!(BLOSSOM_LATENCY_US < 45.0);
+        const { assert!(UF_LATENCY_US < 10.0) };
+        const { assert!(BLOSSOM_LATENCY_US < 45.0) };
     }
 }

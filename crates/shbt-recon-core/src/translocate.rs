@@ -21,6 +21,7 @@ pub enum TranslocateError {
 
 /// Smallest eigenvalue of a symmetric positive-definite candidate matrix
 /// via Jacobi iteration (small dense matrices, n ≤ 64).
+#[allow(clippy::needless_range_loop)]
 fn min_eigenvalue_symmetric(g: &[Vec<f64>]) -> Option<f64> {
     let n = g.len();
     if n == 0 || g.iter().any(|r| r.len() != n) {

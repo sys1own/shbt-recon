@@ -26,6 +26,7 @@ impl LightconeAuthorization {
     }
 
     /// Authorize `tar`; returns Err on violation (spacelike or past-directed).
+    #[allow(clippy::result_unit_err)]
     pub fn authorize(src: SpacetimePoint, tar: SpacetimePoint) -> Result<(), ()> {
         if Self::in_future_cone(src, tar) {
             Ok(())

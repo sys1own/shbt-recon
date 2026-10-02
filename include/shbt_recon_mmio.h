@@ -20,8 +20,25 @@
 #define SHBT_STATE_STANDBY_STASIS     (0x01U)
 #define SHBT_STATE_TRIGGER_ARMED      (0x02U)
 #define SHBT_STATE_FOLDING_BURST      (0x04U)
+/* Dual-mode synthesis dispatch shares the 0x04 burst phase code. */
+#define SHBT_STATE_TRANSMUTATION_BURST (0x04U)
 #define SHBT_STATE_SYMPL_COOLDOWN     (0x08U)
+/* SYMPLECTIC_CRYSTALLIZATION re-render phase (synthesis mode alias). */
+#define SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION (0x08U)
 #define SHBT_STATE_EMERGENCY_QUENCH   (0x10U)
+
+/* Synthesis hardware status bits (synth bank @ 0x30) */
+#define SYNTH_STATUS_IDLE             (0x00000000U)
+#define SYNTH_STATUS_DYNKIN_LOCKED    (0x00000001U)
+#define SYNTH_STATUS_FRAMING_CLEAN    (0x00000002U)
+#define SYNTH_STATUS_DARK_SINK_ACTIVE (0x00000004U)
+#define SYNTH_STATUS_DEC_SYNCHRONIZED (0x00000008U)
+#define SYNTH_STATUS_CRYO_HEADROOM_OK (0x00000010U)
+#define SYNTH_STATUS_ERROR_ANOMALY    (0x80000000U)
+
+/* system_control bank-select bit: 0 = legacy translocator bank,
+ * 1 = synthesis bank overlays Cacheline 0 offsets 0x28..0x3F. */
+#define SHBT_CTRL_SYNTH_BANK_SEL      (1U << 5)
 
 /* 2PN Kinematic Flags */
 #define SHBT_2PN_CAUSAL_AUTHORIZED   (1U << 0)
@@ -49,10 +66,25 @@ typedef struct {
     volatile uint64_t metric_shift_norm_fp64; /* 0x10: ||beta^i|| shift residual (m/s)    */
     volatile uint64_t dark_braid_counter;     /* 0x18: 124 Fibonacci braid step count     */
     volatile uint64_t active_bits_stepped;    /* 0x20: Cumulative boundary bits stepped   */
-    volatile uint64_t target_nucleon_scale;   /* 0x28: Target N_local (10^23 .. 10^28)    */
-    volatile uint32_t minimum_jerk_step_tau;  /* 0x30: s(tau) 5th-order jerk phase (Q32)  */
-    volatile uint32_t wzw_framing_defect_raw; /* 0x34: Delta_fr residual (must be 0)      */
-    volatile uint64_t reserved_c0_1;          /* 0x38: Reserved / Cacheline 0 pad         */
+    /* Bank-switched register window 0x28-0x3F.  When
+     * SHBT_CTRL_SYNTH_BANK_SEL is clear the window exposes the legacy
+     * translocator registers; when set it exposes the synthesis target
+     * specification written before a TRANSMUTATION_BURST (0x04) dispatch. */
+    union {
+        struct {
+            volatile uint64_t target_nucleon_scale;   /* 0x28: Target N_local (10^23..10^28) */
+            volatile uint32_t minimum_jerk_step_tau;  /* 0x30: s(tau) 5th-order jerk (Q32)   */
+            volatile uint32_t wzw_framing_defect_raw; /* 0x34: Delta_fr residual (must be 0) */
+            volatile uint64_t reserved_c0_1;          /* 0x38: Cacheline 0 pad               */
+        } translocator;
+        struct {
+            volatile uint32_t synth_target_z;         /* 0x28: Target atomic number Z        */
+            volatile uint32_t synth_target_a;         /* 0x2C: Target nucleon number A       */
+            volatile uint32_t synth_status;           /* 0x30: SYNTH_STATUS_* telemetry      */
+            volatile int32_t  synth_enthalpy_delta_mv;/* 0x34: formation dH (mJ/mol)         */
+            volatile int64_t  synth_binding_offset_q32;/* 0x38: nuclear dB (MeV, Q32)        */
+        } synth;
+    } bank0;
 
     /* =========================================================================
      * CACHELINE 1: Isomer Core, DEC Bus, Cryogenics, Metrology, ECC, CRC (64 B)
@@ -83,5 +115,11 @@ _Static_assert(offsetof(shbt_recon_mmio_t, isomer_soc_millijoules) == 64,
                "FATAL: Cacheline 1 boundary misaligned; must start at offset 64.");
 _Static_assert(offsetof(shbt_recon_mmio_t, hardware_crc32c) == 112,
                "FATAL: Hardware CRC32C field misaligned; must sit at offset 112.");
+_Static_assert(offsetof(shbt_recon_mmio_t, bank0) == 0x28,
+               "FATAL: bank-switched window must begin at offset 0x28.");
+_Static_assert(offsetof(shbt_recon_mmio_t, bank0.synth.synth_target_z) == 0x28,
+               "FATAL: synth_target_z offset mismatch in Cacheline 0.");
+_Static_assert(offsetof(shbt_recon_mmio_t, bank0.synth.synth_binding_offset_q32) == 0x38,
+               "FATAL: synth_binding_offset_q32 offset mismatch in Cacheline 0.");
 
 #endif /* SHBT_RECON_MMIO_H */

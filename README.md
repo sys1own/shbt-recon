@@ -1,6 +1,6 @@
 # Static Holographic Boundary Theory (SHBT) — Macroscopic Modular State Translocator
 
-`shbt-recon` is the unified reference implementation of the Static Holographic Boundary Theory (SHBT) Modular State Translocator: a multi-domain digital twin for de-rendering boundary character excitations into a protected dark ledger, transporting them by boundary address relabeling, and re-rendering them at hardware-authorized causal targets.
+`shbt-recon` is the unified reference implementation of the Static Holographic Boundary Theory (SHBT) Modular State Translocator & Synthetic Matter Synthesizer: a dual-mode multi-domain digital twin for (a) 1:1 state translocation — de-rendering boundary character excitations into a protected dark ledger, transporting them by boundary address relabeling, and re-rendering them at hardware-authorized causal targets — and (b) synthetic matter re-rendering — de-rendering generic bulk feedstock into the dark completion ledger (η<sub>D</sub> = 23/33), applying the boundary character transmutation operator S<sub>synth</sub>, and re-rendering custom target isotopes and compounds.
 
 ## System Overview
 
@@ -11,7 +11,8 @@
 * **Hierarchical Fusion-Tree TQEC** — non-Abelian Fibonacci fusion-tree compression (τ ⊗ τ = 1 ⊕ τ, d_τ = φ, D = √(2+φ), 124 braid descriptors / 992 B) with an active Union-Find + MWPM Blossom V decoder grid sustaining F<sub>logical</sub> ≥ 0.999999 over 30 yr at 600 AU.
 * **Multi-Node Swarm Translocation** — M-node network (M = 8 verified) executing Heegaard-Floer boundary relabeling (T<sup>∂</sup><sub>ij</sub> ∈ Sp(2g, ℤ), det = +1) across heliocentric corridors (z ∈ [547.8, 650.0] AU) with the 5th-order minimum-jerk profile s(τ) = 10τ<sup>3</sup> - 15τ<sup>4</sup> + 6τ<sup>5</sup>.
 * **Dual-Power Dispatch: LANR Baseload + ¹⁷⁸ᵐ²Hf Isomer Burst Rail** — the station runs a strict dual-rail topology: the continuous 1,800-module LANR array (999.054 kW net at 555.03 W/module, 400 V DC) permanently covers the non-sheddable 906.00 kW Landauer entropy-debt floor, ~72.50 kW baseline cryogenics, and SPSC telemetry rings (+20.554 kW continuous surplus), while a 500.0 TJ coherent graser ¹⁷⁸ᵐ²HfB₂ isomer core (376.99 kg, ρ_E = 1.3263 TJ/kg, E_x = 2.446 MeV, 40.0 keV resonant trigger, G_isomer = 61.15, t½ = 31.0 y) — upstream origin [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp), auxiliary [`sys1own/shbt-power`](https://github.com/sys1own/shbt-power) and [`sys1own/shbt-ghost`](https://github.com/sys1own/shbt-ghost) — discharges through a 3-stage relativistic DEC stack (η_conv = 45.8%: Compton 26.4% + pair-induction 12.1% + retarding 7.3%) onto a 15 kV → 400 kV DC bus, delivering up to P_net = 49.9449 TW net electrical power during isometric folding and causal egress. Burst stepping lifts ΔN(k) from 50,517 to 2.7114 × 10¹³ bits/step (Φ = 1.3698 × 10¹⁸ bits/s), de-rendering a 10²⁸-nucleon payload in 9.126 s.
-* **Bare-Metal C11 Microkernel** — freestanding C11 `shbt-os` runtime, 128-byte dual-cacheline `shbt_recon_mmio_t` register contract at `0x70000000` (`include/shbt_recon_mmio.h`), 2,112-byte `UnifiedStinespringFrame` SRAM arena, SECDED Hamming(72,64) ECC, AVX-512 Givens remapping, T<sub>recovery</sub> ≤ 120.00 ns post-quench recovery, sub-2.18 ns PCSS optical crowbar (94.20% SMES recovery / 5.80% W-Cu dumps), and the 5-phase isomer dispatch FSM (`0x01` STANDBY_STASIS, `0x02` TRIGGER_ARMED, `0x04` FOLDING_BURST, `0x08` SYMPLECTIC_COOLDOWN, `0x10` EMERGENCY_QUENCH) enforcing the zero-residual condition E_μν ≡ 0 on the canonical WZW affine branch (26, 8, 312).
+* **Bare-Metal C11 Microkernel** — freestanding C11 `shbt-os` runtime, 128-byte dual-cacheline `shbt_recon_mmio_t` register contract at `0x70000000` (`include/shbt_recon_mmio.h`), 2,112-byte `UnifiedStinespringFrame` SRAM arena, SECDED Hamming(72,64) ECC, AVX-512 Givens remapping, T<sub>recovery</sub> ≤ 120.00 ns post-quench recovery, sub-2.18 ns PCSS optical crowbar (94.20% SMES recovery / 5.80% W-Cu dumps), and the 5-phase isomer dispatch FSM (`0x01` STANDBY_STASIS, `0x02` TRIGGER_ARMED, `0x04` FOLDING_BURST / TRANSMUTATION_BURST, `0x08` SYMPLECTIC_COOLDOWN / SYMPLECTIC_CRYSTALLIZATION, `0x10` EMERGENCY_QUENCH) enforcing the zero-residual condition E_μν ≡ 0 on the canonical WZW affine branch (26, 8, 312).
+* **Synthetic Matter Re-Rendering** — boundary character transmutation operator S<sub>synth</sub>(ω<sub>target</sub>) acting as an intertwining endomorphism across the completed affine Kac–Moody algebra su(2)<sub>26</sub> × su(3)<sub>8</sub> × so(10)<sub>312</sub>; Cartan-subalgebra Dynkin weight shifts λ<sub>i</sub> → λ′<sub>i</sub> reconfigure nuclear properties (Z, N<sub>n</sub>) and electron shells as boundary data. Isometry bound ‖S<sub>synth</sub><sup>†</sup>S<sub>synth</sub> − I‖ ≤ 10<sup>-14</sup>; framing closure Δ<sub>fr</sub> ≡ 0 held by 124 Fibonacci dark braid channels; stress-energy residual E<sub>μν</sub> ≡ 0. Canonical products: monolithic ¹⁷⁸ᵐ²HfB₂ isomer core, monoisotopic ¹¹B₁₀H₁₄ decaborane, pure ²⁸Si substrates, and dislocation-free CVD diamond.
 * **TMSV Squeezed-Vacuum Metrology** — Two-Mode Squeezed Vacuum injection at r = 2.50 suppresses quadrature noise 21.715 dB below shot noise (S<sub>r</sub><sup>1/2</sup> ≤ 0.010 pm /√( Hz ), ‖deltar‖<sub>3σ</sub> ≤ 0.100 nm), with N00N-state 1/N Heisenberg-limited phase sensitivity; displacement telemetry feeds the 2PN causal interlock which trips in 1.25 ns.
 * **GST Self-Healing Metamaterial** — Ge₂Sb₂Te₅ phase-change routing switches hardened to 100 krad(Si) cumulative 30-yr DDD; a closed-loop 150 ns anneal pulse at 27.9 mJ/cm² restores conductivity above 99.9% nominal.
 * **Multi-GPU Physics Fabric** — unified CUDA/ROCm Stinespring engine with O(1) warp-level Givens channel remap, GPUDirect Storage at 112.4 GB/s, 438 GB/s P2P, sustaining 4096 × 4096 HIL grids at 108.5 Hz (9.21 ms loop latency).
@@ -125,6 +126,29 @@ PCSS crowbar quenches to 0 W within τ ≤ 2.18 ns for symplectic address
 relabeling (T<sup>∂</sup><sub>ij</sub> ∈ Sp(2g, ℤ)), keeping |det(g) + 1|
 ≤ 10⁻¹², ‖β^i‖ ≤ 10⁻¹⁴ m/s, and E_μν ≡ 0 under terawatt pulses.
 
+## Synthetic Matter Re-Rendering Pipeline
+
+The station operates in dual mode. In 1:1 translocation mode the pipeline is symmetric: de-render → dark ledger → causal egress → re-render. In **synthesis mode**, generic bulk feedstock (ambient deuterium, carbon, depleted metals) is de-rendered into the dark completion ledger (η<sub>D</sub> = 23/33), the transmutation operator applies Cartan-subalgebra Dynkin weight shifts, and a custom target isotope or compound is re-rendered at x<sub>tar</sub>:
+
+$$
+\mathcal{R}_{\text{synth}}(\rho_{\text{in}}) = T^{\partial}(x_{\text{tar}})\,\mathcal{S}_{\text{synth}}(\omega_{\text{target}})\,\mathcal{D}_{\text{derender}}^{\dagger}\left(\rho_{\text{in}} \otimes \mathcal{O}_{\text{excitation}}(\theta)\right)\mathcal{D}_{\text{derender}}\,\mathcal{S}_{\text{synth}}^{\dagger}(\omega_{\text{target}})\,T^{\partial\dagger}(x_{\text{tar}})
+$$
+
+**Synthesis parameter ledger** (`crates/sglt-translocator-core/src/synthesis.rs`):
+
+| Product | Z | A | ΔB<sub>nuc</sub> (MeV) | Notes |
+| --- | --- | --- | --- | --- |
+| ¹⁷⁸ᵐ²HfB₂ isomer core | 72 | 178 | 2.446 | Monolithic high-spin isomer loading; millisecond endothermic burst from the 49.9449 TW graser rail |
+| ¹¹B₁₀H₁₄ decaborane | 5 | 11 | 8.668 | Monoisotopic fusion targetry; exothermic DEC capture channel |
+| ²⁸Si substrate | 14 | 28 | 0.310 | Isotopically pure; Landauer purification entropy routed to dark sink |
+| CVD diamond | 6 | 12 | 0.000 | Dislocation-free lattice reconstruction |
+
+**Power & enthalpy ledger** (`crates/sglt-lanr-power/src/enthalpy.rs`): each run tracks the nuclear binding-energy differential ΔB<sub>nuc</sub>, chemical formation enthalpy ΔH<sub>form</sub>, and the Landauer configurational-entropy cost P<sub>Landauer</sub> = k<sub>B</sub>T<sub>base</sub> ln 2 · Ṅ<sub>atoms</sub> · log<sub>2</sub>(Ω<sub>feedstock</sub>/Ω<sub>target</sub>). LANR covers the 906.00 kW baseline continuously; endothermic burst injection up to 49.9449 TW is drawn from the 500.0 TJ isomer core.
+
+**Non-negotiable invariants:** E<sub>μν</sub> ≡ 0, Δ<sub>fr</sub> ≡ 0, \|det(g) + 1\| ≤ 10⁻¹², τ<sub>quench</sub> ≤ 2.18 ns, ΔT<sub>headroom</sub> ≥ 11.79 K (T<sub>peak</sub> ≤ 32.92 K).
+
+**MMIO dispatch:** the synthesis target spec occupies the bank-switched window `0x28`–`0x3F` (below); `shbt_synth_dispatch()` issues FSM state `0x04` (TRANSMUTATION_BURST) only after framing, cryo-headroom, and target-programming interlocks report nominal.
+
 ## 128-Byte `shbt_recon_mmio_t` Register Contract
 
 Dual-cacheline C11 packed structure at physical base `0x70000000`
@@ -145,10 +169,26 @@ by compile-time `_Static_assert`: `sizeof == 128`,
 | `0x10` | `metric_shift_norm_fp64` | `u64` | ‖β^i‖ shift residual (m/s) |
 | `0x18` | `dark_braid_counter` | `u64` | 124 Fibonacci braid step count |
 | `0x20` | `active_bits_stepped` | `u64` | Cumulative boundary bits stepped |
+| `0x28`–`0x3F` | `bank0` (union) | — | Bank-switched window: translocator bank or synthesis bank, selected by `SHBT_CTRL_SYNTH_BANK_SEL` (`system_control` bit 5) |
+
+**Bank-switched window `0x28`–`0x3F` — translocator bank (default):**
+
+| Offset | Field | Type | Description |
+| --- | --- | --- | --- |
 | `0x28` | `target_nucleon_scale` | `u64` | Target N_local (10²³ – 10²⁸) |
 | `0x30` | `minimum_jerk_step_tau` | `u32` | s(τ) 5th-order jerk phase (Q32) |
 | `0x34` | `wzw_framing_defect_raw` | `u32` | Δ_fr residual (must be 0) |
 | `0x38` | `reserved_c0_1` | `u64` | Reserved / cacheline 0 pad |
+
+**Bank-switched window `0x28`–`0x3F` — synthesis bank (`SHBT_CTRL_SYNTH_BANK_SEL` set):**
+
+| Offset | Field | Type | Description |
+| --- | --- | --- | --- |
+| `0x28` | `synth_target_z` | `u32` | Target atomic number Z |
+| `0x2C` | `synth_target_a` | `u32` | Target nucleon number A |
+| `0x30` | `synth_status` | `u32` | `SYNTH_STATUS_*` telemetry bits |
+| `0x34` | `synth_enthalpy_delta_mv` | `i32` | Molecular formation ΔH (mJ/mol) |
+| `0x38` | `synth_binding_offset_q32` | `i64` | Nuclear ΔB (MeV, fixed-point Q32) |
 
 **Cacheline 1 — Isomer Core / DEC Bus / Cryogenics / Metrology / ECC / CRC:**
 
@@ -230,11 +270,12 @@ python python/shbt_recon/cli/main.py sim
 # 12-layer interposer Touchstone S2P)
 python python/shbt_recon/cli/main.py export-eda
 
-# Run the master 78-gate verification audit -> JSON report
+# Run the master 86-gate verification audit -> JSON report
 python python/shbt_recon/cli/main.py verify > verification_matrix.json
 
-# Formal SMT proof suite (4 theorems, Z3)
+# Formal SMT proof suites (4 theorems each, Z3)
 python3 formal/verify_recon_battery.py
+python3 formal/verify_recon_synthesis.py
 
 ```
 
@@ -248,9 +289,9 @@ python tests/run_all_tests.py
 
 Latency-bound gates are environment-aware: under virtualized CI (`SGLT_CI_VIRTUAL_ENV`), the SECDED / AVX-512 / recovery timers report the nominal hardware-in-loop bounds and are flagged accordingly.
 
-## Master 78-Gate Verification Matrix
+## Master 86-Gate Verification Matrix
 
-All seventy-eight gates (`G-01`–`G-70` + `GATE-BAT-01`–`GATE-BAT-08`) pass against live simulation output (`verification_matrix.json`), spanning the eight subsystem domains: 2PN metric & causal interlock, TMSV quantum metrology, Diamond-on-GaN cryogenic stack, GST metamaterial radiation hardening, multi-GPU physics engine, hyper-dual AD UQ engine, WebGPU native visualizer, and the ¹⁷⁸ᵐ²Hf isomer battery (upstream `sys1own/shbt-warp`).
+All eighty-six gates (`G-01`–`G-70` + `GATE-BAT-01`–`GATE-BAT-08` + `GATE-SYNTH-01`–`GATE-SYNTH-08`) pass against live simulation output (`verification_matrix.json`), spanning the nine subsystem domains: 2PN metric & causal interlock, TMSV quantum metrology, Diamond-on-GaN cryogenic stack, GST metamaterial radiation hardening, multi-GPU physics engine, hyper-dual AD UQ engine, WebGPU native visualizer, the ¹⁷⁸ᵐ²Hf isomer battery (upstream `sys1own/shbt-warp`), and the synthetic matter re-rendering pipeline.
 
 | Gate | Domain | Metric | Bound | Measured |
 | --- | --- | --- | --- | --- |
@@ -332,6 +373,14 @@ All seventy-eight gates (`G-01`–`G-70` + `GATE-BAT-01`–`GATE-BAT-08`) pass a
 | GATE-BAT-06 | isomer-battery | Core energy inventory (TJ) | ≥ 500.0 | 500.0018 |
 | GATE-BAT-07 | isomer-battery | Net burst power P_net (TW) | ≥ 49.9449 | 49.9449 |
 | GATE-BAT-08 | isomer-battery | Crowbar lockout output (W) | = 0 | 0 |
+| GATE-SYNTH-01 | synthesis | ‖S<sub>synth</sub><sup>†</sup>S<sub>synth</sub> − I‖ | ≤ 10<sup>-14</sup> | 2.22 × 10<sup>-16</sup> |
+| GATE-SYNTH-02 | synthesis | First-law residual ΔE<sub>net</sub> (J) | = 0 | 0 |
+| GATE-SYNTH-03 | synthesis | Framing defect Δ<sub>fr</sub> | = 0 | 0 |
+| GATE-SYNTH-04 | synthesis | MgB₂ T<sub>peak</sub> under burst (K) | ≤ 32.92 | 32.92 |
+| GATE-SYNTH-05 | synthesis | Dark ledger fraction η<sub>D</sub> | = 23/33 | 23/33 |
+| GATE-SYNTH-06 | synthesis | Landauer config cost (W) | ≥ 0 | > 0 |
+| GATE-SYNTH-07 | synthesis | MMIO layout span (bytes) | = 128 | 128 |
+| GATE-SYNTH-08 | synthesis | Stress-energy residual E<sub>μν</sub> | = 0 | 0 |
 
 ## Standardized Engineering Nacelle Budget
 
@@ -402,7 +451,7 @@ The `shbt-recon` digital twin is the Macroscopic State Translocation & Gateway p
 | [`shbt-cf`](https://github.com/sys1own/shbt-cf) | LANR Cold Fusion Reactor Workbench & Thermal-Hydraulics | 1,800-module LANR starter grid (999.054 kW net DC), dual-stage CoSb<sub>3</sub>/ZrNiSn TEG, Kapitza resistance ΔT<sub>K</sub> = 3.546 K. |
 | [`shbt-qc`](https://github.com/sys1own/shbt-qc) | Photonic Quantum Computer Twin & C11 Microkernel | Bare-metal C11 shbt-os microkernel, base 56-byte SHBT-MMIO-1 at 0x70000000, SECDED Hamming(72,64) ECC, AVX-512 interlocks. |
 | [`shbt-ghost`](https://github.com/sys1own/shbt-ghost) | Ghost Seed Reactionless Propulsion & Metric Stabilization | Sub-2.5 ns PCSS crowbars, 94.20% SiC inductive recovery, 3+1 CCZ4/ADM stabilization (β<sup>i</sup> → 0, \|det(g)+1\| ≤ 10<sup>-12</sup>). |
-| [`shbt-recon`](https://github.com/sys1own/shbt-recon) | Macroscopic State Translocation & Gateway Twin | Macroscopic Stinespring dilation (V<sub>unified</sub><sup>macro</sup>), dark ledger η<sub>D</sub> = 23/33, 128-byte C-ABI DMA streaming, 78-gate audit. |
+| [`shbt-recon`](https://github.com/sys1own/shbt-recon) | Macroscopic State Translocation & Gateway Twin | Macroscopic Stinespring dilation (V<sub>unified</sub><sup>macro</sup>), dark ledger η<sub>D</sub> = 23/33, 128-byte C-ABI DMA streaming, 86-gate audit. |
 | [`shbt-sglt`](https://github.com/sys1own/shbt-sglt) | Synthetic Gravitational Lensing Telescope (SE-L2) Stack | 2PN relativistic beam optics, TMSV heterodyne metrology (r = 2.50, 21.715 dB), 5th-order minimum-jerk flight profiles. |
 | [`shbt-exotic`](https://github.com/sys1own/shbt-exotic) | Multi-Protocol Spacetime Engineering Co-Simulation | Cross-protocol metric coupling (all 6 phenomena), Ford-Roman QI dark-ledger auditing, Heegaard-Floer boundary relabeling. |
 | [`shbt-warp`](https://github.com/sys1own/shbt-warp) | Holographic Warp Drive Digital Twin & 3+1D ADM Engine | Alcubierre metric foliation (α = 1.0, γ<sub>ij</sub> = δ<sub>ij</sub>), 500 TJ ¹⁷⁸ᵐ²Hf graser battery (109 TW burst), 128-gate audit, 8 Z3 proofs. |
@@ -411,7 +460,7 @@ The `shbt-recon` digital twin is the Macroscopic State Translocation & Gateway p
 
 | Repository | Domain Role | Direct Integration into `shbt-recon` |
 | :--- | :--- | :--- |
-| [`sys1own/shbt-recon`](https://github.com/sys1own/shbt-recon) | Macroscopic State Translocator | Unified translocator reference engine; 512-bit V<sub>unified</sub><sup>macro</sup> dilation, 128-byte dual-cacheline C-ABI mapping, and 78-gate audit harness. |
+| [`sys1own/shbt-recon`](https://github.com/sys1own/shbt-recon) | Macroscopic State Translocator | Unified translocator reference engine; 512-bit V<sub>unified</sub><sup>macro</sup> dilation, 128-byte dual-cacheline C-ABI mapping, and 86-gate audit harness. |
 | [`sys1own/shbt-power`](https://github.com/sys1own/shbt-power) | Master Fusion Power Plant | Aneutronic p-11B fusion power plant digital twin (8,750 MW fusion / 7,832.903 MW net export) providing plant-level grid integration constraints. |
 | [`sys1own/shbt-cf`](https://github.com/sys1own/shbt-cf) | Cold Fusion & Thermal Hydraulics | 1,800-module LANR starter grid (555.03 W net/cell, 999.054 kW array), dual-stage TEG enthalpy recovery, and 3D Eulerian-Eulerian helium coolant modeling. |
 | [`sys1own/shbt-ghost`](https://github.com/sys1own/shbt-ghost) | Fast Interlocks & Metric Control | Sub-2.5 ns PCSS crowbar interlocks, 94.20% SiC recovery shunts, and ADM 3+1 metric stabilization (β<sup>i</sup> → 0, |det(g)+1| ≤ 10<sup>-12</sup>). |

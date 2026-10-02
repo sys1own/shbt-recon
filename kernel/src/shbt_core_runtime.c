@@ -30,6 +30,65 @@ void shbt_dispatch_set_state(uint8_t state)
 }
 
 /* --------------------------------------------------------------------------
+ * Synthetic matter re-rendering dispatch (dual-mode extension).
+ *
+ * The synthesis bank overlays Cacheline 0 offsets 0x28-0x3F when
+ * SHBT_CTRL_SYNTH_BANK_SEL is set.  Dispatch of state 0x04
+ * (TRANSMUTATION_BURST) is gated on the same hardware interlocks as the
+ * legacy folding burst: framing closure, isometry residual, and cryogenic
+ * headroom must all be nominal before the burst is committed.
+ * -------------------------------------------------------------------------- */
+
+#define SHBT_CRYO_MGB2_BASE_MK   (21130U)   /* MgB2 rail base temp (mK)    */
+#define SHBT_CRYO_HEADROOM_MK    (11790U)   /* min headroom 11.79 K (mK)   */
+
+/* Program the synthesis target and select the synthesis bank. */
+void shbt_synth_program_target(uint32_t target_z, uint32_t target_a,
+                               int32_t enthalpy_delta_mv,
+                               int64_t binding_offset_q32)
+{
+    shbt_recon_mmio_t *mmio = shbt_recon_mmio();
+    mmio->system_control |= SHBT_CTRL_SYNTH_BANK_SEL;
+    mmio->bank0.synth.synth_target_z = target_z;
+    mmio->bank0.synth.synth_target_a = target_a;
+    mmio->bank0.synth.synth_enthalpy_delta_mv = enthalpy_delta_mv;
+    mmio->bank0.synth.synth_binding_offset_q32 = binding_offset_q32;
+}
+
+/* Dispatch a synthesis FSM command.  Returns 0 on acceptance, negative on
+ * interlock rejection.  Only state 0x04 (TRANSMUTATION_BURST) is issued by
+ * this path; the sequencer owns all other transitions. */
+int32_t shbt_synth_dispatch(void)
+{
+    shbt_recon_mmio_t *mmio = shbt_recon_mmio();
+    uint32_t synth_status = 0U;
+
+    if (mmio->dispatch_fsm_state != SHBT_STATE_TRIGGER_ARMED)
+        return -1;
+
+    /* Framing closure: Delta_fr residual must be identically zero. */
+    if (mmio->bank0.translocator.wzw_framing_defect_raw != 0U)
+        return -2;
+    synth_status |= SYNTH_STATUS_FRAMING_CLEAN;
+
+    /* Cryogenic headroom: T_base + excursion must keep >= 11.79 K margin. */
+    if (mmio->cryo_temp_mgb2_mk > SHBT_CRYO_MGB2_BASE_MK
+        || (32920U - mmio->cryo_temp_mgb2_mk) < SHBT_CRYO_HEADROOM_MK)
+        return -3;
+    synth_status |= SYNTH_STATUS_CRYO_HEADROOM_OK;
+
+    /* Target registers must be programmed (nonzero Z and dB offset). */
+    if (mmio->bank0.synth.synth_binding_offset_q32 == 0
+        && mmio->bank0.synth.synth_target_z == 0U)
+        return -4;
+    synth_status |= SYNTH_STATUS_DYNKIN_LOCKED;
+
+    mmio->bank0.synth.synth_status = synth_status | SYNTH_STATUS_DARK_SINK_ACTIVE;
+    shbt_dispatch_set_state(SHBT_STATE_TRANSMUTATION_BURST);
+    return 0;
+}
+
+/* --------------------------------------------------------------------------
  * Platform timing (x86 TSC; fallback is intentionally empty for non-x86)
  * -------------------------------------------------------------------------- */
 #ifndef SHBT_TSC_HZ

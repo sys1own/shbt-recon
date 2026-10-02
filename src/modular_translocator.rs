@@ -88,6 +88,7 @@ impl ModularStateTranslocator {
     /// 5. Causal authorization.
     /// 6. Phase-locked boundary relabeling and re-rendering.
     #[pyo3(signature = (residual_state, src, tar, theta, source_index=0, target_index=1, active_velocity_c=23.0/33.0))]
+    #[allow(clippy::too_many_arguments)]
     pub fn translocate(
         &mut self,
         residual_state: Vec<f64>,
@@ -179,7 +180,7 @@ impl ModularStateTranslocator {
 
         // Stinespring amplitude is the completed dark fraction 23/33.
         let eta_d = DarkLedger::new().stinespring_amplitude();
-        let active_metric = self.metric.audit_velocity(eta_d as f64);
+        let active_metric = self.metric.audit_velocity(eta_d);
         let nullified_metric = self.metric.audit_velocity(0.0);
 
         let hardware_audit = self.hardware.audit(py)?;

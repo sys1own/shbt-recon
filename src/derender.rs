@@ -1,4 +1,5 @@
 //! Dark-Ledger Trace Loss: formal Stinespring projection lemma.
+#![allow(clippy::needless_range_loop)]
 //!
 //! The Stinespring de-rendering operator can be factorised as
 //!
