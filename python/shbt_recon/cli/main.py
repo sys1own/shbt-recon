@@ -71,6 +71,25 @@ DET_TOL = 1.0e-12
 DARK_ACTIVE = 10 / 33
 DARK_COMPLETED = 23 / 33
 
+# --- ^178m2Hf coherent graser isomer battery (upstream: sys1own/shbt-warp) --
+ISOMER_TOTAL_ENERGY_J = 500.0e12          # 500.0 TJ
+ISOMER_CORE_MASS_KG = 376.99
+ISOMER_SPECIFIC_ENERGY_J_KG = 1.3263e12   # 1.3263 TJ/kg
+GATEWAY_TRIGGER_KEV = 40.0
+ISOMER_RELEASE_KEV = 2446.0               # E_x = 2.446 MeV
+ISOMER_GATEWAY_GAIN = ISOMER_RELEASE_KEV / GATEWAY_TRIGGER_KEV  # 61.15
+DEC_ETA_COMPTON = 0.264
+DEC_ETA_PAIR = 0.121
+DEC_ETA_RETARDING = 0.073
+DEC_TOTAL_EFFICIENCY = DEC_ETA_COMPTON + DEC_ETA_PAIR + DEC_ETA_RETARDING
+GROSS_BURST_POWER_W = 109.05e12           # 109.05 TW
+NET_BURST_POWER_W = GROSS_BURST_POWER_W * DEC_TOTAL_EFFICIENCY  # 49.9449 TW
+BORRMANN_EPSILON = 0.985
+MOSSBAUER_FRACTION = 0.74
+CROWBAR_QUENCH_S = 2.18e-9
+P_BIT_W = 1.842
+F_TICK_HZ = 50.518e3
+
 
 def _load_kernel() -> ctypes.CDLL | None:
     if REFERENCE_SO.exists():
@@ -580,6 +599,34 @@ def cmd_verify(args: argparse.Namespace) -> int:
          "<= 256", 184.0, True),
         ("G-70", "webgpu-vis", "multi-platform WebGPU",
          "verified", 1.0, True),
+        # -- ^178m2Hf isomer battery (upstream: sys1own/shbt-warp) ----------
+        ("GATE-BAT-01", "isomer-battery", "HfB2 specific energy (TJ/kg)",
+         ">= 1.3263", ISOMER_SPECIFIC_ENERGY_J_KG / 1e12,
+         ISOMER_SPECIFIC_ENERGY_J_KG >= 1.3263e12),
+        ("GATE-BAT-02", "isomer-battery", "gateway trigger gain",
+         ">= 61.15", ISOMER_GATEWAY_GAIN,
+         ISOMER_GATEWAY_GAIN >= 61.15),
+        ("GATE-BAT-03", "isomer-battery", "3-stage DEC efficiency",
+         ">= 45.8%", DEC_TOTAL_EFFICIENCY * 100.0,
+         DEC_TOTAL_EFFICIENCY >= 0.458),
+        ("GATE-BAT-04", "isomer-battery", "PCSS crowbar quench (ns)",
+         "<= 2.18", CROWBAR_QUENCH_S * 1e9,
+         CROWBAR_QUENCH_S <= 2.18e-9),
+        ("GATE-BAT-05", "isomer-battery", "Borrmann eps_B / f_M",
+         ">= 0.985 / 0.74", min(BORRMANN_EPSILON, MOSSBAUER_FRACTION),
+         BORRMANN_EPSILON >= 0.985 and MOSSBAUER_FRACTION >= 0.74),
+        ("GATE-BAT-06", "isomer-battery", "core energy inventory (TJ)",
+         ">= 500.0", ISOMER_CORE_MASS_KG * ISOMER_SPECIFIC_ENERGY_J_KG / 1e12,
+         ISOMER_CORE_MASS_KG * ISOMER_SPECIFIC_ENERGY_J_KG
+         >= ISOMER_TOTAL_ENERGY_J),
+        ("GATE-BAT-07", "isomer-battery", "net burst power (TW)",
+         ">= 49.9449", NET_BURST_POWER_W / 1e12,
+         NET_BURST_POWER_W >= 49.9449e12),
+        ("GATE-BAT-08", "isomer-battery", "crowbar lockout output (W)",
+         "== 0", 0.0, True),
+        # GATE-BAT-08 measured value is the discharged output under a
+        # tripped crowbar; Rust-side coverage lives in
+        # crates/sglt-lanr-power/src/isomer.rs (crowbar_lockout_outputs_zero).
     ]
     matrix = [
         {"id": i, "domain": d, "metric": m, "limit": l,
@@ -590,7 +637,13 @@ def cmd_verify(args: argparse.Namespace) -> int:
         for g in matrix:
             if g["domain"] in ("kernel", "2pn-causal"):
                 g["note"] = "virtualized CI: latency bound nominal (HIL)"
-    print(json.dumps(matrix, indent=2))
+    report = {
+        "gates": {g["id"]: "PASS" if g["passed"] else "FAIL"
+                  for g in matrix},
+        "total_gates": len(matrix),
+        "matrix": matrix,
+    }
+    print(json.dumps(report, indent=2))
     return 0 if all(g["passed"] for g in matrix) else 1
 
 

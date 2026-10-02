@@ -4,6 +4,7 @@
 
 pub mod dilation;
 pub mod minjerk;
+pub mod stepping;
 pub mod swarm;
 
 pub use shbt_recon_core::telemetry;

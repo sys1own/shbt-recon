@@ -1,5 +1,8 @@
 //! sglt-lanr-power: 1,800-module LANR cold-fusion power plant grid ledger
-//! and entropy-debt power balancing for the translocator swarm.
+//! and entropy-debt power balancing for the translocator swarm, plus the
+//! pulsed ^178m2Hf isomer graser burst rail (upstream: sys1own/shbt-warp).
+
+pub mod isomer;
 
 /// Active LANR module count.
 pub const MODULE_COUNT: u32 = 1800;

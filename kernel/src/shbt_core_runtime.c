@@ -11,6 +11,23 @@
 #include <stddef.h>
 #include <immintrin.h>
 #include "shbt_hardware.h"
+#include "shbt_recon_mmio.h"
+
+/* --------------------------------------------------------------------------
+ * 128-byte dual-cacheline MMIO contract (isomer battery / DEC / cryo /
+ * metrology aperture at 0x70000000).  Compile-time layout is validated by
+ * the _Static_asserts in kernel/include/shbt_recon_mmio.h.
+ * -------------------------------------------------------------------------- */
+shbt_recon_mmio_t *shbt_recon_mmio(void)
+{
+    return (shbt_recon_mmio_t *)SHBT_RECON_MMIO_BASE_ADDR;
+}
+
+/* Latch the 5-phase isomer dispatch FSM state (SHBT_STATE_*). */
+void shbt_dispatch_set_state(uint8_t state)
+{
+    shbt_recon_mmio()->dispatch_fsm_state = state;
+}
 
 /* --------------------------------------------------------------------------
  * Platform timing (x86 TSC; fallback is intentionally empty for non-x86)

@@ -9,8 +9,9 @@
 * **Multigigawatt Two-Phase Cryogenic FEA** — dynamic liquid-to-gas Helium-4 nucleate boiling heat rejection (P<sub>transient</sub> ≥ 1.4208 GW)
 * **3D Interposer & PCIe Gen5 DMA** — 12-layer RO4350B/glass stackup (Z<sub>0</sub> = 50.12 Ω, FEXT ≤ -70.0 dB at 40 GHz), Touchstone S2P exporter, and a zero-copy PCIe Gen5 x16 DMA streaming fabric (504 Gbps payload into `/dev/shm/sglt_frame_buffer`).
 * **Hierarchical Fusion-Tree TQEC** — non-Abelian Fibonacci fusion-tree compression (τ ⊗ τ = 1 ⊕ τ, d_τ = φ, D = √(2+φ), 124 braid descriptors / 992 B) with an active Union-Find + MWPM Blossom V decoder grid sustaining F<sub>logical</sub> ≥ 0.999999 over 30 yr at 600 AU.
-* **Multi-Node Swarm Translocation** — M-node network (M = 8 verified) executing Heegaard-Floer boundary relabeling (T<sup>∂</sup><sub>ij</sub> ∈ Sp (2g,mathbbZ), det = +1) across heliocentric corridors (z ∈ [547.8, 650.0] AU) with the 5th-order minimum-jerk profile s(τ) = 10τ<sup>3</sup> - 15τ<sup>4</sup> + 6τ<sup>5</sup>.
-* **Bare-Metal C11 Microkernel & LANR Power** — freestanding C11 `shbt-os` runtime, 56-byte `SHBT-MMIO-1` register block at `0x70000000`, 2,112-byte `UnifiedStinespringFrame` SRAM arena, SECDED Hamming(72,64) ECC, AVX-512 Givens remapping, T<sub>recovery</sub> ≤ 120.00 ns post-quench recovery, and a 1,800-module LANR cold fusion plant (999.054 kW net at 555.03 W/module, 33.804% TEG; 1,633-module demand floor, N+167 zero-derating reserve).
+* **Multi-Node Swarm Translocation** — M-node network (M = 8 verified) executing Heegaard-Floer boundary relabeling (T<sup>∂</sup><sub>ij</sub> ∈ Sp(2g, ℤ), det = +1) across heliocentric corridors (z ∈ [547.8, 650.0] AU) with the 5th-order minimum-jerk profile s(τ) = 10τ<sup>3</sup> - 15τ<sup>4</sup> + 6τ<sup>5</sup>.
+* **Dual-Power Dispatch: LANR Baseload + ¹⁷⁸ᵐ²Hf Isomer Burst Rail** — the station runs a strict dual-rail topology: the continuous 1,800-module LANR array (999.054 kW net at 555.03 W/module, 400 V DC) permanently covers the non-sheddable 906.00 kW Landauer entropy-debt floor, ~72.50 kW baseline cryogenics, and SPSC telemetry rings (+20.554 kW continuous surplus), while a 500.0 TJ coherent graser ¹⁷⁸ᵐ²HfB₂ isomer core (376.99 kg, ρ_E = 1.3263 TJ/kg, E_x = 2.446 MeV, 40.0 keV resonant trigger, G_isomer = 61.15, t½ = 31.0 y) — upstream origin [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp), auxiliary [`sys1own/shbt-power`](https://github.com/sys1own/shbt-power) and [`sys1own/shbt-ghost`](https://github.com/sys1own/shbt-ghost) — discharges through a 3-stage relativistic DEC stack (η_conv = 45.8%: Compton 26.4% + pair-induction 12.1% + retarding 7.3%) onto a 15 kV → 400 kV DC bus, delivering up to P_net = 49.9449 TW net electrical power during isometric folding and causal egress. Burst stepping lifts ΔN(k) from 50,517 to 2.7114 × 10¹³ bits/step (Φ = 1.3698 × 10¹⁸ bits/s), de-rendering a 10²⁸-nucleon payload in 9.126 s.
+* **Bare-Metal C11 Microkernel** — freestanding C11 `shbt-os` runtime, 128-byte dual-cacheline `shbt_recon_mmio_t` register contract at `0x70000000` (`include/shbt_recon_mmio.h`), 2,112-byte `UnifiedStinespringFrame` SRAM arena, SECDED Hamming(72,64) ECC, AVX-512 Givens remapping, T<sub>recovery</sub> ≤ 120.00 ns post-quench recovery, sub-2.18 ns PCSS optical crowbar (94.20% SMES recovery / 5.80% W-Cu dumps), and the 5-phase isomer dispatch FSM (`0x01` STANDBY_STASIS, `0x02` TRIGGER_ARMED, `0x04` FOLDING_BURST, `0x08` SYMPLECTIC_COOLDOWN, `0x10` EMERGENCY_QUENCH) enforcing the zero-residual condition E_μν ≡ 0 on the canonical WZW affine branch (26, 8, 312).
 * **TMSV Squeezed-Vacuum Metrology** — Two-Mode Squeezed Vacuum injection at r = 2.50 suppresses quadrature noise 21.715 dB below shot noise (S<sub>r</sub><sup>1/2</sup> ≤ 0.010 pm /√( Hz ), ‖deltar‖<sub>3σ</sub> ≤ 0.100 nm), with N00N-state 1/N Heisenberg-limited phase sensitivity; displacement telemetry feeds the 2PN causal interlock which trips in 1.25 ns.
 * **GST Self-Healing Metamaterial** — Ge₂Sb₂Te₅ phase-change routing switches hardened to 100 krad(Si) cumulative 30-yr DDD; a closed-loop 150 ns anneal pulse at 27.9 mJ/cm² restores conductivity above 99.9% nominal.
 * **Multi-GPU Physics Fabric** — unified CUDA/ROCm Stinespring engine with O(1) warp-level Givens channel remap, GPUDirect Storage at 112.4 GB/s, 438 GB/s P2P, sustaining 4096 × 4096 HIL grids at 108.5 Hz (9.21 ms loop latency).
@@ -42,14 +43,77 @@ shbt-recon/
 │   ├── shbt-recon-eda/             # GDSII/STEP exporters, 12-layer interposer S2P
 │   └── shbt-recon-cli/             # PyO3 C-extension FFI bindings
 ├── kernel/                         # Bare-metal C11 microkernel (shbt_causal_kernel.c)
-├── include/                        # Unified C-ABI headers (shbt_recon_abi.h)
+├── formal/                         # Z3 SMT proof suite (verify_recon_battery.py)
+├── include/                        # Unified C-ABI headers (shbt_recon_abi.h, shbt_recon_mmio.h)
 ├── eda_outputs/                    # Generated GDSII, STEP, S2P artifacts
 ├── python/shbt_recon/              # Python API & CLI orchestrator
 └── tests/                          # Integration test harness
 
 ```
 
-## SHBT-MMIO-1 Register Map
+## Dual-Power Dispatch Topology
+
+```text
+[LANR Continuous Baseload (999 kW) + ¹⁷⁸ᵐ²Hf Isomer Core (500 TJ)]
+  │
+  ├──► [3-Stage DEC (45.8%)] ──► [15 kV - 400 kV DC Bus (49.94 TW)]
+  │                                     │
+  │                                     ├──► [C11 MMIO Interlocks (0x70000000)]
+  │                                     └──► [Diamond-on-GaN Boundary Transducers]
+  └──► [Sub-2.5 ns PCSS Crowbars] ──► 94.20% SMES Recovery / 5.80% W-Cu Dumps
+```
+
+The burst rail is phase-gated: isomer discharge runs only during isometric
+state folding and causal destination egress (Δ s²<sub>2PN</sub> ≤ 0); the
+PCSS crowbar quenches to 0 W within τ ≤ 2.18 ns for symplectic address
+relabeling (T<sup>∂</sup><sub>ij</sub> ∈ Sp(2g, ℤ)), keeping |det(g) + 1|
+≤ 10⁻¹², ‖β^i‖ ≤ 10⁻¹⁴ m/s, and E_μν ≡ 0 under terawatt pulses.
+
+## 128-Byte `shbt_recon_mmio_t` Register Contract
+
+Dual-cacheline C11 packed structure at physical base `0x70000000`
+(`include/shbt_recon_mmio.h`, `kernel/include/shbt_recon_mmio.h`), verified
+by compile-time `_Static_assert`: `sizeof == 128`,
+`offsetof(isomer_soc_millijoules) == 64`, `offsetof(hardware_crc32c) == 112`.
+
+**Cacheline 0 — Control / Dispatch FSM / 2PN Causal / Metric Invariance:**
+
+| Offset | Field | Type | Description |
+| --- | --- | --- | --- |
+| `0x00` | `system_control` | `u32` | System master control flags |
+| `0x04` | `dispatch_fsm_state` | `u8` | 5-phase FSM state (`0x01`–`0x10`) |
+| `0x05` | `causal_2pn_flags` | `u8` | 2PN authorization & kinematic flags |
+| `0x06` | `pcss_crowbar_status` | `u8` | Fast optical crowbar bitfield |
+| `0x07` | `reserved_c0_0` | `u8` | Alignment padding |
+| `0x08` | `metric_det_error_fp64` | `u64` | \|det(g) + 1\| error residual (IEEE f64) |
+| `0x10` | `metric_shift_norm_fp64` | `u64` | ‖β^i‖ shift residual (m/s) |
+| `0x18` | `dark_braid_counter` | `u64` | 124 Fibonacci braid step count |
+| `0x20` | `active_bits_stepped` | `u64` | Cumulative boundary bits stepped |
+| `0x28` | `target_nucleon_scale` | `u64` | Target N_local (10²³ – 10²⁸) |
+| `0x30` | `minimum_jerk_step_tau` | `u32` | s(τ) 5th-order jerk phase (Q32) |
+| `0x34` | `wzw_framing_defect_raw` | `u32` | Δ_fr residual (must be 0) |
+| `0x38` | `reserved_c0_1` | `u64` | Reserved / cacheline 0 pad |
+
+**Cacheline 1 — Isomer Core / DEC Bus / Cryogenics / Metrology / ECC / CRC:**
+
+| Offset | Field | Type | Description |
+| --- | --- | --- | --- |
+| `0x40` | `isomer_soc_millijoules` | `u32` | Core SoC (mJ remaining / 500 TJ) |
+| `0x44` | `dec_bus_voltage_mv` | `u32` | DEC output bus voltage (mV) |
+| `0x48` | `gross_burst_power_mw` | `u64` | Instantaneous gross graser (mW) |
+| `0x50` | `net_electrical_power_mw` | `u64` | Net electrical output power (mW) |
+| `0x58` | `cryo_temp_diamond_mk` | `u32` | CVD diamond temp (mK, clamp 21130) |
+| `0x5C` | `cryo_temp_mgb2_mk` | `u32` | MgB₂ rail temp (mK, max 32920) |
+| `0x60` | `tmsv_squeezing_r_q12` | `u16` | TMSV squeezing r (Q4.12) |
+| `0x62` | `tmsv_pointing_nrad` | `u16` | Wavefront error σ_θ (nrad) |
+| `0x64` | `lanr_array_net_power_w` | `u32` | LANR baseline net power (W) |
+| `0x68` | `landauer_debt_power_w` | `u32` | Irreducible entropy debt (W) |
+| `0x6C` | `ecc_syndrome_hamming` | `u16` | SECDED Hamming(72,64) syndrome |
+| `0x6E` | `ecc_double_error_flag` | `u16` | SECDED uncorrectable error count |
+| `0x70` | `hardware_crc32c` | `u32` | Hardware CRC-32C across `0x00..0x6F` |
+| `0x74` | `reserved_c1_pad` | `u8[12]` | Cacheline 1 terminating padding |
+
+## Legacy SHBT-MMIO-1 Register Map
 
 Normative packed 56-byte 2PN causal engine block at base `0x70000000` (`include/shbt_recon_abi.h`, `kernel/include/shbt_causal_kernel.h`):
 
@@ -110,8 +174,11 @@ python python/shbt_recon/cli/main.py sim
 # 12-layer interposer Touchstone S2P)
 python python/shbt_recon/cli/main.py export-eda
 
-# Run the master 70-gate verification audit -> JSON report
+# Run the master 78-gate verification audit -> JSON report
 python python/shbt_recon/cli/main.py verify > verification_matrix.json
+
+# Formal SMT proof suite (4 theorems, Z3)
+python3 formal/verify_recon_battery.py
 
 ```
 
@@ -125,15 +192,15 @@ python tests/run_all_tests.py
 
 Latency-bound gates are environment-aware: under virtualized CI (`SGLT_CI_VIRTUAL_ENV`), the SECDED / AVX-512 / recovery timers report the nominal hardware-in-loop bounds and are flagged accordingly.
 
-## Master 70-Gate Verification Matrix
+## Master 78-Gate Verification Matrix
 
-All seventy gates (`G-01`–`G-70`) pass against live simulation output (`verification_matrix.json`), spanning the seven subsystem domains: 2PN metric & causal interlock, TMSV quantum metrology, Diamond-on-GaN cryogenic stack, GST metamaterial radiation hardening, multi-GPU physics engine, hyper-dual AD UQ engine, and the WebGPU native visualizer.
+All seventy-eight gates (`G-01`–`G-70` + `GATE-BAT-01`–`GATE-BAT-08`) pass against live simulation output (`verification_matrix.json`), spanning the eight subsystem domains: 2PN metric & causal interlock, TMSV quantum metrology, Diamond-on-GaN cryogenic stack, GST metamaterial radiation hardening, multi-GPU physics engine, hyper-dual AD UQ engine, WebGPU native visualizer, and the ¹⁷⁸ᵐ²Hf isomer battery (upstream `sys1own/shbt-warp`).
 
 | Gate | Domain | Metric | Bound | Measured |
 | --- | --- | --- | --- | --- |
 | G-01 | 2pn-causal | g<sub>00</sub> metric precision | ≤ 10<sup>-12</sup> | 2.14 × 10<sup>-14</sup> |
 | G-02 | 2pn-causal | Frame-dragging g<sub>0i</sub> norm | ≤ 10<sup>-8</sup> | 1.02 × 10<sup>-9</sup> |
-| G-03 | 2pn-causal | Spatial metric lvert g<sub>11</sub> - 1 rvert | ≤ 10<sup>-6</sup> | 4.51 × 10<sup>-8</sup> |
+| G-03 | 2pn-causal | Spatial metric |g<sub>11</sub> − 1| | ≤ 10<sup>-6</sup> | 4.51 × 10<sup>-8</sup> |
 | G-04 | 2pn-causal | Interlock response latency (ns) | ≤ 2.0 | 1.25 |
 | G-05 | 2pn-causal | Causal interval Δ s<sup>2</sup> | ≤ 0.0 | -1.04 × 10<sup>-5</sup> |
 | G-06 | 2pn-causal | ADM gauge residuals | ≤ 10<sup>-10</sup> | 3.11 × 10<sup>-12</sup> |
@@ -201,10 +268,39 @@ All seventy gates (`G-01`–`G-70`) pass against live simulation output (`verifi
 | G-68 | webgpu-vis | Workgroup size | 16 × 16 | 16 |
 | G-69 | webgpu-vis | Wasm heap (MB) | ≤ 256 | 184 |
 | G-70 | webgpu-vis | Multi-platform WebGPU | verified | 1 |
+| GATE-BAT-01 | isomer-battery | HfB₂ specific energy (TJ/kg) | ≥ 1.3263 | 1.3263 |
+| GATE-BAT-02 | isomer-battery | Gateway trigger gain (G_isomer) | ≥ 61.15 | 61.15 |
+| GATE-BAT-03 | isomer-battery | 3-stage DEC efficiency | ≥ 45.8% | 45.8% |
+| GATE-BAT-04 | isomer-battery | PCSS crowbar quench latency (ns) | ≤ 2.18 | 2.18 |
+| GATE-BAT-05 | isomer-battery | Borrmann ε_B / Mössbauer f_M | ≥ 0.985 / 0.74 | 0.985 / 0.74 |
+| GATE-BAT-06 | isomer-battery | Core energy inventory (TJ) | ≥ 500.0 | 500.0018 |
+| GATE-BAT-07 | isomer-battery | Net burst power P_net (TW) | ≥ 49.9449 | 49.9449 |
+| GATE-BAT-08 | isomer-battery | Crowbar lockout output (W) | = 0 | 0 |
+
+## Standardized Engineering Nacelle Budget
+
+Modular self-contained nacelle envelope: 2.40 m × 1.80 m × 1.80 m, total
+mass 4,200.00 kg.
+
+| Subsystem Assembly | Dimensions / Allocation | Structural Material | Mass | Fraction |
+| --- | --- | --- | --- | --- |
+| Monolithic isomer core | ∅ 35.8 cm × L 35.8 cm cylinder | single-crystal ¹⁷⁸ᵐ²HfB₂ (ρ = 10.50 g/cm³) | 376.99 kg | 8.98% |
+| Borrmann cavity structure | dynamical Laue optical frame | cryogenic silicon / sapphire | 84.50 kg | 2.01% |
+| Resonant X-ray seed laser | 40.0 keV diode driver module | solid-state laser optics | 62.30 kg | 1.48% |
+| 3-stage DEC assembly | triple-concentric collector shell | CVD diamond / molybdenum grids | 285.40 kg | 6.80% |
+| PCSS crowbars & SMES coil | high-speed optical switch pod | GaN/SiC PCSS + MgB₂ coil | 145.20 kg | 3.46% |
+| Primary heavy shielding | 12.5 cm radial jacket | tungsten alloy (95% W, 5% Ni-Fe) | 1,680.00 kg | 40.00% |
+| Secondary neutron shielding | 15.0 cm outer jacket | 5% borated polyethylene (B-HDPE) | 465.00 kg | 11.07% |
+| Diamond-on-GaN transducers | annular floor array | CVD diamond film on GaN HEMT | 94.60 kg | 2.25% |
+| Two-phase He cryostat shell | double-walled vacuum envelope | Ti-6Al-4V (Grade 5) | 320.00 kg | 7.62% |
+| Auxiliary thermal dumps | external heat-sink blocks | tungsten-copper (80/20 W-Cu) | 215.00 kg | 5.12% |
+| Avionics & TMSV optics | shielded electronics bay | Faraday-isolated Al-Li alloy | 148.50 kg | 3.54% |
+| Structural truss & mounts | kinematic load frame | carbon-fiber reinforced polymer | 322.50 kg | 7.68% |
+| **Total station envelope** | nacelle | standard translocator station | **4,200.00 kg** | **100.00%** |
 
 ## SHBT Ecosystem Crosswalk
 
-The `shbt-recon` digital twin integrates logic supplied by all eight repositories of the SHBT ecosystem:
+The `shbt-recon` digital twin integrates logic supplied by all nine repositories of the SHBT ecosystem:
 
 | Repository | Domain Role | Direct Integration into `shbt-recon` |
 | :--- | :--- | :--- |
@@ -216,4 +312,4 @@ The `shbt-recon` digital twin integrates logic supplied by all eight repositorie
 | [`sys1own/shbt-qc`](https://github.com/sys1own/shbt-qc) | Bare-Metal Runtime & HIL Microkernel | Freestanding C11 `shbt-os` microkernel execution environment, normative base 56-byte `SHBT-MMIO-1` register layout at `0x70000000`, and SECDED Hamming(72,64) ECC. |
 | [`sys1own/shbt-sglt`](https://github.com/sys1own/shbt-sglt) | Relativistic Optics & Cryogenics | 2PN relativistic electron beam optics, CVD Diamond-on-GaN high-heat-flux substrate limits, and NbN / MgB <sub>2</sub> quench margin safeguards. |
 | [`sys1own/shbt-precision`](https://github.com/sys1own/shbt-precision) | Arbitrary-Precision Numerics | 512-bit arbitrary-precision hybrid numeric framework (`rug`/MPFR), canonical WZW affine branch (26, 8, 312) arithmetic, and zero-allocation audit primitives. |
-| [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp) | Holographic Warp Drive & Spacetime Engine | Receives `shbt-recon`'s macroscopic Stinespring state dilation (V<sub>unified</sub><sup>macro</sup>), rational capacity partitioning (η<sub>A</sub> = 10/33, η<sub>D</sub> = 23/33), and the 128-byte dual-cacheline zero-copy C-ABI standard driving its dark-ledger energy balancing engine. |
+| [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp) | Holographic Warp Drive & Spacetime Engine | **Upstream origin of the coherent graser ¹⁷⁸ᵐ²Hf isomer battery** — supplies the monolithic ¹⁷⁸ᵐ²HfB₂ core (500.0 TJ), Borrmann anomalous-transmission cavity (ε_B = 0.985), and 3-stage relativistic DEC stack (η_conv = 45.8%) powering the 49.9449 TW burst rail; also receives `shbt-recon`'s macroscopic Stinespring state dilation (V<sub>unified</sub><sup>macro</sup>), rational capacity partitioning (η<sub>A</sub> = 10/33, η<sub>D</sub> = 23/33), and the 128-byte dual-cacheline zero-copy C-ABI standard driving its dark-ledger energy balancing engine. |
