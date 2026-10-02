@@ -17,7 +17,60 @@
 * **Multi-GPU Physics Fabric** — unified CUDA/ROCm Stinespring engine with O(1) warp-level Givens channel remap, GPUDirect Storage at 112.4 GB/s, 438 GB/s P2P, sustaining 4096 × 4096 HIL grids at 108.5 Hz (9.21 ms loop latency).
 * **Hyper-Dual Bayesian UQ** — hyper-dual numbers (ε<sub>1</sub><sup>2</sup> = ε<sub>2</sub><sup>2</sup> = 0) give exact gradients/Hessians; N ≥ 10<sup>7</sup> GUM-S1 Monte Carlo samples produce 99.73% (3σ) confidence bounds on all monitored parameters.
 * **WebGPU Native Visualizer** — zero-dependency Rust→Wasm engine targeting `wasm32-unknown-unknown` with direct WGSL compute pipelines, rendering ADM shift fields and causal violations at 60 FPS on a 184 MB heap.
+  
+```
+╭────────────────────────────────────────────────────────────────────────────────────────╮
+│          SHBT-RECON MACROSCOPIC STATE TRANSLOCATION & GATEWAY ARCHITECTURE             │
+╰────────────────────────────────────────────────────────────────────────────────────────╯
 
+ ┌── [ STAGE 1: SOURCE DE-RENDERING ] ────────┐      ┌── [ STAGE 2: TOPOLOGICAL DARK LEDGER ] ────┐
+ │ Physical Payload Chamber                   │      │ 2,112-Byte SRAM Stinespring Arena          │
+ │ • N_local ∈ [10²³, 10²⁸] nucleons          │      │ • η_A = 10/33 Visible Register (640 B)     │
+ │ • CVD Diamond-on-GaN transducer array      │      │ • η_D = 23/33 Dark Ledger (1,472 B)        │
+ │ • Sub-nanometer atomic boundary scan       │      │   ├─ 124 Fibonacci Braid Descriptors (992B)│
+ │                                            │      │   └─ SECDED Checkpoint Metadata (480 B)    │
+ │       V_macro Isometric Dilation           │      │                                            │
+ │ ──────────────────────────────────────────►│      │ Invariant: Δ_norm < 10⁻¹²⁰, ε_unitary = 0  │
+ └────────────────────────────────────────────┘      └─────────────────────┬──────────────────────┘
+                                                                           │
+ ┌── [ STAGE 4: CAUSAL RECONSTRUCTION ] ──────┐                            │ 504 Gbps DMA Streaming
+ │ Destination Re-Rendering Chamber           │                            │ Zero-Copy C-ABI Ring
+ │ • Coherent phase-locked re-materialization │                            ▼
+ │ • GST Phase-Change self-healing substrate  │      ┌── [ STAGE 3: SYMPLECTIC ROUTING ] ─────────┐
+ │ • MgB₂ (39 K) / NbN (16 K) superconducting │      │ Symplectic Relabeling & Relativistic Gate  │
+ │ • Thermal shock envelope: ΔT_K = 3.55 K    │      │ • Address Relabeling: T^∂_ij ∈ Sp(2g, ℤ)   │
+ │                                            │      │ • 2PN Relativistic Lightcone Authorization:│
+ │       Zero-Entropy State Crystallization   │      │   Δs²_2PN = -(1 - 2U/c²)c²Δt² + γ_ij ΔxⁱΔxʲ│
+ │ ◄──────────────────────────────────────────│      │   Rigid Metric Invariant: Δs²_2PN ≤ 0      │
+ └─────────────────────▲──────────────────────┘      └─────────────────────┬──────────────────────┘
+                       │                                                   │
+                       └────────────────── Causal Egress Path ─────────────┘
+                                           (Subluminal Authorized Transit)
+
+══════════════════════════════════════════════════════════════════════════════════════════
+ [ DUAL-TIER ENERGY & CRYOGENIC TRANSDUCER DISPATCH ]
+ ╭────────────────────────────────────────────╮      ╭────────────────────────────────────╮
+ │ Continuous Baseline: 1,800-Module LANR Grid│      │ Pulsed Gateway: ¹⁷⁸ᵐ²Hf Graser Core│
+ │ • 999.054 kW DC Net Array @ 400 V DC       │      │ • 376.99 kg | 500.0 TJ Monolith    │
+ │ • 906.000 kW Non-Sheddable Landauer Floor  │      │ • 40.0 keV Seed Laser (Gain G=61.15│
+ │ • Net Operational Reserve: +93.054 kW      │      │ • 3-Stage DEC (η = 45.8%): 49.9 TW │
+ ╰─────────────────────┬──────────────────────╯      ╰──────────────────┬─────────────────╯
+                       │                                                │
+                       ▼                                                ▼
+ ╭────────────────────────────────────────────────────────────────────────────────────────╮
+ │ TRANSDUCER & THERMAL DISSIPATION STACK (FEA Multiphysics Verification)                 │
+ │ • Heat Spreader: CVD Diamond Thin Film (K = 2,250 W/m·K) bonded to GaN HEMT Gates      │
+ │ • Superconducting Rails: NbN (Tc = 16.0 K) Logic Traces + MgB₂ (Tc = 39.12 K) DC Bus   │
+ │ • Optical Restoration: Ge₂Sb₂Te₅ (GST) Phase-Change Recovery (E_dens ≥ 27.9 mJ/cm²)    │
+ │ • Cryogenic Headroom: Two-Phase Supercritical He-4 Loop (ΔT_headroom ≥ 11.790 K)       │
+ ╰────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭────────────────────────────────────────────────────────────────────────────────────────╮
+ │ BARE-METAL C11 MICROKERNEL & CONTROL CONTRACT (shbt-os @ 0x70000000)                   │
+ │ • 128-Byte Dual-Cacheline MMIO (Static sizeof assert == 128) | SECDED Hamming(72,64)   │
+ │ • Fast Causal Interlock: Sub-2.18 ns PCSS Crowbars (94.20% SiC Inductive Recovery)     │
+ │ • Causal Register Bank (0x28–0x2C): Real-time hardware assertion of Δs²_2PN ≤ 0        │
+ ╰────────────────────────────────────────────────────────────────────────────────────────╯
+```
 ## Workspace Topology
 
 ```text
