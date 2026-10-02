@@ -5,3 +5,6 @@ edition = "2021"
 
 [dependencies]
 shbt-recon-core = { path = "../shbt-recon-core" }
+
+[dev-dependencies]
+sglt-lanr-power = { path = "../sglt-lanr-power" }
