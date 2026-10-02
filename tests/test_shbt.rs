@@ -103,7 +103,7 @@ fn cap_verify_future_cone_property_test() {
 /// reaches `STATUS_NOMINAL_PASS`) when the target is inside `J^+(x_src)`.
 #[test]
 fn cap_translocate_status_nominal_only_in_future_cone() {
-    let mut rng = Lcg64::new(0xBADC_0FFEE_0DDF00D);
+    let mut rng = Lcg64::new(0xBADC_0FFE_E0DD_F00D);
     let r = 10.0;
     let n = 1_000;
     let residual = unit_residual();

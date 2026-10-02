@@ -167,9 +167,9 @@ mod tests {
         // rounded figure (0.004% delta, physics-preserving).
         assert!(inv >= ISOMER_TOTAL_ENERGY_JOULES);
         assert!((ISOMER_GATEWAY_GAIN - 61.15).abs() < 1e-4);
-        assert!((DEC_TOTAL_EFFICIENCY - 0.458).abs() < 1e-9);
-        assert!(BORRMANN_EPSILON >= 0.985 && MOSSBAUER_FRACTION >= 0.74);
-        assert!(CROWBAR_QUENCH_TIME_SECONDS <= 2.18e-9);
+        const { assert!((DEC_TOTAL_EFFICIENCY - 0.458).abs() < 1e-9) };
+        const { assert!(BORRMANN_EPSILON >= 0.985 && MOSSBAUER_FRACTION >= 0.74) };
+        const { assert!(CROWBAR_QUENCH_TIME_SECONDS <= 2.18e-9) };
     }
 
     #[test]

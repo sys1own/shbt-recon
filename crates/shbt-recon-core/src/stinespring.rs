@@ -31,7 +31,10 @@ pub const fn partition_is_exact() -> bool {
 /// De-render a visible local state |C_loc⟩ = Σ r_i|i⟩ into the coupled
 /// visible⊗dark frame: active amplitudes scaled by √(10/33) (gauge-charge
 /// zeroed slice) and dark amplitudes by √(23/33).  Returns (active, dark).
-pub fn derender(state: &[(f64, f64)]) -> (Vec<(f64, f64)>, Vec<(f64, f64)>) {
+/// Complex amplitude pair (re, im) on the boundary character basis.
+pub type Amplitude = (f64, f64);
+
+pub fn derender(state: &[Amplitude]) -> (Vec<Amplitude>, Vec<Amplitude>) {
     let a = residual_fraction().sqrt();
     let d = completed_fraction().sqrt();
     let active = state.iter().map(|&(r, i)| (r * a, i * a)).collect();

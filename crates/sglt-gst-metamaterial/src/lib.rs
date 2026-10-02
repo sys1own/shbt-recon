@@ -133,7 +133,7 @@ mod tests {
 
     #[test]
     fn anneal_within_thermal_window() {
-        assert!(T_CRYST_K < T_MELT_K);
-        assert!((400.0..=500.0).contains(&T_CRYST_K));
+        const { assert!(T_CRYST_K < T_MELT_K) };
+        const { assert!(T_CRYST_K >= 400.0 && T_CRYST_K <= 500.0) };
     }
 }

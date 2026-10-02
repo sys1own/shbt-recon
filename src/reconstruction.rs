@@ -1,4 +1,5 @@
 //! Reconstruction operator, boundary relabeling, and phase-locked excitation.
+#![allow(clippy::needless_range_loop, clippy::new_without_default)]
 
 use pyo3::prelude::*;
 use rug::{Assign, Complex, Float};
@@ -209,7 +210,7 @@ impl BoundaryRelabeling {
         source_index: usize,
         target_index: usize,
     ) -> PyResult<Vec<Vec<(f64, f64)>>> {
-        let mut state = snapshot_to_state(state).map_err(|e| PyErr::from(e))?;
+        let mut state = snapshot_to_state(state).map_err(PyErr::from)?;
         if source_index >= VISIBLE_STATE_DIM || target_index >= VISIBLE_STATE_DIM {
             return Err(ReconError::AnomalyClosureError(
                 "Boundary address index out of bounds".to_string(),
@@ -349,7 +350,7 @@ mod tests {
         let src = CausalCoordinate::new(0.0, 0.0, 0.0, 0.0);
         let tar = CausalCoordinate::new(-1.0, 0.0, 0.0, 0.0);
         let result = reconstruct_state(
-            &mut engine.state_vector_mut(),
+            engine.state_vector_mut(),
             &src,
             &tar,
             0.0,
@@ -360,7 +361,7 @@ mod tests {
 
         let tar = CausalCoordinate::new(1.0, 0.0, 0.0, 0.0);
         let result = reconstruct_state(
-            &mut engine.state_vector_mut(),
+            engine.state_vector_mut(),
             &src,
             &tar,
             0.421,

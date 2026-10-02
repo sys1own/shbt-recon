@@ -27,6 +27,7 @@ pub fn f_unitarity_residual() -> f64 {
     for i in 0..2 {
         for j in 0..2 {
             let mut acc = 0.0;
+            #[allow(clippy::needless_range_loop)]
             for k in 0..2 {
                 acc += f[i][k] * f[j][k];
             }
@@ -60,9 +61,9 @@ mod tests {
 
     #[test]
     fn quantum_dimensions() {
-        assert!((PHI - 1.61803398875).abs() < 1e-10);
-        assert!((TOTAL_DIM - 1.90211303259).abs() < 1e-10);
-        assert!((TOTAL_DIM * TOTAL_DIM - (2.0 + PHI)).abs() < 1e-12);
+        const { assert!((PHI - std::f64::consts::GOLDEN_RATIO).abs() < 1e-10) };
+        const { assert!((TOTAL_DIM * TOTAL_DIM - (2.0 + PHI)).abs() < 1e-10) };
+        const { assert!((TOTAL_DIM * TOTAL_DIM - (2.0 + PHI)).abs() < 1e-12) };
     }
 
     #[test]

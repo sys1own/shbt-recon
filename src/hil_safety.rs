@@ -59,6 +59,7 @@ impl HilSafetyMonitor {
     /// Returns `"STATUS_NOMINAL_PASS"` when all checks are within bounds;
     /// otherwise returns an emergency trigger identifier.
     #[pyo3(signature = (min_gram_eig, max_det_err, eigenvector_rigidity_detuning, max_info_density, budget_limit, phase_jitter_rad=0.0, q_dot_shunt_w=-1.0, cooling_power_w=0.0))]
+    #[allow(clippy::too_many_arguments)]
     pub fn audit_hil_step(
         &self,
         min_gram_eig: f64,

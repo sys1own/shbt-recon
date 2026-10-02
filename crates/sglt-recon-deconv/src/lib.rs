@@ -10,9 +10,9 @@ pub mod fusion;
 pub mod lindblad;
 
 /// Golden ratio — quantum dimension of the Fibonacci anyon.
-pub const PHI: f64 = 1.618_033_988_749_894_9;
+pub const PHI: f64 = std::f64::consts::GOLDEN_RATIO;
 /// Total quantum dimension D = √(2 + φ).
-pub const TOTAL_DIM: f64 = 1.902_113_032_590_307_1;
+pub const TOTAL_DIM: f64 = 1.902_113_032_590_307;
 /// Dark-ledger capacity partition η_D = 23/33.
 pub const ETA_D_NUM: u64 = 23;
 pub const CAPACITY_DENOM: u64 = 33;
@@ -34,7 +34,7 @@ pub const P_TH: f64 = 1e-2;
 pub const PL_PREFACTOR: f64 = 0.031;
 /// Logical error rate P_L = α (p/p_th)^((d+1)/2).
 pub fn logical_error_rate() -> f64 {
-    PL_PREFACTOR * (P_PHYS / P_TH).powi(((CODE_DISTANCE + 1) / 2) as i32)
+    PL_PREFACTOR * (P_PHYS / P_TH).powi(CODE_DISTANCE.div_ceil(2) as i32)
 }
 /// 30-year service interval (s).
 pub const SERVICE_S: f64 = 9.46e8;

@@ -34,7 +34,7 @@ impl DarkLedgerFrame {
     /// Parse a raw 1,472-byte buffer into a typed frame reference.
     /// Returns None on bad length or misalignment.
     pub fn parse(buf: &[u8]) -> Option<&Self> {
-        if buf.len() != FRAME_BYTES || (buf.as_ptr() as usize) % std::mem::align_of::<Self>() != 0 {
+        if buf.len() != FRAME_BYTES || !(buf.as_ptr() as usize).is_multiple_of(std::mem::align_of::<Self>()) {
             return None;
         }
         Some(unsafe { &*(buf.as_ptr() as *const Self) })

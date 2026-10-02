@@ -6,5 +6,6 @@ pub mod dilation;
 pub mod minjerk;
 pub mod stepping;
 pub mod swarm;
+pub mod synthesis;
 
 pub use shbt_recon_core::telemetry;

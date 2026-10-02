@@ -43,9 +43,9 @@ impl MetricNullificationAuditor {
         domain_radius_m: f64,
         grid_points: usize,
     ) -> Self {
-        let n = grid_points.min(MAX_METRIC_GRID).max(5);
+        let n = grid_points.clamp(5, MAX_METRIC_GRID);
         // Force odd grid so that x = 0 is included.
-        let n = if n % 2 == 0 { n + 1 } else { n };
+        let n = if n.is_multiple_of(2) { n + 1 } else { n };
         let mut x_m = [0.0; MAX_METRIC_GRID];
         let mut shape = [0.0; MAX_METRIC_GRID];
         let dx = if n > 1 {

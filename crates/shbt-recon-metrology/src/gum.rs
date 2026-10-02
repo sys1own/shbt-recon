@@ -89,6 +89,7 @@ impl std::ops::Sub for DualNum {
     }
 }
 
+#[allow(clippy::suspicious_arithmetic_impl)] // product rule for dual numbers
 impl std::ops::Mul for DualNum {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self {
