@@ -18,6 +18,8 @@
 * **Hyper-Dual Bayesian UQ** — hyper-dual numbers (ε<sub>1</sub><sup>2</sup> = ε<sub>2</sub><sup>2</sup> = 0) give exact gradients/Hessians; N ≥ 10<sup>7</sup> GUM-S1 Monte Carlo samples produce 99.73% (3σ) confidence bounds on all monitored parameters.
 * **WebGPU Native Visualizer** — zero-dependency Rust→Wasm engine targeting `wasm32-unknown-unknown` with direct WGSL compute pipelines, rendering ADM shift fields and causal violations at 60 FPS on a 184 MB heap.
 
+---
+
 ## Translocator System Topology
 
 ```
