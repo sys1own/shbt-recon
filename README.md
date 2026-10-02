@@ -19,7 +19,6 @@
 * **WebGPU Native Visualizer** — zero-dependency Rust→Wasm engine targeting `wasm32-unknown-unknown` with direct WGSL compute pipelines, rendering ADM shift fields and causal violations at 60 FPS on a 184 MB heap.
 
 ---
-
 ## Translocator System Topology
 
 ```
