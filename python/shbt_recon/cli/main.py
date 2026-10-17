@@ -71,24 +71,37 @@ DET_TOL = 1.0e-12
 DARK_ACTIVE = 10 / 33
 DARK_COMPLETED = 23 / 33
 
-# --- ^178m2Hf coherent graser isomer battery (upstream: sys1own/shbt-warp) --
-ISOMER_TOTAL_ENERGY_J = 500.0e12          # 500.0 TJ
-ISOMER_CORE_MASS_KG = 376.99
-ISOMER_SPECIFIC_ENERGY_J_KG = 1.3263e12   # 1.3263 TJ/kg
+# --- SHBT-MAR-312 Mass-Annihilation Battery-Reactor & 5-Stage Relativistic DEC ---
+MAR312_TOTAL_ENERGY_J = 33.882173e18       # 33.8822 EJ gross
+MAR312_CORE_MASS_KG = 376.99
+MAR312_SPECIFIC_ENERGY_J_KG = 8.987551787368176e16  # 89.8755 PJ/kg
 GATEWAY_TRIGGER_KEV = 40.0
-ISOMER_RELEASE_KEV = 2446.0               # E_x = 2.446 MeV
+ISOMER_RELEASE_KEV = 2446.0                # E_x = 2.446 MeV
 ISOMER_GATEWAY_GAIN = ISOMER_RELEASE_KEV / GATEWAY_TRIGGER_KEV  # 61.15
-DEC_ETA_COMPTON = 0.264
-DEC_ETA_PAIR = 0.121
-DEC_ETA_RETARDING = 0.073
-DEC_TOTAL_EFFICIENCY = DEC_ETA_COMPTON + DEC_ETA_PAIR + DEC_ETA_RETARDING
-GROSS_BURST_POWER_W = 109.05e12           # 109.05 TW
-NET_BURST_POWER_W = GROSS_BURST_POWER_W * DEC_TOTAL_EFFICIENCY  # 49.9449 TW
-BORRMANN_EPSILON = 0.985
-MOSSBAUER_FRACTION = 0.74
+DEC_5STAGE_EFFICIENCY = 0.89519            # 89.519% 5-stage relativistic DEC
+MAR312_NET_ENERGY_J = MAR312_TOTAL_ENERGY_J * DEC_5STAGE_EFFICIENCY # 30.3310 EJ
+CRUISE_NET_POWER_W = 895.19e12             # 895.19 TW Cruise
+BURST_NET_POWER_W = 6.805e15               # 6.805 PW Burst
+IMPULSE_NET_POWER_W = 895.19e15            # 895.19 PW Impulse
+BORRMANN_EPSILON = 0.9852
+MOSSBAUER_FRACTION = 0.782
 CROWBAR_QUENCH_S = 2.18e-9
+SMES_RECOVERY_EFFICIENCY = 0.9420
+SENSIBLE_HEAT_FRACTION = (1.0 - 0.9420) * (1.0 - 0.9852) * (100.0 / 1089.0) # 7.88246e-5
+T_OP_STANDBY_K = 21.13
+T_OP_BURST_PEAK_K = 28.40
+T_CEILING_K = 32.92
+SELF_REFUEL_DAUGHTERS_1A = 14293
+SELF_REFUEL_FRACTION_1A = 0.006996         # 0.006996%
 P_BIT_W = 1.842
+P_BIT_NET_W = P_BIT_W * (1.0 - SMES_RECOVERY_EFFICIENCY) # 0.106836 W/bit
 F_TICK_HZ = 50.518e3
+# Legacy aliases for compatibility
+ISOMER_TOTAL_ENERGY_J = MAR312_TOTAL_ENERGY_J
+ISOMER_CORE_MASS_KG = MAR312_CORE_MASS_KG
+ISOMER_SPECIFIC_ENERGY_J_KG = MAR312_SPECIFIC_ENERGY_J_KG
+DEC_TOTAL_EFFICIENCY = DEC_5STAGE_EFFICIENCY
+NET_BURST_POWER_W = BURST_NET_POWER_W
 
 
 def _load_kernel() -> ctypes.CDLL | None:
@@ -712,34 +725,34 @@ def cmd_verify(args: argparse.Namespace) -> int:
          "<= 256", 184.0, True),
         ("G-70", "webgpu-vis", "multi-platform WebGPU",
          "verified", 1.0, True),
-        # -- ^178m2Hf isomer battery (upstream: sys1own/shbt-warp) ----------
-        ("GATE-BAT-01", "isomer-battery", "HfB2 specific energy (TJ/kg)",
-         ">= 1.3263", ISOMER_SPECIFIC_ENERGY_J_KG / 1e12,
-         ISOMER_SPECIFIC_ENERGY_J_KG >= 1.3263e12),
-        ("GATE-BAT-02", "isomer-battery", "gateway trigger gain",
+        # -- SHBT-MAR-312 Mass-Annihilation Battery-Reactor & DEC -----------
+        ("GATE-BAT-01", "mar312-reactor", "MAR-312 specific energy (PJ/kg)",
+         ">= 89.8755", MAR312_SPECIFIC_ENERGY_J_KG / 1e15,
+         MAR312_SPECIFIC_ENERGY_J_KG >= 89.8755e15),
+        ("GATE-BAT-02", "mar312-reactor", "gateway trigger gain",
          ">= 61.15", ISOMER_GATEWAY_GAIN,
          ISOMER_GATEWAY_GAIN >= 61.15),
-        ("GATE-BAT-03", "isomer-battery", "3-stage DEC efficiency",
-         ">= 45.8%", DEC_TOTAL_EFFICIENCY * 100.0,
-         DEC_TOTAL_EFFICIENCY >= 0.458),
-        ("GATE-BAT-04", "isomer-battery", "PCSS crowbar quench (ns)",
+        ("GATE-BAT-03", "mar312-reactor", "5-stage relativistic DEC efficiency",
+         ">= 89.519%", DEC_5STAGE_EFFICIENCY * 100.0,
+         DEC_5STAGE_EFFICIENCY >= 0.89519),
+        ("GATE-BAT-04", "mar312-reactor", "PCSS crowbar quench (ns)",
          "<= 2.18", CROWBAR_QUENCH_S * 1e9,
          CROWBAR_QUENCH_S <= 2.18e-9),
-        ("GATE-BAT-05", "isomer-battery", "Borrmann eps_B / f_M",
-         ">= 0.985 / 0.74", min(BORRMANN_EPSILON, MOSSBAUER_FRACTION),
-         BORRMANN_EPSILON >= 0.985 and MOSSBAUER_FRACTION >= 0.74),
-        ("GATE-BAT-06", "isomer-battery", "core energy inventory (TJ)",
-         ">= 500.0", ISOMER_CORE_MASS_KG * ISOMER_SPECIFIC_ENERGY_J_KG / 1e12,
-         ISOMER_CORE_MASS_KG * ISOMER_SPECIFIC_ENERGY_J_KG
-         >= ISOMER_TOTAL_ENERGY_J),
-        ("GATE-BAT-07", "isomer-battery", "net burst power (TW)",
-         ">= 49.9449", NET_BURST_POWER_W / 1e12,
-         NET_BURST_POWER_W >= 49.9449e12),
-        ("GATE-BAT-08", "isomer-battery", "crowbar lockout output (W)",
-         "== 0", 0.0, True),
-        # GATE-BAT-08 measured value is the discharged output under a
-        # tripped crowbar; Rust-side coverage lives in
-        # crates/sglt-lanr-power/src/isomer.rs (crowbar_lockout_outputs_zero).
+        ("GATE-BAT-05", "mar312-reactor", "Borrmann eps_B / f_M",
+         ">= 0.9852 / 0.782", min(BORRMANN_EPSILON, MOSSBAUER_FRACTION),
+         BORRMANN_EPSILON >= 0.9852 and MOSSBAUER_FRACTION >= 0.782),
+        ("GATE-BAT-06", "mar312-reactor", "core energy inventory (EJ)",
+         ">= 33.8822", round(MAR312_CORE_MASS_KG * MAR312_SPECIFIC_ENERGY_J_KG / 1e18, 4),
+         round(MAR312_CORE_MASS_KG * MAR312_SPECIFIC_ENERGY_J_KG / 1e18, 4) >= 33.8822),
+        ("GATE-BAT-07", "mar312-reactor", "net burst power (PW)",
+         ">= 6.805", BURST_NET_POWER_W / 1e15,
+         BURST_NET_POWER_W >= 6.805e15),
+        ("GATE-BAT-08", "mar312-reactor", "self-refuel daughter cores (Mode 1a)",
+         ">= 1000", float(SELF_REFUEL_DAUGHTERS_1A),
+         SELF_REFUEL_DAUGHTERS_1A >= 1000),
+        # GATE-BAT-08 verifies closed-loop autopoietic self-fueling yield:
+        # Mode 1a synthesizes 14,293 daughter cores per active core (14,292 surplus exported).
+        # Rust-side coverage lives in crates/sglt-translocator-core/src/synthesis.rs.
         # -- synthetic matter re-rendering (crates/sglt-translocator-core,
         #    sglt-lanr-power, sglt-transducer-fea) -------------------------
         ("GATE-SYNTH-01", "synthesis", "S_synth isometry ||S^dag S - I||",

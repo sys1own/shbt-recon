@@ -13,7 +13,10 @@
 * **3D Interposer & PCIe Gen5 DMA** — 12-layer RO4350B/glass stackup (`Z₀ = 50.12 Ω`, `FEXT ≤ -70.0 dB` at `40 GHz`), Touchstone S2P exporter, and a zero-copy PCIe Gen5 x16 DMA streaming fabric (`504 Gbps` payload into `/dev/shm/sglt_frame_buffer`).
 * **Hierarchical Fusion-Tree TQEC** — non-Abelian Fibonacci fusion-tree compression (`τ ⊗ τ = 1 ⊕ τ`, `d_τ = φ`, `D = √(2+φ)`, 124 braid descriptors / 992 B) with an active Union-Find + MWPM Blossom V decoder grid sustaining `F_logical ≥ 0.999999` over 30 yr at 600 AU.
 * **Multi-Node Swarm Translocation** — M-node network (`M = 8` verified) executing Heegaard–Floer boundary relabeling (`T^∂_ij ∈ Sp(2g, Z)`, `det = +1`) across heliocentric corridors (`z ∈ [547.8, 650.0] AU`) with the 5th-order minimum-jerk profile `s(τ) = 10τ³ - 15τ⁴ + 6τ⁵`.
-* **Dual-Power Dispatch: LANR Baseload + ¹⁷⁸ᵐ²Hf Isomer Burst Rail** — the station runs a strict dual-rail topology: the continuous 1,800-module LANR array (`999.054 kW` net at `555.03 W/module`, `400 V DC`) permanently covers the non-sheddable `906.00 kW` Landauer entropy-debt floor, `~72.50 kW` baseline cryogenics, and SPSC telemetry rings (`+20.554 kW` continuous surplus), while a `500.0 TJ` coherent graser `¹⁷⁸ᵐ²HfB₂` isomer core (`376.99 kg`, `ρ_E = 1.3263 TJ/kg`, `E_x = 2.446 MeV`, `40.0 keV` resonant trigger, `G_isomer = 61.15`, `t_{1/2} = 31.0 yr`) — upstream origin [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp), auxiliary [`sys1own/shbt-power`](https://github.com/sys1own/shbt-power) and [`sys1own/shbt-ghost`](https://github.com/sys1own/shbt-ghost) — discharges through a 3-stage relativistic DEC stack (`η_conv = 45.8%`: Compton `26.4%` + pair-induction `12.1%` + retarding `7.3%`) onto a `15 kV → 400 kV DC` bus, delivering up to `P_net = 49.9449 TW` net electrical power during isometric folding and causal egress. Burst stepping lifts `ΔN(k)` from `50,517` to `2.7114 × 10¹³ bits/step` (`Φ = 1.3698 × 10¹⁸ bits/s`), de-rendering a `10²⁸`-nucleon payload in `9.126 s` (and scaling to `509.1 ms` Cruise / `66.98 ms` Burst / `0.508 ms` Impulse when coupled to `SHBT-MAR-312`).
+* **Dual-Power Dispatch: Continuous LANR Baseload + SHBT-MAR-312 Mass-Annihilation Battery-Reactor Rail** — the station runs a strict dual-rail topology:
+  - **Tier-1 Continuous Baseload:** 1,800-module LANR cold fusion array (`999.054 kW` net at `555.03 W/module`, `400 V DC`) supplemented by Seebeck TEG recovery (`+48.000 kW` DC) yields `1,047.054 kW` DC total generation, permanently covering the non-sheddable `906.00 kW` Landauer entropy-debt floor, `~72.50 kW` baseline cryogenics, and SPSC telemetry rings (`+81.104 kW` net continuous margin; `+33.104 kW` on LANR alone).
+  - **Tier-2 Primary Plant (SHBT-MAR-312):** Monolithic 4th-Gen Stinespring-so(10)312 mass-annihilation battery-reactor (`376.99 kg`, `33.8822 EJ` gross / `30.3310 EJ` net electric at `89.519%` 5-stage DEC, `0.015–2.700 MV` HVDC bus, `895.19 TW` Cruise / `6.805 PW` Burst / `895.19 PW` Impulse) — upstream origin [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp), auxiliary [`sys1own/shbt-power`](https://github.com/sys1own/shbt-power) and [`sys1own/shbt-ghost`](https://github.com/sys1own/shbt-ghost). In Burst mode, net bit-stepping rate reaches `6.370 × 10¹⁶ bits/s` (`P_bit,net = 0.106836 W/bit` after `94.20%` SMES recovery), de-rendering a macroscopic `10²⁸`-nucleon payload in `196.2 ms` (and `1.492 ms` on `895.19 PW` Impulse).
+  - **Closed-Loop Self-Refueling Breeder:** Consumes a microscopic fraction of active reactor inventory (`0.000938%` in Mode 1c, `0.006996%` in Mode 1a, or `0.07065%` in Mode 1b) to synthesize replacement `376.99 kg` cores in-situ via `R_synth^MAR`, yielding `106,611` (Mode 1c), `14,293` (Mode 1a), or `1,415` (Mode 1b) daughter cores per core inventory with automated hot-swap trigger at `SoC ≤ 5%` (`1.5165 EJ` remaining).
 * **Bare-Metal C11 Microkernel** — freestanding C11 `shbt-os` runtime, 128-byte dual-cacheline `shbt_recon_mmio_t` register contract at `0x70000000` (`include/shbt_recon_mmio.h`), 2,112-byte `UnifiedStinespringFrame` SRAM arena, SECDED Hamming(72,64) ECC, AVX-512 Givens remapping, `T_recovery ≤ 120.00 ns` post-quench recovery, sub-2.18 ns PCSS optical crowbar (`94.20%` SMES recovery / `5.80%` W-Cu dumps), and the isomer/synthesis dispatch FSM (`0x01` STANDBY_STASIS, `0x02` TRIGGER_ARMED, `0x04` FOLDING_BURST / TRANSMUTATION_BURST, `0x06` COSET_ANTIBARYON_FOLD, `0x08` SYMPLECTIC_COOLDOWN / SYMPLECTIC_CRYSTALLIZATION, `0x10` EMERGENCY_QUENCH) enforcing the zero-residual condition `E_μν ≡ 0` on the canonical WZW affine branch `(26, 8, 312)`.
 * **Synthetic Matter Re-Rendering & Bipartite `SHBT-MAR-312` Fuel Foundry (`SHBT-RECON-SYNTH-MAR312`)** — boundary character transmutation operators `S_synth(ω_target)` and `S_synth^MAR(ω_target, θ_coset)` acting across the completed affine Kac–Moody algebra `su(2)₂₆ × su(3)₈ ⊂ so(10)₃₁₂`; Cartan-subalgebra Dynkin weight shifts `λ_i → λ′_i` reconfigure visible nuclear properties `(Z, N_n)` and electron shells (`Branch A`), while `16 → 16̄` coset spinor folding (`Δh_vis = 45/64 = 0.703125`, `δh_braid = -45/7936`) populates the topologically protected anti-baryon dark ledger (`Branch B`). Isometry bound `‖S_synth† S_synth − I‖ ≤ 10⁻¹⁴`; framing closure `Δ_fr ≡ 0` held by 124 Fibonacci dark braid channels; stress-energy residual `E_μν ≡ 0`; zero standby boil-off `Γ_{B̄→B} = 0 s⁻¹`. Canonical products: `¹⁷⁸ᵐ²HfB₂` isomer core, `¹¹B₁₀H₁₄` decaborane, pure `²⁸Si` substrates, dislocation-free `¹²C` CVD diamond, the monolithic `376.99 kg` (`33.8822 EJ`) `SHBT-MAR-312` Dual-Sector Fuel Core (`0x05`), and the Stinespring-Folded `16̄` Anti-Baryon Lattice (`0x06`).
 * **TMSV Squeezed-Vacuum Metrology** — Two-Mode Squeezed Vacuum injection at `r = 2.50` suppresses quadrature noise `21.715 dB` below shot noise (`S_r^{1/2} ≤ 0.010 pm/√Hz`, `‖δr‖_{3σ} ≤ 0.100 nm`), with N00N-state `1/N` Heisenberg-limited phase sensitivity; displacement telemetry feeds the 2PN causal interlock which trips in `1.25 ns`.
@@ -57,10 +60,11 @@
 ══════════════════════════════════════════════════════════════════════════════════════════
  [ DUAL-TIER ENERGY & CRYOGENIC TRANSDUCER DISPATCH ]
  ╭────────────────────────────────────────────╮      ╭────────────────────────────────────╮
- │ Continuous Baseline: 1,800-Module LANR Grid│      │ Pulsed Gateway: ¹⁷⁸ᵐ²Hf Graser Core│
- │ • 999.054 kW DC Net Array @ 400 V DC       │      │ • 376.99 kg | 500.0 TJ Monolith    │
- │ • 906.000 kW Non-Sheddable Landauer Floor  │      │ • 40.0 keV Seed Laser (Gain G=61.15│
- │ • Net Operational Reserve: +93.054 kW      │      │ • 3-Stage DEC (η = 45.8%): 49.9 TW │
+ │ Continuous Baseline: 1,800-Module LANR Grid│      │ Primary Plant: SHBT-MAR-312 Reactor│
+ │ • 999.054 kW DC Net Array @ 400 V DC       │      │ • 376.99 kg | 33.8822 EJ Monolith  │
+ │ • 965.950 kW Housekeeping Load Floor       │      │ • 5-Stage DEC (η = 89.519%): 6.8 PW│
+ │ • Net Operational Margin: +81.104 kW       │      │ • 0.015 - 2.700 MV HVDC Bus        │
+ │ • Baseload Generation: 1,047.054 kW (w/TEG)│      │ • Self-Fueling: 14,293 Cores (M1a) │
  ╰─────────────────────┬──────────────────────╯      ╰──────────────────┬─────────────────╯
                        │                                                │
                        ▼                                                ▼
@@ -114,20 +118,20 @@ shbt-recon/
 ## Dual-Power Dispatch Topology
 
 ```text
-[LANR Continuous Baseload (999 kW) + ¹⁷⁸ᵐ²Hf Isomer Core (500 TJ)]
+[LANR Baseload (1,047 kW w/TEG) + SHBT-MAR-312 Reactor Core (33.8822 EJ)]
   │
-  ├──► [3-Stage DEC (45.8%)] ──► [15 kV - 400 kV DC Bus (49.94 TW)]
-  │                                     │
-  │                                     ├──► [C11 MMIO Interlocks (0x70000000)]
-  │                                     └──► [Diamond-on-GaN Boundary Transducers]
-  └──► [Sub-2.5 ns PCSS Crowbars] ──► 94.20% SMES Recovery / 5.80% W-Cu Dumps
+  ├──► [5-Stage Relativistic DEC (89.519%)] ──► [0.015 - 2.700 MV HVDC Bus (6.805 PW Burst)]
+  │                                                   │
+  │                                                   ├──► [C11 MMIO Interlocks (0x70000000)]
+  │                                                   └──► [Diamond-on-GaN Boundary Transducers]
+  └──► [Sub-2.18 ns PCSS Crowbars] ──────────► 94.20% SMES Recovery / 5.80% W-Cu Dumps
 ```
 
-The burst rail is phase-gated: isomer discharge runs only during isometric
+The burst rail is phase-gated: mass-annihilation discharge runs only during isometric
 state folding and causal destination egress (Δ s²<sub>2PN</sub> ≤ 0); the
 PCSS crowbar quenches to 0 W within τ ≤ 2.18 ns for symplectic address
 relabeling (T<sup>∂</sup><sub>ij</sub> ∈ Sp(2g, ℤ)), keeping |det(g) + 1|
-≤ 10⁻¹², ‖β^i‖ ≤ 10⁻¹⁴ m/s, and E_μν ≡ 0 under terawatt pulses.
+≤ 10⁻¹², ‖β^i‖ ≤ 10⁻¹⁴ m/s, and E_μν ≡ 0 under petawatt pulses.
 
 ## Synthetic Matter Re-Rendering Pipeline (`R_synth` & `R_synth^MAR`)
 
@@ -145,7 +149,7 @@ S_synth^MAR(ω_target, θ_coset) = diag( U_Cartan(Δλ_vis) · P_{K^π=16+}(ω_t
 
 | Product | Code | Z | A | ΔB_nuc (MeV) | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `¹⁷⁸ᵐ²HfB₂` isomer core | `0x01` | 72 | 178 | 2.446 | Monolithic high-spin isomer loading (`K^π = 16⁺`, `t_{1/2} = 31.0 yr`); millisecond endothermic burst from the `49.9449 TW` graser rail |
+| `¹⁷⁸ᵐ²HfB₂` isomer precursor | `0x01` | 72 | 178 | 2.446 | High-spin isomer loading (`K^π = 16⁺`, `t_{1/2} = 31.0 yr`); visible-sector precursor and gateway trigger matrix |
 | `¹¹B₁₀H₁₄` decaborane | `0x02` | 5 | 11 | 8.668 | Monoisotopic `p-¹¹B` fusion targetry (`shbt-power`); exothermic DEC capture channel |
 | `²⁸Si` substrate | `0x03` | 14 | 28 | 0.310 | Isotopically pure semiconductor substrate; Landauer purification entropy routed to dark sink |
 | `¹²C` CVD diamond | `0x04` | 6 | 12 | 0.000 | Dislocation-free lattice reconstruction (`K = 2,250 W/m·K`) |
@@ -192,7 +196,7 @@ Because `shbt-recon` de-renders existing bulk matter nucleons (`2.270287 × 10²
 
 In closed-loop breeder operation, a single active `SHBT-MAR-312` reactor supplying `30.3310 EJ` of net electrical energy (`η_conv = 89.519%`) can synthesize **`14,293` replacement `SHBT-MAR-312` cores** (`Q_foundry = 15,967` thermal/stored ratio) from Mode 1a `SiC/HfO₂/B₄C` feedstock or **`106,611` replacement cores** (`Q_foundry = 119,094` thermal/stored ratio) from Mode 1c pre-refined `HfB₂–¹²C` feedstock.
 
-**Power & enthalpy ledger** (`crates/sglt-lanr-power/src/enthalpy.rs`): each run tracks the nuclear binding-energy differential `ΔB_nuc`, chemical formation enthalpy `ΔH_form`, and the Landauer configurational-entropy cost `P_Landauer = k_B T_base ln 2 · Ṅ_atoms · log₂(Ω_feedstock / Ω_target)`. LANR covers the `906.00 kW` baseline continuously; endothermic burst injection up to `49.9449 TW` (or `895.19 TW`–`895.19 PW` in breeder mode) drives the transmutation pulse while SiC/SMES inductive shunts recover `94.20%` of the reactive folding energy.
+**Power & enthalpy ledger** (`crates/sglt-lanr-power/src/enthalpy.rs`): each run tracks the nuclear binding-energy differential `ΔB_nuc`, chemical formation enthalpy `ΔH_form`, and the Landauer configurational-entropy cost `P_Landauer = k_B T_base ln 2 · Ṅ_atoms · log₂(Ω_feedstock / Ω_target)`. The 1,800-module LANR array and TEG recovery cover the `965.950 kW` housekeeping load floor continuously (`+81.104 kW` net margin; `+33.104 kW` on LANR alone); endothermic burst injection up to `6.805 PW` (or `895.19 TW`–`895.19 PW` in impulse mode) drives the transmutation pulse while SiC/SMES inductive shunts recover `94.20%` of the reactive folding energy.
 
 **Non-negotiable invariants & Z3 formal verification:** `E_μν ≡ 0`, `Δ_fr ≡ 0`, `|det(g) + 1| ≤ 10⁻¹²`, `τ_quench ≤ 2.18 ns`, `ΔT_headroom ≥ 11.79 K` (`T_peak ≤ 32.92 K`). Verified across the **94-gate master harness** (`G-01..70` / `GATE-01..70`, `GATE-BAT-01..08`, `GATE-SYNTH-01..16`) and **10 Z3 SMT theorems**: `BAT-01..04` (`formal/verify_recon_battery.py`) and `SYNTH-01..06` (`formal/verify_recon_synthesis.py`, proving transmutation isometry `SYNTH-01`, first-law enthalpy balance `SYNTH-02`, framing closure `SYNTH-03`, thermal quench margin `SYNTH-04`, bipartite coset shift `Δh_vis = 45/64` & 124-braid cancellation `SYNTH-05`, and quiescent stasis `C_{B̄} = 0 ⇒ Γ_{B̄→B} = 0` with `M_core = 376.99 kg` `SYNTH-06`).
 
@@ -241,14 +245,14 @@ by compile-time `_Static_assert`: `sizeof == 128`,
 | `0x3C` | `synth_antibaryon_ratio_q16` | `u16` | Anti-baryon folding ratio `η_{B̄}` (Q16, nominal `0x8000 = 32768 = 0.500`) |
 | `0x3E` | `synth_coset_weight_q16` | `u16` | Sugawara conformal weight shift `Δh_vis` (Q16, nominal `0xB400 = 46080 = 45/64 = 0.703125`) |
 
-**Cacheline 1 — Isomer Core / DEC Bus / Cryogenics / Metrology / ECC / CRC:**
+**Cacheline 1 — SHBT-MAR-312 Reactor / DEC Bus / Cryogenics / Metrology / ECC / CRC:**
 
 | Offset | Field | Type | Description |
 | --- | --- | --- | --- |
-| `0x40` | `isomer_soc_millijoules` | `u32` | Core SoC (mJ remaining / 500 TJ) |
-| `0x44` | `dec_bus_voltage_mv` | `u32` | DEC output bus voltage (mV) |
-| `0x48` | `gross_burst_power_mw` | `u64` | Instantaneous gross graser (mW) |
-| `0x50` | `net_electrical_power_mw` | `u64` | Net electrical output power (mW) |
+| `0x40` | `isomer_soc_millijoules` | `u32` | Reactor core SoC (33.8822 EJ gross / 30.3310 EJ net; scaled mJ/SoC) |
+| `0x44` | `dec_bus_voltage_mv` | `u32` | 5-stage DEC collector bus voltage (mV; 0.015–2.700 MV) |
+| `0x48` | `gross_burst_power_mw` | `u64` | Instantaneous gross mass-annihilation power (mW; 7.6017 PW Burst) |
+| `0x50` | `net_electrical_power_mw` | `u64` | Net electrical output power after 89.519% DEC (mW; 6.805 PW Burst) |
 | `0x58` | `cryo_temp_diamond_mk` | `u32` | CVD diamond temp (mK, clamp 21130) |
 | `0x5C` | `cryo_temp_mgb2_mk` | `u32` | MgB₂ rail temp (mK, max 32920) |
 | `0x60` | `tmsv_squeezing_r_q12` | `u16` | TMSV squeezing r (Q4.12) |
@@ -416,14 +420,14 @@ All ninety-four gates (`G-01`–`G-70` + `GATE-BAT-01`–`GATE-BAT-08` + `GATE-S
 | G-68 | webgpu-vis | Workgroup size | 16 × 16 | 16 |
 | G-69 | webgpu-vis | Wasm heap (MB) | ≤ 256 | 184 |
 | G-70 | webgpu-vis | Multi-platform WebGPU | verified | 1 |
-| GATE-BAT-01 | isomer-battery | HfB₂ specific energy (TJ/kg) | ≥ 1.3263 | 1.3263 |
-| GATE-BAT-02 | isomer-battery | Gateway trigger gain (G_isomer) | ≥ 61.15 | 61.15 |
-| GATE-BAT-03 | isomer-battery | 3-stage DEC efficiency | ≥ 45.8% | 45.8% |
-| GATE-BAT-04 | isomer-battery | PCSS crowbar quench latency (ns) | ≤ 2.18 | 2.18 |
-| GATE-BAT-05 | isomer-battery | Borrmann ε_B / Mössbauer f_M | ≥ 0.985 / 0.74 | 0.985 / 0.74 |
-| GATE-BAT-06 | isomer-battery | Core energy inventory (TJ) | ≥ 500.0 | 500.0018 |
-| GATE-BAT-07 | isomer-battery | Net burst power P_net (TW) | ≥ 49.9449 | 49.9449 |
-| GATE-BAT-08 | isomer-battery | Crowbar lockout output (W) | = 0 | 0 |
+| GATE-BAT-01 | mar312-reactor | MAR-312 specific energy (PJ/kg) | ≥ 89.8755 | 89.8755 |
+| GATE-BAT-02 | mar312-reactor | gateway trigger gain | ≥ 61.15 | 61.15 |
+| GATE-BAT-03 | mar312-reactor | 5-stage relativistic DEC efficiency | ≥ 89.519% | 89.519% |
+| GATE-BAT-04 | mar312-reactor | PCSS crowbar quench (ns) | ≤ 2.18 | 2.18 |
+| GATE-BAT-05 | mar312-reactor | Borrmann eps_B / f_M | ≥ 0.9852 / 0.782 | 0.9852 / 0.782 |
+| GATE-BAT-06 | mar312-reactor | core energy inventory (EJ) | ≥ 33.8822 | 33.8822 |
+| GATE-BAT-07 | mar312-reactor | net burst power (PW) | ≥ 6.805 | 6.805 |
+| GATE-BAT-08 | mar312-reactor | self-refuel daughter cores (Mode 1a) | ≥ 1000 | 14293 |
 | GATE-SYNTH-01 | synthesis | ‖S<sub>synth</sub><sup>†</sup>S<sub>synth</sub> − I‖ | ≤ 10<sup>-14</sup> | 2.22 × 10<sup>-16</sup> |
 | GATE-SYNTH-02 | synthesis | First-law residual ΔE<sub>net</sub> (J) | = 0 | 0 |
 | GATE-SYNTH-03 | synthesis | Framing defect Δ<sub>fr</sub> | = 0 | 0 |
@@ -448,10 +452,10 @@ mass 4,200.00 kg.
 
 | Subsystem Assembly | Dimensions / Allocation | Structural Material | Mass | Fraction |
 | --- | --- | --- | --- | --- |
-| Monolithic isomer core | ∅ 35.8 cm × L 35.8 cm cylinder | single-crystal ¹⁷⁸ᵐ²HfB₂ (ρ = 10.50 g/cm³) | 376.99 kg | 8.98% |
+| SHBT-MAR-312 reactor core | monolithic dual-sector cylinder | visible ¹⁷⁸ᵐ²HfB₂–¹²C (188.50 kg) + 16̄ dark ledger (188.50 kg) | 376.99 kg | 8.98% |
 | Borrmann cavity structure | dynamical Laue optical frame | cryogenic silicon / sapphire | 84.50 kg | 2.01% |
 | Resonant X-ray seed laser | 40.0 keV diode driver module | solid-state laser optics | 62.30 kg | 1.48% |
-| 3-stage DEC assembly | triple-concentric collector shell | CVD diamond / molybdenum grids | 285.40 kg | 6.80% |
+| 5-stage relativistic DEC | 5-stage concentric MHD/recoil/TEG stack | CVD diamond/Mo grids + MHD channel + superlattice TEG | 285.40 kg | 6.80% |
 | PCSS crowbars & SMES coil | high-speed optical switch pod | GaN/SiC PCSS + MgB₂ coil | 145.20 kg | 3.46% |
 | Primary heavy shielding | 12.5 cm radial jacket | tungsten alloy (95% W, 5% Ni-Fe) | 1,680.00 kg | 40.00% |
 | Secondary neutron shielding | 15.0 cm outer jacket | 5% borated polyethylene (B-HDPE) | 465.00 kg | 11.07% |
@@ -528,5 +532,5 @@ The `shbt-recon` digital twin is the Macroscopic State Translocation & Gateway p
 | [`sys1own/shbt-exotic`](https://github.com/sys1own/shbt-exotic) | Boundary CFT & Dark Ledger | Boundary CFT state tensors, Heegaard-Floer symplectic boundary relabeling (T<sup>∂</sup><sub>ij</sub>), and dark ledger capacity partitioning (η<sub>D</sub> = 23/33). |
 | [`sys1own/shbt-qc`](https://github.com/sys1own/shbt-qc) | Bare-Metal Runtime & HIL Microkernel | Freestanding C11 `shbt-os` microkernel execution environment, normative base 56-byte `SHBT-MMIO-1` register layout at `0x70000000`, and SECDED Hamming(72,64) ECC. |
 | [`sys1own/shbt-sglt`](https://github.com/sys1own/shbt-sglt) | Relativistic Optics & Cryogenics | 2PN relativistic electron beam optics, CVD Diamond-on-GaN high-heat-flux substrate limits, and NbN / MgB <sub>2</sub> quench margin safeguards. |
-| [`sys1own/shbt-precision`](https://github.com/sys1own/shbt-precision) | Arbitrary-Precision Numerics | 512-bit arbitrary-precision hybrid numeric framework (`rug`/MPFR), canonical WZW affine branch (26, 8, 312) arithmetic, and zero-allocation audit primitives. |
-| [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp) | Holographic Warp Drive, `SHBT-MAR-312` Reactor & `SHBT-EW-312` Wormhole | **Bidirectional power-foundry & wormhole partner:** supplies the coherent graser `¹⁷⁸ᵐ²HfB₂` isomer battery (`500.0 TJ`, `3-stage DEC η_conv = 45.8%`, `49.9449 TW` burst rail) and the 4th-Gen `SHBT-MAR-312` mass-annihilation reactor (`33.8822 EJ`, `5-stage DEC η_conv = 89.519%`, `895.19 TW` Cruise / `6.805 PW` Burst / `895.19 PW` Impulse breeder driver); in return, `shbt-recon` synthesizes the `376.99 kg` `SHBT-MAR-312` dual-sector fuel core (`R_synth^MAR`, `2.1220 PJ` Mode 1a / `0.2845 PJ` Mode 1c) and provides the Type I Gateway layer (`V_unified^macro`, 124 Fibonacci braids `η_D = 23/33`, `Sp(2g, Z)` routing, `Δs²_2PN ≤ 0`) for `shbt-warp`'s `SHBT-EW-312` Effective Traversable Wormhole System. |
+| [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp) | Holographic Warp Drive, `SHBT-MAR-312` Reactor & `SHBT-EW-312` Wormhole | **Bidirectional power-foundry & wormhole partner:** supplies the 4th-Gen `SHBT-MAR-312` mass-annihilation battery-reactor architecture (`33.8822 EJ`, `5-stage DEC η_conv = 89.519%`, `895.19 TW` Cruise / `6.805 PW` Burst / `895.19 PW` Impulse); in return, `shbt-recon` synthesizes the `376.99 kg` `SHBT-MAR-312` dual-sector fuel core (`R_synth^MAR`, `2.1220 PJ` Mode 1a / `0.2845 PJ` Mode 1c) in an autonomous closed-loop breeder (`14,293` daughter cores per inventory) and provides the Type I Gateway layer (`V_unified^macro`, 124 Fibonacci braids `η_D = 23/33`, `Sp(2g, Z)` routing, `Δs²_2PN ≤ 0`) for `shbt-warp`'s `SHBT-EW-312` Effective Traversable Wormhole System. |
+

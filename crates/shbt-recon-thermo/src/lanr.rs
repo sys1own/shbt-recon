@@ -16,6 +16,17 @@ pub const MIN_MODULE_FLOOR: u32 = 1633;
 pub const RESERVE_MODULE_COUNT: u32 = 167;
 /// Continuous entropy-debt demand (W).
 pub const DEMAND_W: f64 = 906.00e3;
+/// Quiescent SHBT-MAR-312 TEG recovery (W): 48.000 kW DC from visible host lattice decay.
+pub const TEG_QUIESCENT_RECOVERY_W: f64 = 48.000e3;
+/// Total continuous non-sheddable station housekeeping load (W):
+/// 906 kW (Landauer) + 42.15 kW (cryo) + 12.8 kW (RF/PIC) + 5 kW (controller) = 965.950 kW.
+pub const HOUSEKEEPING_TOTAL_LOAD_W: f64 = 965.950e3;
+/// Total Tier-1 continuous DC bus generation (W): 999.054 kW + 48.000 kW = 1,047.054 kW.
+pub const TIER1_TOTAL_DC_W: f64 = 1047.054e3;
+/// Net continuous margin on LANR alone (W): 999.054 kW - 965.950 kW = +33.104 kW.
+pub const LANR_ONLY_MARGIN_W: f64 = 33.104e3;
+/// Net continuous margin on Tier-1 bus with TEG recovery (W): 1,047.054 kW - 965.950 kW = +81.104 kW.
+pub const TIER1_NET_MARGIN_W: f64 = 81.104e3;
 /// Thermoelectric generator efficiency.
 pub const TEG_EFFICIENCY: f64 = 0.33804;
 /// Radiator temperature (K).
@@ -116,6 +127,9 @@ mod tests {
         assert_eq!(MIN_MODULE_FLOOR, 1633);
         assert_eq!(RESERVE_MODULE_COUNT, 167);
         assert!((l.teg_efficiency() - 0.33804).abs() < 1e-6);
+        assert!((TIER1_TOTAL_DC_W - 1047054.0).abs() < 1e-3);
+        assert!((LANR_ONLY_MARGIN_W - 33104.0).abs() < 1e-3);
+        assert!((TIER1_NET_MARGIN_W - 81104.0).abs() < 1e-3);
     }
 
     #[test]

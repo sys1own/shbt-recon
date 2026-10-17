@@ -95,14 +95,25 @@ typedef struct {
         } synth;
     } bank0;
 
+/* SHBT-MAR-312 Primary Power Plant & 5-Stage Relativistic DEC Constants */
+#define SHBT_MAR312_TOTAL_ENERGY_EJ         (33.8822)
+#define SHBT_MAR312_NET_ENERGY_EJ           (30.3310)
+#define SHBT_MAR312_CORE_MASS_KG            (376.99)
+#define SHBT_MAR312_DEC_EFFICIENCY_PPM      (895190U)  /* 89.519% */
+#define SHBT_MAR312_DEC_BUS_MIN_MV          (15000000U) /* 15 kV */
+#define SHBT_MAR312_DEC_BUS_MAX_MV          (2700000000U) /* 2.700 MV */
+#define SHBT_MAR312_CRUISE_NET_MW           (895190000000000ULL)    /* 895.19 TW */
+#define SHBT_MAR312_BURST_NET_MW            (6805000000000000ULL)   /* 6.805 PW */
+#define SHBT_MAR312_IMPULSE_NET_MW          (895190000000000000ULL) /* 895.19 PW */
+
     /* =========================================================================
-     * CACHELINE 1: Isomer Core, DEC Bus, Cryogenics, Metrology, ECC, CRC (64 B)
+     * CACHELINE 1: SHBT-MAR-312 Reactor, 5-Stage DEC, Cryo, Metrology, ECC (64 B)
      * Offset: 0x40 - 0x7F
      * ========================================================================= */
-    volatile uint32_t isomer_soc_millijoules; /* 0x40: Core SoC (mJ remaining / 500 TJ)   */
-    volatile uint32_t dec_bus_voltage_mv;     /* 0x44: DEC output bus voltage (mV)        */
-    volatile uint64_t gross_burst_power_mw;   /* 0x48: Instantaneous gross graser (mW)    */
-    volatile uint64_t net_electrical_power_mw;/* 0x50: Net electrical output power (mW)   */
+    volatile uint32_t isomer_soc_millijoules; /* 0x40: MAR-312 Core SoC (mJ rem / 33.8822 EJ gross / 30.3310 EJ net) */
+    volatile uint32_t dec_bus_voltage_mv;     /* 0x44: 5-Stage DEC bus voltage (mV, 15 kV - 2.700 MV DC)   */
+    volatile uint64_t gross_burst_power_mw;   /* 0x48: Gross annihilation power (mW, 1.0 PW Cruise / 7.6 PW Burst / 1.0 EW Imp) */
+    volatile uint64_t net_electrical_power_mw;/* 0x50: Net electrical output power (mW, 895.19 TW / 6.805 PW / 895.19 PW) */
     volatile uint32_t cryo_temp_diamond_mk;   /* 0x58: CVD Diamond temp (mK, clamp 21130) */
     volatile uint32_t cryo_temp_mgb2_mk;      /* 0x5C: MgB2 rail temp (mK, max 32920)     */
     volatile uint16_t tmsv_squeezing_r_q12;   /* 0x60: TMSV squeezing r parameter (Q4.12) */

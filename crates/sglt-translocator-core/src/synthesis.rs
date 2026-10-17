@@ -561,6 +561,115 @@ impl PowerDriver {
     }
 }
 
+/// Closed-Loop Autonomous Self-Fueling Breeder diagnostics for SHBT-MAR-312.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct SelfRefuelCycle {
+    pub mode: FoundryMode,
+    pub delta_e_synth_pj: f64,
+    pub self_refuel_fraction: f64,
+    pub duration_cruise_s: f64,
+    pub duration_burst_s: f64,
+    pub duration_impulse_s: f64,
+    pub total_daughter_cores: u64,
+    pub surplus_cores_exported: u64,
+    pub q_breeder_net: f64,
+}
+
+/// Autonomous on-board self-refueling breeder state machine.
+#[derive(Clone, Debug, PartialEq)]
+pub struct SelfRefuelBreeder {
+    /// Active core stored net electrical energy (PJ remaining out of 30,331.0 PJ).
+    pub energy_remaining_pj: f64,
+    /// Automated hot-swap threshold SoC (default 0.05 = 5%).
+    pub auto_refuel_threshold_soc: f64,
+    /// Number of replacement cores synthesized for local hot-swap.
+    pub local_replacements_completed: u64,
+    /// Total surplus daughter cores exported to shbt-warp.
+    pub total_surplus_cores_exported: u64,
+}
+
+impl SelfRefuelBreeder {
+    pub const NET_CORE_ENERGY_PJ: f64 = 30331.0; // 30.3310 EJ net electric
+    pub const GROSS_CORE_ENERGY_PJ: f64 = 33882.17; // 33.8822 EJ gross
+    pub const CORE_MASS_KG: f64 = 376.99;
+
+    pub fn new() -> Self {
+        Self {
+            energy_remaining_pj: Self::NET_CORE_ENERGY_PJ,
+            auto_refuel_threshold_soc: 0.05,
+            local_replacements_completed: 0,
+            total_surplus_cores_exported: 0,
+        }
+    }
+
+    pub fn state_of_charge(&self) -> f64 {
+        (self.energy_remaining_pj / Self::NET_CORE_ENERGY_PJ).clamp(0.0, 1.0)
+    }
+
+    /// Calculate the closed-loop self-refueling parameters for a given foundry mode.
+    pub fn evaluate_cycle(mode: FoundryMode) -> SelfRefuelCycle {
+        let delta_e_synth_pj = mode.synthesis_energy_pj();
+        let self_refuel_fraction = delta_e_synth_pj / Self::NET_CORE_ENERGY_PJ;
+        let delta_e_j = delta_e_synth_pj * 1e15;
+
+        let duration_cruise_s = delta_e_j / PowerDriver::BreederCruise.power_w();
+        let duration_burst_s = delta_e_j / PowerDriver::BreederSustainedBurst.power_w();
+        let duration_impulse_s = delta_e_j / PowerDriver::BreederImpulse.power_w();
+
+        let total_daughter_cores = (Self::NET_CORE_ENERGY_PJ / delta_e_synth_pj).floor() as u64;
+        let surplus_cores_exported = total_daughter_cores.saturating_sub(1);
+        let q_breeder_net = Self::NET_CORE_ENERGY_PJ / delta_e_synth_pj;
+
+        SelfRefuelCycle {
+            mode,
+            delta_e_synth_pj,
+            self_refuel_fraction,
+            duration_cruise_s,
+            duration_burst_s,
+            duration_impulse_s,
+            total_daughter_cores,
+            surplus_cores_exported,
+            q_breeder_net,
+        }
+    }
+
+    /// Execute automated in-situ hot-swap core synthesis when SoC <= threshold.
+    ///
+    /// Simulates the 4-phase microkernel sequence:
+    ///   0x02 TRIGGER_ARMED -> 0x04 TRANSMUTATION_BURST -> 0x06 COSET_ANTIBARYON_FOLD -> 0x08 SYMPLECTIC_CRYSTALLIZATION.
+    /// Deducts delta_e_synth, resets energy_remaining_pj to 100% (30,331.0 PJ),
+    /// and increments the local replacement counter.
+    pub fn trigger_hot_swap(&mut self, mode: FoundryMode) -> Result<SelfRefuelCycle, &'static str> {
+        let cycle = Self::evaluate_cycle(mode);
+        if self.energy_remaining_pj < cycle.delta_e_synth_pj {
+            return Err("Deficit: reserve energy below synthesis threshold");
+        }
+        self.energy_remaining_pj -= cycle.delta_e_synth_pj;
+        // Replacement core co-crystallized: reset SoC to 100%
+        self.energy_remaining_pj = Self::NET_CORE_ENERGY_PJ;
+        self.local_replacements_completed += 1;
+        Ok(cycle)
+    }
+
+    /// Export a batch of surplus daughter cores to shbt-warp.
+    pub fn export_surplus_batch(&mut self, mode: FoundryMode, count: u64) -> Result<f64, &'static str> {
+        let cycle = Self::evaluate_cycle(mode);
+        let energy_cost = cycle.delta_e_synth_pj * count as f64;
+        if self.energy_remaining_pj < energy_cost {
+            return Err("Deficit: insufficient energy for requested export batch");
+        }
+        self.energy_remaining_pj -= energy_cost;
+        self.total_surplus_cores_exported += count;
+        Ok(energy_cost)
+    }
+}
+
+impl Default for SelfRefuelBreeder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Errors occurring during high-precision coset fold execution.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum SynthesisError {
@@ -734,6 +843,46 @@ mod tests {
         assert!((f_sens - 7.88246e-5).abs() < 1e-8);
         assert_eq!(t_man, 21.130);
         assert_eq!(s_max, 124.60);
+    }
+
+    #[test]
+    fn self_refuel_breeder_verification() {
+        let c_1c = SelfRefuelBreeder::evaluate_cycle(FoundryMode::Mode1c);
+        assert_eq!(c_1c.delta_e_synth_pj, 0.2845);
+        assert!((c_1c.self_refuel_fraction - 0.00000937984).abs() < 1e-10);
+        assert!((c_1c.duration_cruise_s - 0.3178).abs() < 1e-3);
+        assert!((c_1c.duration_burst_s - 0.04181).abs() < 1e-4);
+        assert!((c_1c.duration_impulse_s - 0.0003178).abs() < 1e-6);
+        assert_eq!(c_1c.total_daughter_cores, 106611);
+        assert_eq!(c_1c.surplus_cores_exported, 106610);
+
+        let c_1a = SelfRefuelBreeder::evaluate_cycle(FoundryMode::Mode1a);
+        assert_eq!(c_1a.delta_e_synth_pj, 2.1220);
+        assert!((c_1a.self_refuel_fraction - 0.0000699614).abs() < 1e-9);
+        assert!((c_1a.duration_cruise_s - 2.370).abs() < 1e-2);
+        assert!((c_1a.duration_burst_s - 0.3118).abs() < 1e-3);
+        assert!((c_1a.duration_impulse_s - 0.002370).abs() < 1e-5);
+        assert_eq!(c_1a.total_daughter_cores, 14293);
+        assert_eq!(c_1a.surplus_cores_exported, 14292);
+
+        let c_1b = SelfRefuelBreeder::evaluate_cycle(FoundryMode::Mode1b);
+        assert_eq!(c_1b.delta_e_synth_pj, 21.4300);
+        assert!((c_1b.self_refuel_fraction - 0.000706537).abs() < 1e-8);
+        assert!((c_1b.duration_cruise_s - 23.94).abs() < 0.02);
+        assert!((c_1b.duration_burst_s - 3.149).abs() < 0.01);
+        assert!((c_1b.duration_impulse_s - 0.02394).abs() < 1e-4);
+        assert_eq!(c_1b.total_daughter_cores, 1415);
+        assert_eq!(c_1b.surplus_cores_exported, 1414);
+
+        // Test automated hot-swap state machine:
+        let mut breeder = SelfRefuelBreeder::new();
+        breeder.energy_remaining_pj = 1516.55; // 5% reserve
+        assert_eq!(breeder.local_replacements_completed, 0);
+        let res = breeder.trigger_hot_swap(FoundryMode::Mode1a).expect("hot swap must succeed");
+        assert_eq!(res.mode, FoundryMode::Mode1a);
+        assert_eq!(breeder.local_replacements_completed, 1);
+        assert_eq!(breeder.energy_remaining_pj, SelfRefuelBreeder::NET_CORE_ENERGY_PJ);
+        assert_eq!(breeder.state_of_charge(), 1.0);
     }
 }
 

@@ -20,6 +20,18 @@ pub const MODULE_PARASITIC_W: f64 = 490.55;
 pub const DEBT_BASE_GW: f64 = 906.0;
 /// Nominal array net electrical output (kW).
 pub const ARRAY_NET_KW: f64 = 999.054;
+/// Quiescent SHBT-MAR-312 TEG recovery (kW): spontaneous decay of the visible
+/// 178m2HfB2 host lattice (354.27 kW_th at eta_TEG = 13.55%).
+pub const TEG_QUIESCENT_RECOVERY_KW: f64 = 48.000;
+/// Total Tier-1 continuous DC bus generation (kW): 999.054 + 48.000 = 1,047.054 kW.
+pub const TIER1_TOTAL_DC_KW: f64 = ARRAY_NET_KW + TEG_QUIESCENT_RECOVERY_KW;
+/// Total continuous non-sheddable station housekeeping load (kW):
+/// 906.000 kW (Landauer floor) + 42.150 kW (LHe cryo) + 12.800 kW (RF/PIC) + 5.000 kW (controller) = 965.950 kW.
+pub const HOUSEKEEPING_TOTAL_LOAD_KW: f64 = 965.950;
+/// Net continuous margin on LANR alone (kW): 999.054 - 965.950 = +33.104 kW.
+pub const LANR_ONLY_MARGIN_KW: f64 = ARRAY_NET_KW - HOUSEKEEPING_TOTAL_LOAD_KW;
+/// Net continuous margin on Tier-1 bus with TEG recovery (kW): 1,047.054 - 965.950 = +81.104 kW.
+pub const TIER1_NET_MARGIN_KW: f64 = TIER1_TOTAL_DC_KW - HOUSEKEEPING_TOTAL_LOAD_KW;
 /// Minimum module operating floor sustaining the 906.00 kW non-sheddable
 /// entropy-debt threshold: ceil(906,000 W / 555.03 W).
 pub const MIN_MODULE_FLOOR: u32 = 1633;
@@ -81,6 +93,9 @@ mod tests {
         assert_eq!(MIN_MODULE_FLOOR, 1633);
         assert_eq!(RESERVE_MODULE_COUNT, 167);
         assert_eq!(MODULE_COUNT - MIN_MODULE_FLOOR, RESERVE_MODULE_COUNT);
+        assert!((TIER1_TOTAL_DC_KW - 1047.054).abs() < 1e-6);
+        assert!((LANR_ONLY_MARGIN_KW - 33.104).abs() < 1e-6);
+        assert!((TIER1_NET_MARGIN_KW - 81.104).abs() < 1e-6);
     }
 
     #[test]

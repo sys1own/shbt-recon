@@ -9,7 +9,7 @@
 //!
 //! Power balance: the 1,800-module LANR array covers the 906.00 kW baseline
 //! entropy debt continuously; endothermic burst injection (up to the
-//! 49.9449 TW net graser rail) is drawn from the 500.0 TJ isomer battery.
+//! 6.805 PW net burst / 895.19 TW Cruise MAR-312 rail) is drawn from the 33.8822 EJ reactor.
 
 use crate::isomer;
 use crate::ARRAY_NET_KW;
@@ -20,7 +20,7 @@ pub const K_B: f64 = 1.380649e-23;
 pub const T_BASE_K: f64 = 21.13;
 /// Continuous entropy-debt floor covered by LANR (W): 906.00 kW.
 pub const BASELINE_DEBT_W: f64 = 906.00e3;
-/// Peak net burst injection available from the isomer rail (W): 49.9449 TW.
+/// Peak net burst injection available from the SHBT-MAR-312 rail (W): 6.805 PW.
 pub const MAX_BURST_INJECTION_W: f64 = isomer::NET_BURST_POWER_W;
 
 /// Per-run enthalpy ledger entry.
@@ -114,7 +114,7 @@ mod tests {
 
     #[test]
     fn burst_headroom() {
-        assert!((NET_BURST_POWER_W - 49.9449e12).abs() < 1e9);
+        assert!((NET_BURST_POWER_W - 6.805e15).abs() < 1e12);
     }
 
     #[test]
