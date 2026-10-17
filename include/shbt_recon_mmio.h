@@ -27,6 +27,9 @@
 #define SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION (0x08U)
 #define SHBT_STATE_EMERGENCY_QUENCH   (0x10U)
 
+/* Bipartite Coset Spinor Folding Extension State (0x06) */
+#define SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD (0x06U)
+
 /* Synthesis hardware status bits (synth bank @ 0x30) */
 #define SYNTH_STATUS_IDLE             (0x00000000U)
 #define SYNTH_STATUS_DYNKIN_LOCKED    (0x00000001U)
@@ -34,6 +37,10 @@
 #define SYNTH_STATUS_DARK_SINK_ACTIVE (0x00000004U)
 #define SYNTH_STATUS_DEC_SYNCHRONIZED (0x00000008U)
 #define SYNTH_STATUS_CRYO_HEADROOM_OK (0x00000010U)
+#define SHBT_SYNTH_RG_LOCK_312        (1U << 16)
+#define SHBT_SYNTH_CBARB_ZERO_VERIFIED (1U << 17)
+#define SHBT_SYNTH_BRAID_PARITY_OK    (1U << 18)
+#define SHBT_SYNTH_FRAMING_FAULT      (1U << 31)
 #define SYNTH_STATUS_ERROR_ANOMALY    (0x80000000U)
 
 /* system_control bank-select bit: 0 = legacy translocator bank,
@@ -82,7 +89,9 @@ typedef struct {
             volatile uint32_t synth_target_a;         /* 0x2C: Target nucleon number A       */
             volatile uint32_t synth_status;           /* 0x30: SYNTH_STATUS_* telemetry      */
             volatile int32_t  synth_enthalpy_delta_mv;/* 0x34: formation dH (mJ/mol)         */
-            volatile int64_t  synth_binding_offset_q32;/* 0x38: nuclear dB (MeV, Q32)        */
+            volatile int32_t  synth_binding_offset_q32;/* 0x38: nuclear dB (MeV, Q32)        */
+            volatile uint16_t synth_antibaryon_ratio_q16; /* 0x3C: anti-baryon fraction Q16 (0x8000 = 0.500) */
+            volatile uint16_t synth_coset_weight_q16;     /* 0x3E: coset conformal weight Q16 (0xB400 = 45/64) */
         } synth;
     } bank0;
 
@@ -121,5 +130,9 @@ _Static_assert(offsetof(shbt_recon_mmio_t, bank0.synth.synth_target_z) == 0x28,
                "FATAL: synth_target_z offset mismatch in Cacheline 0.");
 _Static_assert(offsetof(shbt_recon_mmio_t, bank0.synth.synth_binding_offset_q32) == 0x38,
                "FATAL: synth_binding_offset_q32 offset mismatch in Cacheline 0.");
+_Static_assert(offsetof(shbt_recon_mmio_t, bank0.synth.synth_antibaryon_ratio_q16) == 0x3C,
+               "FATAL: synth_antibaryon_ratio_q16 offset mismatch in Cacheline 0.");
+_Static_assert(offsetof(shbt_recon_mmio_t, bank0.synth.synth_coset_weight_q16) == 0x3E,
+               "FATAL: synth_coset_weight_q16 offset mismatch in Cacheline 0.");
 
 #endif /* SHBT_RECON_MMIO_H */

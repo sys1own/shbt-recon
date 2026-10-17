@@ -51,8 +51,11 @@ extern "C" {
 #define SHBT_REG_SYNTH_STATUS          0x30U  /* SYNTH_STATUS_* bits (R) */
 #define SHBT_REG_SYNTH_ENTHALPY_MV     0x34U  /* formation dH, mJ/mol (R/W) */
 #define SHBT_REG_SYNTH_BINDING_Q32     0x38U  /* nuclear dB, MeV Q32 (R/W) */
+#define SHBT_REG_SYNTH_ANTIBARYON_Q16  0x3CU  /* anti-baryon ratio Q16 (R/W) */
+#define SHBT_REG_SYNTH_COSET_WEIGHT_Q16 0x3EU /* coset conformal weight Q16 (R/W) */
 
 #define SHBT_FSM_TRANSMUTATION_BURST   0x04U  /* synthesis burst dispatch */
+#define SHBT_FSM_COSET_ANTIBARYON_FOLD 0x06U  /* bipartite coset anti-baryon fold */
 #define SHBT_FSM_SYMPLECTIC_CRYSTALLIZATION 0x08U /* lattice re-render phase */
 
 /* Synthesis telemetry status bits (SHBT_REG_SYNTH_STATUS) */
@@ -61,6 +64,10 @@ extern "C" {
 #define SHBT_SYNTH_STATUS_DARK_SINK_ACTIVE  (1U << 2)
 #define SHBT_SYNTH_STATUS_DEC_SYNCHRONIZED  (1U << 3)
 #define SHBT_SYNTH_STATUS_CRYO_HEADROOM_OK  (1U << 4)
+#define SHBT_SYNTH_STATUS_RG_LOCK_312       (1U << 16)
+#define SHBT_SYNTH_STATUS_CBARB_ZERO_VERIFIED (1U << 17)
+#define SHBT_SYNTH_STATUS_BRAID_PARITY_OK   (1U << 18)
+#define SHBT_SYNTH_STATUS_FRAMING_FAULT     (1U << 31)
 #define SHBT_SYNTH_STATUS_ERROR_ANOMALY     (1U << 31)
 
 /* --------------------------------------------------------------------------

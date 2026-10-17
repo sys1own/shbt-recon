@@ -13,6 +13,19 @@ pub const CAPACITY_DENOM: u64 = 33;
 /// Dark ledger dimension (boundary character block width).
 pub const DARK_LEDGER_DIM: usize = 8;
 
+/// UnifiedStinespringFrame total allocation in SRAM (bytes).
+pub const UNIFIED_STINESPRING_FRAME_BYTES: usize = 2112;
+/// Visible active operational window (bytes): 2112 * 10 / 33 = 640 B.
+pub const VISIBLE_ACTIVE_WINDOW_BYTES: usize = 640;
+/// Dark completion ledger allocation (bytes): 2112 * 23 / 33 = 1472 B.
+pub const DARK_LEDGER_BYTES: usize = 1472;
+/// 124 Fibonacci anyon braid channel log space (bytes): 124 * 8 = 992 B.
+pub const DARK_BRAID_LATTICE_BYTES: usize = 992;
+/// SECDED Hamming(72,64) syndrome metadata allocation (bytes): 1472 - 992 = 480 B.
+pub const SECDED_METADATA_BYTES: usize = 480;
+/// Fibonacci braid capacity C_braid = 100 / φ² ≈ 38.19660112501052.
+pub const FIBONACCI_BRAID_CAPACITY: f64 = 38.19660112501052;
+
 /// Completed fraction η_D = 23/33.
 pub fn completed_fraction() -> f64 {
     DARK_COMPLETED_NUM as f64 / CAPACITY_DENOM as f64
@@ -66,5 +79,12 @@ mod tests {
             .collect();
         let (a, d) = derender(&s);
         assert!(trace_residual(&s, &a, &d).abs() < 1e-12);
+    }
+
+    #[test]
+    fn frame_partition_exact() {
+        assert_eq!(VISIBLE_ACTIVE_WINDOW_BYTES + DARK_LEDGER_BYTES, UNIFIED_STINESPRING_FRAME_BYTES);
+        assert_eq!(DARK_BRAID_LATTICE_BYTES + SECDED_METADATA_BYTES, DARK_LEDGER_BYTES);
+        assert_eq!(DARK_BRAID_LATTICE_BYTES / 124, 8);
     }
 }

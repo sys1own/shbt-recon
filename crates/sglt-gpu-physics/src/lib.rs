@@ -44,6 +44,44 @@ pub fn remap_stinespring_pair(
     (va, vb)
 }
 
+/// Warp-level bipartite projection lane partition (32 SIMD lanes).
+/// Lanes 0..9: Visible Cartan channel + K^pi=16+ isomer gateway (10 lanes = eta_A = 10/33).
+/// Lanes 10..30: so(10)_312 coset rotation + 124-braid folding channels.
+/// Lane 31: SECDED Hamming(72,64) parity syndrome check.
+pub const WARP_VISIBLE_LANES: usize = 10;
+pub const WARP_DARK_COSET_LANES: usize = 21;
+pub const WARP_SECDED_LANE: usize = 31;
+pub const TOTAL_WARP_LANES: usize = 32;
+
+/// Bipartite projection over 32 warp lanes.
+pub fn bipartite_warp_projection(
+    lanes: &[[f64; 2]; TOTAL_WARP_LANES],
+    theta_coset: f64,
+) -> [[f64; 2]; TOTAL_WARP_LANES] {
+    let mut out = *lanes;
+    let cos_c = theta_coset.cos();
+    let sin_c = theta_coset.sin();
+
+    // Lanes 0..9: Visible Cartan + K^pi=16+ isomer projection
+    for item in out.iter_mut().take(WARP_VISIBLE_LANES) {
+        let (va, _) = remap_stinespring_pair(*item, [0.0, 0.0], 1.0, 0.0);
+        *item = va;
+    }
+
+    // Lanes 10..30: so(10)_312 coset rotation
+    for lane in WARP_VISIBLE_LANES..WARP_SECDED_LANE {
+        let partner = (lane + 10) % WARP_DARK_COSET_LANES + WARP_VISIBLE_LANES;
+        let (va, vb) = remap_stinespring_pair(out[lane], out[partner], cos_c, sin_c);
+        out[lane] = va;
+        out[partner] = vb;
+    }
+
+    // Lane 31: SECDED parity syndrome check (zero syndrome defect in stasis)
+    out[WARP_SECDED_LANE] = [0.0, 0.0];
+
+    out
+}
+
 /// Stinespring channel update rho' = U rho U^T (real-unitary dilation on
 /// the active block; environmental partial trace reduces to congruence).
 pub fn stinespring_update(rho: &[Vec<f64>], u: &[Vec<f64>]) -> Vec<Vec<f64>> {

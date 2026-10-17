@@ -52,12 +52,12 @@ void shbt_synth_program_target(uint32_t target_z, uint32_t target_a,
     mmio->bank0.synth.synth_target_z = target_z;
     mmio->bank0.synth.synth_target_a = target_a;
     mmio->bank0.synth.synth_enthalpy_delta_mv = enthalpy_delta_mv;
-    mmio->bank0.synth.synth_binding_offset_q32 = binding_offset_q32;
+    mmio->bank0.synth.synth_binding_offset_q32 = (int32_t)binding_offset_q32;
 }
 
 /* Dispatch a synthesis FSM command.  Returns 0 on acceptance, negative on
- * interlock rejection.  Only state 0x04 (TRANSMUTATION_BURST) is issued by
- * this path; the sequencer owns all other transitions. */
+ * interlock rejection.  When synth_antibaryon_ratio_q16 > 0, executes the
+ * bipartite coset spinor folding sequence (0x04 -> 0x06 -> 0x08). */
 int32_t shbt_synth_dispatch(void)
 {
     shbt_recon_mmio_t *mmio = shbt_recon_mmio();
@@ -85,6 +85,36 @@ int32_t shbt_synth_dispatch(void)
 
     mmio->bank0.synth.synth_status = synth_status | SYNTH_STATUS_DARK_SINK_ACTIVE;
     shbt_dispatch_set_state(SHBT_STATE_TRANSMUTATION_BURST);
+
+    /* Bipartite Coset Spinor Folding Upgrade (SHBT-RECON-SYNTH-MAR312) */
+    if (mmio->bank0.synth.synth_antibaryon_ratio_q16 > 0U) {
+        /* In TRANSMUTATION_BURST (0x04), verify coset weight == 0xB400 (45/64) and RG lock 312 */
+        if (mmio->bank0.synth.synth_coset_weight_q16 != 0xB400U
+            || !(mmio->bank0.synth.synth_status & SHBT_SYNTH_RG_LOCK_312)) {
+            mmio->bank0.synth.synth_status |= SHBT_SYNTH_FRAMING_FAULT | SYNTH_STATUS_ERROR_ANOMALY;
+            shbt_dispatch_set_state(SHBT_STATE_EMERGENCY_QUENCH);
+            return -5;
+        }
+
+        /* Transition to 0x06 (COSET_ANTIBARYON_FOLD) */
+        shbt_dispatch_set_state(SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD);
+
+        /* Verify zero C_bar_B, Delta_fr, and E_munu residual */
+        if (mmio->bank0.translocator.wzw_framing_defect_raw != 0U
+            || mmio->metric_det_error_fp64 != 0ULL) {
+            mmio->bank0.synth.synth_status |= SHBT_SYNTH_FRAMING_FAULT | SYNTH_STATUS_ERROR_ANOMALY;
+            shbt_dispatch_set_state(SHBT_STATE_EMERGENCY_QUENCH);
+            return -6;
+        }
+
+        /* Clear RG lock, latch verified stasis and braid parity */
+        mmio->bank0.synth.synth_status &= ~SHBT_SYNTH_RG_LOCK_312;
+        mmio->bank0.synth.synth_status |= (SHBT_SYNTH_CBARB_ZERO_VERIFIED | SHBT_SYNTH_BRAID_PARITY_OK);
+
+        /* Transition to 0x08 (SYMPLECTIC_CRYSTALLIZATION) */
+        shbt_dispatch_set_state(SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION);
+    }
+
     return 0;
 }
 

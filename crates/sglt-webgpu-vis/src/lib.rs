@@ -35,6 +35,33 @@ pub struct MetricField {
 
 const _: () = assert!(std::mem::size_of::<MetricField>() == 32);
 
+/// Bipartite synthesis telemetry record shared with WGSL pipeline.
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct BipartiteSynthesisTelemetry {
+    pub visible_baryon_density_kg_m3: f32,
+    pub folded_antibaryon_density_kg_m3: f32,
+    pub coset_weight_shift: f32,
+    pub fibonacci_braid_load: f32,
+    pub active_render_cost_c_barb: f32,
+    pub padding: [f32; 3],
+}
+
+impl Default for BipartiteSynthesisTelemetry {
+    fn default() -> Self {
+        Self {
+            visible_baryon_density_kg_m3: 5250.56,
+            folded_antibaryon_density_kg_m3: 5250.56,
+            coset_weight_shift: 0.703125,
+            fibonacci_braid_load: 0.018408,
+            active_render_cost_c_barb: 0.0,
+            padding: [0.0; 3],
+        }
+    }
+}
+
+const _: () = assert!(std::mem::size_of::<BipartiteSynthesisTelemetry>() == 32);
+
 /// RGBA render pixel.
 pub type Rgba = [f32; 4];
 
@@ -95,5 +122,15 @@ mod tests {
         assert_eq!(WEB_DEPENDENCIES, 0);
         assert_eq!(WORKGROUP_SIZE, 16);
         assert_eq!(RENDER_GRID, 4096);
+    }
+
+    #[test]
+    fn bipartite_telemetry_defaults() {
+        let t = BipartiteSynthesisTelemetry::default();
+        assert_eq!(t.visible_baryon_density_kg_m3, 5250.56);
+        assert_eq!(t.folded_antibaryon_density_kg_m3, 5250.56);
+        assert_eq!(t.coset_weight_shift, 0.703125);
+        assert_eq!(t.fibonacci_braid_load, 0.018408);
+        assert_eq!(t.active_render_cost_c_barb, 0.0);
     }
 }

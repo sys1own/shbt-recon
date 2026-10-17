@@ -11,6 +11,17 @@ struct MetricField {
     ds2: f32,
 };
 
+struct BipartiteSynthesisTelemetry {
+    visible_baryon_density_kg_m3: f32,
+    folded_antibaryon_density_kg_m3: f32,
+    coset_weight_shift: f32,
+    fibonacci_braid_load: f32,
+    active_render_cost_c_barb: f32,
+    padding0: f32,
+    padding1: f32,
+    padding2: f32,
+};
+
 @group(0) @binding(0) var<storage, read> inputFields: array<MetricField>;
 @group(0) @binding(1) var<storage, read_write> outputRenderBuffer: array<vec4<f32>>;
 

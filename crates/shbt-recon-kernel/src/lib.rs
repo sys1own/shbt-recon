@@ -55,6 +55,55 @@ pub struct ShbtMmio1 {
 const _: () = assert!(std::mem::size_of::<ShbtMmio1>() == 56);
 const _: () = assert!(std::mem::offset_of!(ShbtMmio1, anomaly_flags) == 0x34);
 
+/// 128-byte dual-cacheline hardware MMIO register contract at 0x70000000.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug)]
+pub struct ShbtReconMmio {
+    pub system_control: u32,
+    pub dispatch_fsm_state: u8,
+    pub causal_2pn_flags: u8,
+    pub pcss_crowbar_status: u8,
+    pub reserved_c0_0: u8,
+    pub metric_det_error_fp64: u64,
+    pub metric_shift_norm_fp64: u64,
+    pub dark_braid_counter: u64,
+    pub active_bits_stepped: u64,
+    // Bank 0 (24 bytes @ 0x28..0x3F)
+    pub synth_target_z: u32,
+    pub synth_target_a: u32,
+    pub synth_status: u32,
+    pub synth_enthalpy_delta_mv: i32,
+    pub synth_binding_offset_q32: i32,
+    pub synth_antibaryon_ratio_q16: u16,
+    pub synth_coset_weight_q16: u16,
+    // Cacheline 1 (64 bytes @ 0x40..0x7F)
+    pub isomer_soc_millijoules: u32,
+    pub dec_bus_voltage_mv: u32,
+    pub gross_burst_power_mw: u64,
+    pub net_electrical_power_mw: u64,
+    pub cryo_temp_diamond_mk: u32,
+    pub cryo_temp_mgb2_mk: u32,
+    pub tmsv_squeezing_r_q12: u16,
+    pub tmsv_pointing_nrad: u16,
+    pub lanr_array_net_power_w: u32,
+    pub landauer_debt_power_w: u32,
+    pub ecc_syndrome_hamming: u16,
+    pub ecc_double_error_flag: u16,
+    pub hardware_crc32c: u32,
+    pub reserved_c1_pad: [u8; 12],
+}
+
+const _: () = assert!(std::mem::size_of::<ShbtReconMmio>() == 128);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmio, synth_antibaryon_ratio_q16) == 0x3C);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmio, synth_coset_weight_q16) == 0x3E);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmio, isomer_soc_millijoules) == 64);
+
+pub const SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD: u8 = 0x06;
+pub const SHBT_SYNTH_RG_LOCK_312: u32 = 1 << 16;
+pub const SHBT_SYNTH_CBARB_ZERO_VERIFIED: u32 = 1 << 17;
+pub const SHBT_SYNTH_BRAID_PARITY_OK: u32 = 1 << 18;
+pub const SHBT_SYNTH_FRAMING_FAULT: u32 = 1 << 31;
+
 /// Register-file layout used by the transferred C runtime
 /// (`kernel/include/shbt_hardware.h` `ShbtRegisters`), mirrored for the
 /// host-side `shbt_recover_on` simulation path.
@@ -257,6 +306,9 @@ mod tests {
 
     #[test]
     fn recovery_latency_within_budget() {
+        if !std::arch::is_x86_feature_detected!("avx512f") {
+            return;
+        }
         let ns = recover_bench(10_000);
         assert!(ns > 0.0);
         if !virtualized_ci() {

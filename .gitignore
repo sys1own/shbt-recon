@@ -1,6 +1,7 @@
 /.venv
 /target
 *.so
+*.pyd
 *.egg-info
 __pycache__
 .pytest_cache
@@ -20,6 +21,7 @@ test_*.pdf
 /crates/shbt-recon-kernel/bin/
 /eda_outputs/
 /sim_outputs/
+verification_matrix.json
 
 # latexmk aux
 *.fdb_latexmk
