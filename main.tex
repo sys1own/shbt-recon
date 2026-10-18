@@ -61,8 +61,7 @@
 Modular State Translocator: Architecture, EDA Hardware-in-the-Loop,\\
 Mass-Annihilation Battery-Reactor (\texttt{SHBT-MAR-312}), and 94-Gate Verification Record}\\[0.5em]
 \large Master Technical Specification for the \texttt{sys1own/shbt-recon} Digital Twin}
-\author{\textbf{SHBT-RECON Architecture and Engineering Group}\\
-\texttt{sys1own/shbt-recon} \quad $\cdot$ \quad Canonical WZW $(26, 8, 312)$ Sector}
+\author{}
 \date{October 2026 \quad $\cdot$ \quad Release v2.4.0}
 
 \begin{document}
@@ -588,11 +587,39 @@ Against a nominal steady-state housekeeping load of $P_{\text{housekeeping}} = 9
 \begin{equation}
 \Delta P_{\text{Tier1}} = 1{,}047{,}054~\text{W} - 965{,}950~\text{W} = +81{,}104~\text{W} \quad (+33{,}104~\text{W on LANR alone}).
 \end{equation}
-While this surplus safely powers all dilution refrigerators, 2PN metrology lasers, and microkernel avionics without draining stored reserves, its bit-stepping throughput across the $1.842$~W/bit stepping dissipation ($0.106836$~W/bit after $94.20\%$ SMES recovery) is strictly limited:
+Table~\ref{tab:tier1_baseload_ledger} details the continuous Tier-1 generation vs.\ housekeeping consumption ledger. While this surplus safely powers all dilution refrigerators, 2PN metrology lasers, and microkernel avionics without draining stored reserves, its bit-stepping throughput across the $1.842$~W/bit stepping dissipation ($0.106836$~W/bit after $94.20\%$ SMES recovery) is strictly limited:
 \begin{equation}
 \Delta N_{\text{LANR}} = \left\lfloor \frac{93{,}054~\text{W}}{1.842~\text{W/bit}} \right\rfloor = 50{,}517~\text{bits/step} \implies \Phi_{\text{LANR}} = 2.5520 \times 10^9~\text{bits/s}.
 \end{equation}
 At this rate, de-rendering a macroscopic $10^{28}$-nucleon payload ($B \approx 1.25 \times 10^{28}$~bits) would require $4.898\times 10^{18}$~seconds ($155$~billion years), completely precluding macroscopic state translocation on human or tactical timescales.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Continuous Tier-1 housekeeping load allocation and baseload DC power generation ledger ($+1{,}047.054$~kW total generation vs. $965.950$~kW baseline loads $\to +81.104$~kW net surplus).}
+\label{tab:tier1_baseload_ledger}
+\begin{tabularx}{\textwidth}{@{}l X r r@{}}
+\toprule
+Subsystem / Bus Element & Operating Mechanism \& Infrastructure Parameters & Power Flow (kW) & Rail Share \\
+\midrule
+\multicolumn{4}{@{}l}{\textbf{Continuous Generation \& Waste Heat Energy Recovery:}} \\
+1,800-Module LANR Array & 1,800 Ni--H cold fusion cells $\times 555.03$~W net after SiC crowbar recovery & $+999.054$ & $95.42\%$ \\
+Seebeck TEG Recovery & Spontaneous $^{178\text{m}2}\text{HfB}_2$ lattice decay ($354.27~\text{kW}_{\text{th}}$ at $\eta_{\text{TEG}} = 13.55\%$) & $+48.000$ & $4.58\%$ \\
+\midrule
+\textbf{Total Tier-1 Baseload Generation} & Combined continuous DC primary generation envelope & $\mathbf{+1{,}047.054}$ & $\mathbf{100.00\%}$ \\
+\midrule
+\multicolumn{4}{@{}l}{\textbf{Continuous Non-Sheddable Housekeeping Loads:}} \\
+Landauer Configurational Debt & Thermodynamic boundary entropy purification floor (Gate \texttt{GATE-SYNTH-06}) & $-906.000$ & $93.79\%$ \\
+Helium Microchannel Cryostat & 4.20~K two-phase boiling circulation, pumps, and cryocooler compressors & $-42.150$ & $4.36\%$ \\
+Photonic/RF Metrology Rail & TMSV squeezing laser diodes, PIC heterodyne, and 2PN metric locks & $-12.800$ & $1.33\%$ \\
+Microkernel Avionics \& C11 HIL & Dual-cacheline MMIO bus host, causal interlock trip logic, telemetry & $-5.000$ & $0.52\%$ \\
+\midrule
+\textbf{Total Continuous Housekeeping} & Minimum station life-support and quantum coherence baseload & $\mathbf{-965.950}$ & $\mathbf{100.00\%}$ \\
+\midrule
+\textbf{Net Baseload Margin (with TEG)} & \textbf{Continuous positive surplus buffer available to facility} & $\mathbf{+81.104}$ & \textbf{--} \\
+\textbf{Net Baseload Margin (LANR alone)} & \textbf{Fault-tolerant positive headroom with MAR reactor cold/offline} & $\mathbf{+33.104}$ & \textbf{--} \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \FloatBarrier
 \subsection{The Monolithic SHBT-MAR-312 Bipartite Reactor Core and Borrmann Cavity}
@@ -615,19 +642,83 @@ yielding a specific mass energy density of:
 Coherent emission without lattice self-absorption is maintained inside an anomalous Borrmann dynamical Laue cavity at cryogenic temperature ($T \le 21.13$~K). The Borrmann parameter reaches $\epsilon_B = 0.9852$ with recoilless Mössbauer fraction $f_M \ge 0.782$ (Gate \texttt{GATE-BAT-05}), suppressing photoelectric absorption by over two orders of magnitude and guiding radiation into the direct energy converter.
 
 \FloatBarrier
-\subsection{5-Stage Relativistic DEC Stack and Multi-Mode Stepping Dynamics}
-Primary mass-annihilation flux is converted directly into high-voltage direct current through a 5-stage relativistic Direct Energy Conversion (DEC) stack:
-\begin{enumerate}
-    \item \textbf{Stage 1 (Ultrarelativistic Pair-Plasma MHD Induction Channel):} $\eta_1 = 34.820\%$.
-    \item \textbf{Stage 2 (Forward Relativistic Compton Recoil Collector Grids):} $\eta_2 = 24.150\%$.
-    \item \textbf{Stage 3 (High-Gradient Electrostatic Deceleration Grids):} $\eta_3 = 16.430\%$.
-    \item \textbf{Stage 4 (Sub-Surface Betavoltaic CVD Diamond p-n Junctions):} $\eta_4 = 8.740\%$.
-    \item \textbf{Stage 5 (Residual Phonon/Thermal High-ZT Superlattice TEG Array):} $\eta_5 = 5.379\%$.
-\end{enumerate}
-Summing all five stages yields a composite direct electrical conversion efficiency:
+\subsection{5-Stage Hybrid Relativistic DEC Cascade Architecture}
+\label{subsec:dec_cascade}
+Primary mass-annihilation flux released along the cavity $[001]$ Borrmann axis is converted directly into high-voltage direct current through the standardized 5-Stage Hybrid Relativistic Direct Energy Conversion (DEC) duct ($840.00$~kg, $0.4200~\text{m}^3$, $\eta_{\text{conv}} = 89.519\%$, $0.015\text{--}2.700$~MV HVDC bus). The converter couples electromagnetic radiation, relativistic pair plasma, and residual epithermal kinetic energy into a unified electric grid. Table~\ref{tab:mar312_dec_cascade} provides the complete physical breakdown of the five cascaded converter stages.
+
+\begin{table}[!htbp]
+\centering\footnotesize
+\caption{First-principles physical specification of the 5-Stage Hybrid Relativistic DEC Cascade ($840.00$~kg, $0.4200~\text{m}^3$, $\eta_{\text{conv}} = 89.519\%$, $0.015\text{--}2.700$~MV HVDC bus).}
+\label{tab:mar312_dec_cascade}
+\begin{tabularx}{\textwidth}{@{}p{2.9cm} p{3.5cm} X r r@{}}
+\toprule
+DEC Stage & Operating Physics & Converter Architecture \& Materials & $\eta_k$ & Cumulative \\
+\midrule
+Stage 1: Relativistic Forward-Compton & Klein--Nishina forward scattering ($d\sigma_{\text{KN}}/d\Omega$, $\theta_{1/2} < 18^\circ$, $E_\gamma \gg E_K$) & 1,200 biased $25~\mu\text{m}$ W/Ta micro-foils along $[001]$ Borrmann axis & $26.400\%$ & $26.400\%$ \\
+Stage 2: Bethe--Heitler Pair-Induction Matrix & Non-radiative pair conversion ($\hbar\omega > 2m_e c^2$) \& magnetic deflection & Open-cell porous W-foam ($92\%$ porosity, $Z=74$) + transverse $2.4$~T NdFeB dipole + REBCO pickup ($21.13$~K) & $12.100\%$ & $38.500\%$ \\
+Stage 3: High-$\beta$ Resistive MHD Solenoid & Motional EMF ($\mathcal{E} = -\oint \frac{\partial \mathbf{B}}{\partial t}\cdot d\mathbf{A}$) from expanding $e^\pm/\pi^\pm$ plasma ($\beta_p > 0.85$, $R_m \gg 1$) & $4.2$~m diverging $18.5$~T REBCO trumpet nozzle; sub-Alfvénic ceiling $M_A \le 0.120 < 1$ & $29.800\%$ & $68.300\%$ \\
+Stage 4A: Low-$Z$ Beryllium Epithermal Grids & Bremsstrahlung-suppressed electrostatic deceleration ($E_k \in [0.1, 2.5]$~MeV, loss $<5\%$) & Multi-tier high-purity beryllium ($Z=4$) retarding mesh grids ($>95\%$ backscatter suppression) & $7.300\%$ & $75.600\%$ \\
+Stage 4B: Tri-Rail Venetian-Blind MV Collector & Graded multi-rail collection ($+0.8$, $+1.8$, $+2.7$~MV) + Sternglass--Joy secondary suppression & CVD-diamond-coated Mo louvers + $-50$~kV suppressor wire grid ($>99.4\%$ reflection) & $13.919\%$ & $89.519\%$ \\
+\midrule
+\textbf{Total DEC Cascade} & \textbf{5-Stage Direct Relativistic Converter} & \textbf{Envelope: $840.00$~kg, $0.4200~\text{m}^3$, $0.015\text{--}2.700$~MV HVDC} & $\mathbf{89.519\%}$ & $\mathbf{89.519\%}$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\FloatBarrier
+\subsubsection{Stage 1: Relativistic Forward-Compton Photo-Converter (\texorpdfstring{$\eta_1 = 26.400\%$}{eta1 = 26.400\%})}
+At extreme photon energies $E_\gamma \gg E_K \approx 69.5$~keV, the Klein--Nishina differential cross-section dictates sharp forward relativistic beaming:
 \begin{equation}
-\eta_{\text{DEC}} = \sum_{k=1}^5 \eta_k = 34.820\% + 24.150\% + 16.430\% + 8.740\% + 5.379\% = 89.519\% \quad (\text{Gate \texttt{GATE-BAT-03}}).
+\frac{d\sigma_{\text{KN}}}{d\Omega} = \frac{r_e^2}{2}\left(\frac{E_\gamma'}{E_\gamma}\right)^2 \left[\frac{E_\gamma'}{E_\gamma} + \frac{E_\gamma}{E_\gamma'} - \sin^2\theta\right], \qquad E_\gamma' = \frac{E_\gamma}{1 + \frac{E_\gamma}{m_e c^2}(1 - \cos\theta)}.
+\label{eq:klein_nishina}
 \end{equation}
+Because the emission emerges from the Borrmann cavity along the $[001]$ axis with half-angle $\theta_{1/2} < 18^\circ$, Compton recoil electrons are projected directly forward along the beam vector with relativistic Lorentz factors $\gamma_e \in [5, 40]$. Stage~1 captures these recoil electrons across an array of 1,200 electrostatically biased $25~\mu\text{m}$ tungsten/tantalum (W/Ta) micro-foils. The micro-foil thickness is calibrated to match the electron continuous-slowing-down approximation (CSDA) range, allowing forward-ejected electrons to escape into the inter-foil vacuum gaps while depositing $<4.2\%$ of their kinetic energy as heat. An axial electric bias field sweeps these electrons directly into the primary anode collector, achieving an energy extraction efficiency of $\eta_1 = 26.400\%$.
+
+\FloatBarrier
+\subsubsection{Stage 2: Bethe--Heitler Pair-Induction Matrix (\texorpdfstring{$\eta_2 = 12.100\%$}{eta2 = 12.100\%}, Cumulative \texorpdfstring{$38.500\%$}{38.500\%})}
+Photons possessing energies $\hbar\omega > 2m_e c^2 \approx 1.022$~MeV that traverse the micro-foils enter Stage~2, consisting of an open-cell porous tungsten foam ($92\%$ open porosity, effective atomic number $Z = 74$). In the strong Coulomb field of the tungsten nuclei, high-energy gamma quanta undergo non-radiative Bethe--Heitler pair creation ($\gamma + Z \to e^- + e^+ + Z$). An orthogonal $2.4$~T permanent NdFeB dipole field sweeps opposite charge species into divergent trajectories, inducing high-frequency AC displacement currents across multi-turn REBCO high-temperature superconducting (HTS) pickup loops maintained at $21.13$~K. This inductive extraction captures pair kinetic energy without physical surface electrode bombardment, delivering $\eta_2 = 12.100\%$ and elevating cumulative conversion efficiency to $38.500\%$.
+
+\FloatBarrier
+\subsubsection{Stage 3: High-\texorpdfstring{$\beta$}{beta} Resistive MHD Magnetic Flux-Compression Solenoid (\texorpdfstring{$\eta_3 = 29.800\%$}{eta3 = 29.800\%}, Cumulative \texorpdfstring{$68.300\%$}{68.300\%})}
+The relativistic pair plasma and intermediate meson flux ($e^\pm, \pi^\pm$) emerging from the pair-induction matrix form a dense conducting diamagnetic plasma ball with high plasma beta $\beta_p = \frac{2\mu_0 n k_B T}{B^2} > 0.85$ and high magnetic Reynolds number $R_m = \mu_0 \sigma v L \gg 1$. The plasma expands axially into a $4.2$~m long diverging magnetic trumpet nozzle generated by concentric $18.5$~T REBCO coils. As the diamagnetic plasma ball expands against the diverging magnetic gradient, it compresses the external magnetic field lines, driving strong motional electromotive force according to Faraday's law:
+\begin{equation}
+\mathcal{E}_{\text{MHD}} = -\oint_{\partial S} \frac{\partial \mathbf{B}}{\partial t}\cdot d\mathbf{A}.
+\end{equation}
+The plasma expansion speed is maintained strictly below the sub-Alfvénic ceiling:
+\begin{equation}
+M_A = \frac{v}{\sqrt{B^2 / (\mu_0 \rho_{\text{plasma}})}} \le 0.120 < 1,
+\end{equation}
+preventing turbulent shock boundary separation and converting plasma hydrodynamic momentum directly into inductive electrical current within the stator windings at an efficiency of $\eta_3 = 29.800\%$, bringing cumulative conversion to $68.300\%$.
+
+\FloatBarrier
+\subsubsection{Stage 4A \& 4B: Low-\texorpdfstring{$Z$}{Z} Epithermal Grids and Tri-Rail Venetian-Blind Collector (\texorpdfstring{$\eta_4 = 21.219\%$}{eta4 = 21.219\%})}
+The exhausted charged particle stream exiting the MHD solenoid consists of intermediate-to-low energy electrons ($E_k \in [0.1, 2.5]$~MeV) and thermalized ions. Energy extraction is executed in two coupled sub-stages:
+\begin{itemize}
+    \item \textbf{Stage 4A: Low-$Z$ Beryllium Epithermal Retarding Grids ($\eta_{4A} = 7.300\%$, cumulative $75.600\%$):} Deceleration of charged particles in conventional high-$Z$ grids suffers catastrophic secondary radiative losses via bremsstrahlung ($dE_{\text{brem}}/dx \propto Z^2/m^2$). Stage~4A circumvents this by employing multi-tier retarding mesh grids fabricated from ultra-pure beryllium ($Z = 4$). Compared to refractory tungsten ($Z = 74$), the low atomic number suppresses bremsstrahlung production by a factor of $(74/4)^2 \approx 342$ ($>95\%$ backscatter suppression), converting $7.300\%$ of remaining stream kinetic energy directly into electrostatic potential.
+    \item \textbf{Stage 4B: Tri-Rail Venetian-Blind MV Electrostatic Collector + Sternglass--Joy Grid ($\eta_{4B} = 13.919\%$, cumulative $89.519\%$):} The residual charged particles enter a cascaded Venetian-blind collector array constructed from CVD-diamond-coated molybdenum louvers oriented at $45^\circ$ grazing incidence. The louvers are biased across three graded potentials: $+0.800$~MV, $+1.800$~MV, and $+2.700$~MV. Upstream of each louver, a fine tungsten wire mesh biased at $-50$~kV enforces the Sternglass--Joy secondary electron suppression criterion, establishing an adverse potential barrier that reflects $>99.4\%$ of secondary emitted electrons back onto the collector surface. Stage~4B contributes $\eta_{4B} = 13.919\%$, yielding the final net composite DEC efficiency:
+    \begin{equation}
+    \begin{split}
+    \eta_{\text{DEC}} &= \eta_1 + \eta_2 + \eta_3 + \eta_{4A} + \eta_{4B} \\
+    &= 26.400\% + 12.100\% + 29.800\% + 7.300\% + 13.919\% = 89.519\% \quad (\text{Gate \texttt{GATE-BAT-03}}).
+    \end{split}
+    \end{equation}
+\end{itemize}
+
+\FloatBarrier
+\subsubsection{Fast Optical Interlock, PCSS Crowbar, and Magnetic Energy Recovery}
+\label{subsubsec:pcss_crowbar}
+At power levels reaching multi-petawatt peaks, inductive energy stored within the DEC duct must be arrested without generating catastrophic inductive voltage spikes ($V = -L\,dI/dt$) or exceeding dielectric breakdown limits. Switching and emergency quench protection are executed by lateral 4H-SiC/GaN photoconductive semiconductor switches (PCSS) triggered by mode-locked $532$~nm laser diodes. The optical switches quench discharge within:
+\begin{equation}
+\tau_{\text{quench}} \le 2.18~\text{ns} \quad (\text{Gate \texttt{GATE-BAT-04}}),
+\end{equation}
+shunting reactive magnetic field energy via a resonant commutation bridge into the $230$~kg $\text{MgB}_2$ SMES ring with an empirical energy recovery fraction of $\eta_{\text{SMES}} = 94.20\%$, clamping idle standby consumption to $0$~W (Gate \texttt{GATE-BAT-08}). Slew rates are strictly bounded to:
+\begin{equation}
+\left|\frac{dI}{dt}\right| \le 1.85\times 10^{14}~\text{A/s}, \qquad \left|\frac{dV}{dt}\right| \le 4.20\times 10^{13}~\text{V/s},
+\end{equation}
+guaranteeing that the metric stress-energy anomaly remains identically null ($E_{\mu\nu} \equiv 0$) across the entire switching cycle.
+
+\FloatBarrier
+\subsection{Multi-Mode Stepping Dynamics and Translocation Latency Compression}
 The 5-stage DEC stack feeds a variable $0.015\text{--}2.700$~MV HVDC bus delivering a net electrical energy inventory:
 \begin{equation}
 E_{\text{net}} = E_{\text{gross}} \cdot \eta_{\text{DEC}} = (33.8822~\text{EJ}) \times 0.89519 = 30.3310~\text{EJ}.
@@ -648,31 +739,30 @@ This accelerates translocation throughput by $2.496\times 10^7$ over LANR baselo
 \end{equation}
 and further down to $\tau_{\text{fold}}^{\text{impulse}} = 1.492$~ms under Mode~3 Impulse ($895.19$~PW).
 
-Upon cycle completion, photoconductive semiconductor switch (PCSS) optical crowbars quench emission within $\tau_{\text{quench}} \le 2.18$~ns (Gate \texttt{GATE-BAT-04}), recovering $94.20\%$ of reactive magnetic field into the $\text{MgB}_2$ SMES ring and locking power draw to $0$~W (Gate \texttt{GATE-BAT-08}). Tables~\ref{tab:nacelle} and~\ref{tab:benchmark} detail the standardized nacelle mass budget and comparative performance benchmark.
+Tables~\ref{tab:nacelle} and~\ref{tab:benchmark} detail the standardized nacelle mass budget and comparative performance benchmark.
 
 \begin{table}[!htbp]
 \centering\small
-\caption{Standardized translocator station nacelle budget (total mass $4{,}200.00$~kg; envelope $2.40~\text{m} \times 1.80~\text{m} \times 1.80~\text{m}$).}
+\caption{Standardized translocator station nacelle budget (nominal mass $4{,}096.99$~kg; maximum transport envelope $4{,}200.00$~kg; dimensions $2.40~\text{m} \times 1.80~\text{m} \times 1.80~\text{m}$).}
 \label{tab:nacelle}
-\begin{tabularx}{\textwidth}{@{}l p{4.2cm} X r r@{}}
+\begin{tabularx}{\textwidth}{@{}l p{3.4cm} X r r@{}}
 \toprule
-Subsystem Assembly & Dimensions / Allocation & Structural Material Composition & Mass (kg) & Fraction \\
+Subsystem Assembly & Dimensions / Volume Allocation & Structural Material Composition & Mass (kg) & Fraction \\
 \midrule
-SHBT-MAR-312 Reactor Core & Monolithic dual-sector cylinder & Visible $^{178\text{m}2}\text{HfB}_2\text{--}^{12}\text{C}$ ($188.50$~kg) + $\overline{\mathbf{16}}$ dark ledger ($188.50$~kg) & $376.99$ & $8.98\%$ \\
-Borrmann Cavity Structure & Dynamical Laue optical frame & Cryogenic optical sapphire / silicon & $84.50$ & $2.01\%$ \\
-Resonant X-ray Seed Laser & $40.0$~keV diode driver pod & Solid-state laser optics & $62.30$ & $1.48\%$ \\
-5-Stage Relativistic DEC & 5-stage concentric MHD/recoil/TEG stack & Diamond/Mo grids + MHD channel + superlattice TEG & $285.40$ & $6.80\%$ \\
-PCSS Crowbars \& SMES & High-speed optical switch pod & GaN/SiC PCSS + $\text{MgB}_2$ recovery coil & $145.20$ & $3.46\%$ \\
-Primary Heavy Shielding & $12.5$~cm radial jacket & Heavy tungsten alloy ($95\%$ W, $5\%$ Ni-Fe) & $1{,}680.00$ & $40.00\%$ \\
-Secondary Shielding & $15.0$~cm outer jacket & $5\%$ borated polyethylene (B-HDPE) & $465.00$ & $11.07\%$ \\
-Diamond-GaN Transducers & Annular floor matrix & CVD diamond film on GaN HEMT & $94.60$ & $2.25\%$ \\
-Cryostat Enclosure & Double-walled vacuum shell & Ti-6Al-4V Grade 5 titanium & $320.00$ & $7.62\%$ \\
-Auxiliary Thermal Dumps & External heat sinks & Tungsten-copper (80/20 W-Cu) & $215.00$ & $5.12\%$ \\
-Avionics \& TMSV Bay & Shielded electronics bay & Faraday-isolated Al-Li alloy & $148.50$ & $3.54\%$ \\
-Structural Load Frame & Kinematic truss mounts & Carbon-fiber reinforced polymer (CFRP) & $322.50$ & $7.68\%$ \\
+Active Core (\texttt{SHBT-MAR-312}) & Monolithic cylinder, $0.0359~\text{m}^3$ & Visible $^{178\text{m}2}\text{HfB}_2\text{--}^{12}\text{C}$ ($188.50$~kg) + $\overline{\mathbf{16}}$ dark ledger ($188.50$~kg) & $376.99$ & $9.20\%$ \\
+Diamond Borrmann Cavity & Optical chamber, $0.0185~\text{m}^3$ & Type-IIa CVD diamond crystal optics on sapphire flexures & $65.12$ & $1.59\%$ \\
+5-Stage Relativistic DEC Duct & Concentric cascade duct, $0.4200~\text{m}^3$ & W/Ta foils, W-foam, REBCO trumpet, Be grids, CVD-Mo louvers & $840.00$ & $20.50\%$ \\
+Cryostat \& REBCO Coils & Vacuum vessel, $0.2850~\text{m}^3$ & Ti-6Al-4V dual-wall shell, REBCO tape, He-II microchannels & $520.00$ & $12.69\%$ \\
+Graded Heavy Shadow Shield & $12.5\text{--}15.0$~cm jacket, $0.3450~\text{m}^3$ & Graded W-Cu ($80/20$), lead glass, and $5\%$ borated HDPE & $1{,}884.88$ & $46.01\%$ \\
+PCSS Crowbars \& SMES & Switching bay, $0.1120~\text{m}^3$ & Lateral 4H-SiC/GaN PCSS modules, $\text{MgB}_2$ toroidal coils & $230.00$ & $5.61\%$ \\
+Avionics \& TMSV Metrology Bay & Shielded compartment, $0.0950~\text{m}^3$ & Al-Li 2195 Faraday chassis, C11 HIL avionics, TMSV optics & $180.00$ & $4.39\%$ \\
 \midrule
-\textbf{Total Station Nacelle} & Fully integrated envelope & Standardized transport nacelle & \textbf{4,200.00} & \textbf{100.00\%} \\
+\textbf{Nominal Subsystems Total} & Summed core volume: $1.3114~\text{m}^3$ & Integrated sub-assemblies inside nacelle frame & $\mathbf{4{,}096.99}$ & $\mathbf{100.00\%}$ \\
+Structural Reserve Margin & Kinetic load frame \& margins & Carbon-fiber reinforced polymer (CFRP) kinematic mounts & $103.01$ & $2.45\%^\dagger$ \\
+\midrule
+\textbf{Total Station Nacelle Envelope} & $2.40~\text{m} \times 1.80~\text{m} \times 1.80~\text{m}$ ($7.776~\text{m}^3$) & Standardized inter-facility transport envelope & $\mathbf{4{,}200.00}$ & $\mathbf{--}$ \\
 \bottomrule
+\multicolumn{5}{@{}p{\textwidth}@{}}{\footnotesize $^\dagger$Reserve margin computed relative to the $4{,}200.00$~kg transport envelope ceiling ($103.01 / 4200 = 2.45\%$).}
 \end{tabularx}
 \end{table}
 

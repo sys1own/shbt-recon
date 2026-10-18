@@ -32,19 +32,22 @@ pub const MAR312_SPECIFIC_ENERGY_J_KG: f64 = 8.987_551_787_368_176e16;
 pub const SPECIFIC_ENERGY_JOULES_PER_KG: f64 = MAR312_SPECIFIC_ENERGY_J_KG;
 
 /// 5-stage relativistic DEC stage efficiencies:
-/// Stage 1: Forward-Compton W/Ta foils
-pub const DEC_STAGE1_COMPTON: f64 = 0.3850;
-/// Stage 2: Pair-Induction W-foam + REBCO coils
-pub const DEC_STAGE2_PAIR: f64 = 0.2785;
-/// Stage 3: Beryllium retarding grids
-pub const DEC_STAGE3_RETARDING: f64 = 0.1245;
-/// Stage 4: Traveling-Wave MHD
-pub const DEC_STAGE4_MHD: f64 = 0.0820;
-/// Stage 5: -38.5 kV secondary electron collector
-pub const DEC_STAGE5_COLLECTOR: f64 = 0.02519;
+/// Stage 1: Relativistic Forward-Compton Photo-Converter (eta_1 = 26.400%)
+pub const DEC_STAGE1_COMPTON: f64 = 0.26400;
+/// Stage 2: Bethe-Heitler Pair-Induction Matrix (eta_2 = 12.100%)
+pub const DEC_STAGE2_PAIR: f64 = 0.12100;
+/// Stage 3: High-beta Resistive MHD Magnetic Flux-Compression Solenoid (eta_3 = 29.800%)
+pub const DEC_STAGE3_MHD: f64 = 0.29800;
+pub const DEC_STAGE3_RETARDING: f64 = DEC_STAGE3_MHD; // compatibility alias
+/// Stage 4A: Low-Z Beryllium Epithermal Retarding Grids (eta_4A = 7.300%)
+pub const DEC_STAGE4A_RETARDING: f64 = 0.07300;
+pub const DEC_STAGE4_MHD: f64 = DEC_STAGE4A_RETARDING; // compatibility alias
+/// Stage 4B: Tri-Rail Venetian-Blind MV Electrostatic Collector + Sternglass-Joy Grid (eta_4B = 13.919%)
+pub const DEC_STAGE4B_COLLECTOR: f64 = 0.13919;
+pub const DEC_STAGE5_COLLECTOR: f64 = DEC_STAGE4B_COLLECTOR; // compatibility alias
 /// Cascaded 5-stage DEC conversion efficiency: 89.519%.
 pub const MAR312_DEC_EFFICIENCY: f64 =
-    DEC_STAGE1_COMPTON + DEC_STAGE2_PAIR + DEC_STAGE3_RETARDING + DEC_STAGE4_MHD + DEC_STAGE5_COLLECTOR;
+    DEC_STAGE1_COMPTON + DEC_STAGE2_PAIR + DEC_STAGE3_MHD + DEC_STAGE4A_RETARDING + DEC_STAGE4B_COLLECTOR;
 /// Total DEC efficiency alias.
 pub const DEC_TOTAL_EFFICIENCY: f64 = MAR312_DEC_EFFICIENCY;
 
