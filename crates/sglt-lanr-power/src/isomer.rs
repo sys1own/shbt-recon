@@ -250,6 +250,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[allow(clippy::assertions_on_constants)]
     fn inventory_and_density() {
         assert!((MAR312_CORE_MASS_KG - 376.99).abs() < 1e-4);
         assert!((MAR312_SPECIFIC_ENERGY_J_KG - 8.987551787368176e16).abs() < 1e10);

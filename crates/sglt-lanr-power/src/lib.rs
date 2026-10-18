@@ -2,8 +2,11 @@
 //! and entropy-debt power balancing for the translocator swarm, plus the
 //! pulsed ^178m2Hf isomer graser burst rail (upstream: sys1own/shbt-warp).
 
+pub mod compacted_nacelle;
 pub mod enthalpy;
 pub mod isomer;
+
+pub use compacted_nacelle::*;
 
 /// Active LANR module count.
 pub const MODULE_COUNT: u32 = 1800;

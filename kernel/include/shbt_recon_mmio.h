@@ -13,6 +13,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "shbt_ibr312_mmio.h"
 
 #define SHBT_RECON_MMIO_BASE_ADDR (0x70000000U)
 
@@ -105,6 +106,21 @@ typedef struct {
 #define SHBT_MAR312_CRUISE_NET_MW           (895190000000000ULL)    /* 895.19 TW */
 #define SHBT_MAR312_BURST_NET_MW            (6805000000000000ULL)   /* 6.805 PW */
 #define SHBT_MAR312_IMPULSE_NET_MW          (895190000000000000ULL) /* 895.19 PW */
+
+/* SHBT-MAR-312C Compacted Seed Wafer & Active Symplectic Nacelle Constants */
+#define SHBT_MAR312C_COMPACTED_NACELLE_MASS_KG (2257.70)
+#define SHBT_MAR312C_COMPACTED_NACELLE_VOL_M3  (0.8589)
+#define SHBT_MAR312C_SEED_WAFER_MASS_KG        (37.699)
+#define SHBT_MAR312C_SEED_WAFER_VOL_M3         (0.00359)
+#define SHBT_MAR312C_SEED_GROSS_EJ             (3.38822)
+#define SHBT_MAR312C_SEED_NET_EJ               (3.03310)
+#define SHBT_MAR312C_SYMPLECTIC_SHIELD_MASS_KG (384.88)
+#define SHBT_MAR312C_SYMPLECTIC_SHIELD_VOL_M3  (0.0850)
+#define SHBT_MAR312C_SYMPLECTIC_S_FACTOR       (100.0 / 1089.0)
+#define SHBT_MAR312C_REBCO_SHEATH_TESLA        (18.5)
+#define SHBT_MAR312C_SINGLE_FRAME_LIMIT_KG     (16600.00)
+#define SHBT_MAR312C_SINGLE_FRAME_MARGIN_KG    (14342.30)
+#define SHBT_MAR312C_TIER1_MAX_CORES           (38U)
 
     /* =========================================================================
      * CACHELINE 1: SHBT-MAR-312 Reactor, 5-Stage DEC, Cryo, Metrology, ECC (64 B)

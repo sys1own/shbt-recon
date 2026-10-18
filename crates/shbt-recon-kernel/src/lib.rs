@@ -104,6 +104,91 @@ pub const SHBT_SYNTH_CBARB_ZERO_VERIFIED: u32 = 1 << 17;
 pub const SHBT_SYNTH_BRAID_PARITY_OK: u32 = 1 << 18;
 pub const SHBT_SYNTH_FRAMING_FAULT: u32 = 1 << 31;
 
+/* Control Bitflags */
+pub const SHBT_MAR_SYMPLECTIC_SHIELD_LOCK: u32 = 1 << 8;
+pub const SHBT_MAR_REBCO_DEFLECTOR_18T5: u32 = 1 << 9;
+pub const SHBT_IBR_AUTO_RELOAD_ARMED: u32 = 1 << 10;
+pub const SHBT_IBR_RELOAD_IN_PROGRESS: u32 = 1 << 11;
+pub const SHBT_IBR_ZERO_VOLUME_LOCK: u32 = 1 << 12;
+pub const SHBT_IBR_ADM_FRAME_COMPLIANT: u32 = 1 << 13;
+
+/* Normative Constants */
+pub const SHBT_IBR_SYMPLECTIC_S_Q32: u32 = 0x17829CBC;
+pub const SHBT_IBR_SHIELD_MASS_G: u32 = 384880;
+pub const SHBT_IBR_NACELLE_MASS_G: u32 = 2257700;
+pub const SHBT_IBR_CREW_DOSE_NSV_YR: u32 = 114000;
+pub const SHBT_MAR312C_SEED_MASS_G: u32 = 37699;
+pub const SHBT_IBR312_MAGAZINE_TOTAL_SIZE: usize = 33792;
+pub const SHBT_IBR312_MAGAZINE_BANKS: usize = 16;
+
+/* 8-State Autonomous Hot-Swap FSM States */
+pub const IBR_FSM_S0_NOMINAL_BURN: u16 = 0x00;
+pub const IBR_FSM_S1_SOC_THRESHOLD_DETECT: u16 = 0x01;
+pub const IBR_FSM_S2_SMES_BUS_CLAMP: u16 = 0x02;
+pub const IBR_FSM_S3_GIVENS_BANK_ALIGN: u16 = 0x03;
+pub const IBR_FSM_S4_STINESPRING_UNFOLD: u16 = 0x04;
+pub const IBR_FSM_S5_SUGAWARA_PARITY_LOCK: u16 = 0x05;
+pub const IBR_FSM_S6_MOSSBAUER_SYNC: u16 = 0x06;
+pub const IBR_FSM_S7_HANDOFF_RESUME: u16 = 0x07;
+
+/* 4 Braid Reload Modes */
+pub const IBR_MODE_PREFOLDED_UNFOLD: u16 = 0x00;
+pub const IBR_MODE_1C_ISOBARIC_RECYCLE: u16 = 0x01;
+pub const IBR_MODE_1A_MATCHED_FOUNDRY: u16 = 0x02;
+pub const IBR_MODE_1B_RAW_SLAG_SCOOP: u16 = 0x03;
+
+/// 16-Bank Stinespring Dark-Braid Magazine Ring Buffer (33,792 Bytes = 33.0 KB)
+#[repr(C, align(64))]
+#[derive(Clone, Copy, Debug)]
+pub struct ShbtStinespringMagazine {
+    pub banks: [[u8; 2112]; SHBT_IBR312_MAGAZINE_BANKS],
+}
+
+const _: () = assert!(std::mem::size_of::<ShbtStinespringMagazine>() == 33792);
+
+/// Compacted SHBT-MAR-312-IBR MMIO Register Block (128 Bytes)
+#[repr(C, align(64))]
+#[derive(Clone, Copy, Debug)]
+pub struct ShbtIbr312Mmio {
+    pub energy_remaining_joules: u64,
+    pub state_of_charge_q32: u64,
+    pub bus_voltage_uv: u64,
+    pub bus_current_ua: u64,
+    pub core_temperature_uk: u64,
+    pub cryo_headroom_uk: u64,
+    pub trigger_delay_ps: u32,
+    pub trigger_pulse_width_ps: u32,
+    pub graser_coherent_flux_w_m2: u64,
+    pub transient_shear_stress_kpa: u32,
+    pub borrmann_epsilon_q16: u32,
+    pub system_status_flags: u32,
+    pub crowbar_trip_count: u32,
+    pub inductive_recovery_eff_q32: u32,
+    pub net_conversion_eff_q32: u32,
+    pub symplectic_s_factor_q32: u32,
+    pub symplectic_shield_mass_g: u32,
+    pub compacted_nacelle_mass_g: u32,
+    pub ibr_frame_bank_select: u16,
+    pub ibr_reload_mode: u16,
+    pub ibr_stored_micro_batches: u32,
+    pub ibr_reload_count: u32,
+    pub ibr_last_latency_ns: u32,
+    pub ibr_crew_dose_nsv_yr: u32,
+    pub ibr_frame_angle_q64: u64,
+}
+
+const _: () = assert!(std::mem::size_of::<ShbtIbr312Mmio>() == 128);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, symplectic_s_factor_q32) == 0x58);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, symplectic_shield_mass_g) == 0x5C);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, compacted_nacelle_mass_g) == 0x60);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_frame_bank_select) == 0x64);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_reload_mode) == 0x66);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_stored_micro_batches) == 0x68);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_reload_count) == 0x6C);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_last_latency_ns) == 0x70);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_crew_dose_nsv_yr) == 0x74);
+const _: () = assert!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_frame_angle_q64) == 0x78);
+
 /// Register-file layout used by the transferred C runtime
 /// (`kernel/include/shbt_hardware.h` `ShbtRegisters`), mirrored for the
 /// host-side `shbt_recover_on` simulation path.
@@ -349,5 +434,21 @@ mod tests {
         assert_eq!(std::mem::offset_of!(ShbtMmio1, ds2_interval_lo), 0x28);
         assert_eq!(std::mem::offset_of!(ShbtMmio1, quench_time_ns), 0x30);
         assert_eq!(SHBT_MMIO_BASE, 0x7000_0000);
+    }
+
+    #[test]
+    fn ibr312_mmio_and_magazine_layout() {
+        assert_eq!(std::mem::size_of::<ShbtIbr312Mmio>(), 128);
+        assert_eq!(std::mem::size_of::<ShbtStinespringMagazine>(), 33792);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, symplectic_s_factor_q32), 0x58);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, symplectic_shield_mass_g), 0x5C);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, compacted_nacelle_mass_g), 0x60);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_frame_bank_select), 0x64);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_reload_mode), 0x66);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_stored_micro_batches), 0x68);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_reload_count), 0x6C);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_last_latency_ns), 0x70);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_crew_dose_nsv_yr), 0x74);
+        assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_frame_angle_q64), 0x78);
     }
 }

@@ -156,3 +156,16 @@ def test_thermodynamic_cost():
     assert tc.temperature_k == pytest.approx(15.4e-3, rel=1.0e-15)
     assert tc.c_get_j > 0.0
     assert tc.c_get_j < tc.landauer_limit_j
+
+
+def test_verification_matrix_102_gates():
+    """All 102 gates in verification matrix must pass."""
+    import json
+    with open("verification_matrix.json", encoding="utf-8") as f:
+        data = json.load(f)
+    assert data["total_gates"] == 102
+    assert all(status == "PASS" for status in data["gates"].values())
+    for i in range(1, 9):
+        gate_id = f"GATE-IBR-{i:02d}"
+        assert gate_id in data["gates"]
+        assert data["gates"][gate_id] == "PASS"

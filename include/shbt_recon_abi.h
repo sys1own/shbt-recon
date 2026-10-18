@@ -12,6 +12,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "shbt_ibr312_mmio.h"
 
 #ifdef __cplusplus
 extern "C" {
