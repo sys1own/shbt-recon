@@ -9,8 +9,6 @@
 
 ## System Overview
 
-![SHBT-MAR-312-IBR Compacted Nacelle Cutaway](figures/shbt_mar312_ibr_cutaway.png)
-
 * **Macroscopic Stinespring Dilation** — isometric state de-rendering via `V_unified^macro` for `N_local ∈ [10²³, 10²⁸]` particles with invariant rational capacity partitioning (`η_A = 10/33`, `η_D = 23/33`), trace norm preservation (`Δ_norm < 10⁻¹²⁰`), and zero unitarity residual (`ε_unitary = 0`).
 * **2PN Relativistic Causal Authorization** — second post-Newtonian metric expansion `g_μν` in harmonic coordinates `(M_odot, J₂, S_odot)` for relativistic targets `(v ≥ 0.1c)`, enforced by a hardware lightcone interlock `(Δs²_2PN ≤ 0)`; dual-wavelength heterodyne metrology at `σ_r ≤ 0.144 pm/√Hz` synchronized to a Ytterbium optical lattice clock (`σ_t ≤ 10⁻¹⁸ s`); emergency GaN current-shunt quench in `τ_quench < 2.50 ns`.
 * **Multigigawatt Two-Phase Cryogenic FEA** — dynamic liquid-to-gas Helium-4 nucleate boiling heat rejection (`P_transient ≥ 1.4208 GW`).
@@ -30,6 +28,78 @@
 * **WebGPU Native Visualizer** — zero-dependency Rust→Wasm engine targeting `wasm32-unknown-unknown` with direct WGSL compute pipelines, rendering ADM shift fields and causal violations at 60 FPS on a 184 MB heap.
 
 ---
+
+## Compacted SHBT-MAR-312C Nacelle Architecture & Translocator Integration
+
+![SHBT-MAR-312-IBR Compacted Nacelle Cutaway](figures/shbt_mar312_ibr_cutaway.png)
+
+The **SHBT-MAR-312C** compacted propulsion nacelle (`crates/sglt-lanr-power/src/compacted_nacelle.rs`) scales the stationary 376.99 kg (0.0359 m³) monolithic reactor core down by 1/10th into an annular **Micro-Wafer Borrmann/Mössbauer Catalytic Seed Die** (`M_seed = 37.699 kg`, `V_seed = 0.003590 m³ = 3.59 L`, `ρ = 10.501 g/cm³`) and replaces 1,500.00 kg of heavy passive shielding with an active 8-layer Heegaard–Floer symplectic shield sleeve. This architecture slashes total dry nacelle mass by **-44.89%** (from 4,096.99 kg to **2,257.70 kg**) and nacelle volume by **-34.51%** (from 1.3114 m³ to **0.8589 m³**), expanding the structural payload reserve to **1,942.30 kg** below the 4,200.00 kg flight ceiling.
+
+### Cutaway Subsystem Architecture
+
+The engineering cutaway diagram illustrates the axial propulsion and energy-conversion assembly:
+
+1. **Dark-Braid Transducer Ring (`NAC-02` — 145.20 kg, 0.0425 m³):**
+   * Mounted at the nacelle intake collar, this ring interfaces the 124-channel Fibonacci anyon dark ledger (`η_D = 23/33`) with the physical core cavity.
+   * Couples directly to `V_unified^macro` and the bipartite coset unitary beam-splitter `W_split(π/4)` to stream Stinespring-folded `16̄` anti-baryon batches dynamically into the active catalytic reaction zone with zero steric collision cross-section (`σ_collision ≡ 0.0000 m²`, `ΔV_steric ≡ 0.0000 m³`).
+
+2. **Ti-6Al-4V Cryostat Shell & LHe Cold Plate (`NAC-05` — 524.02 kg, 0.1550 m³):**
+   * Dual-wall titanium alloy pressure vessel containing the multi-gigawatt two-phase supercritical Helium-4 cooling loops (`P_transient ≥ 1.4208 GW`).
+   * Sustains baseline core cryogenics at `T_op = 21.13 K`, holding a minimum thermal quench headroom of `ΔT_headroom = 11.79 K` below the REBCO superconducting critical temperature (`T_crit = 32.92 K`) under petawatt discharge.
+
+3. **CVD Diamond Borrmann Cavity Matrix (`NAC-03` — 245.50 kg, 0.0520 m³):**
+   * Synthesized from dislocation-free, isotopically pure Type-IIa `¹²C` CVD diamond (`K = 2,250 W/m·K`).
+   * Forms the anomalous Borrmann transmission throat collimating `98.52%` (`ε_B = 0.9852`) of the annihilation gamma-ray and relativistic charged-particle stream along the axial `[001]` diamond lattice direction (`τ_B = 1,453.4 >> 10`) into a narrow forward cone (`θ_1/2 < 18°`).
+   * Provides high Lamb–Mössbauer recoilless fraction (`f_M = 0.7820 ≥ 0.74`) and acoustic phonon dissipation, limiting peak diamond burst stress to `σ_max = 124.60 MPa ≤ 350.00 MPa` (safety factor 2.809).
+
+4. **Annular Catalytic Seed Wafer Die (`NAC-01` — 37.699 kg, 0.00359 m³):**
+   * Located at the focal waist of the diamond cavity (`R_out = 0.1650 m`, `R_in = 0.0450 m`, axial thickness `L_seed = 0.045347 m = 4.535 cm`).
+   * Consists of an epitaxial composite: `18.8495 kg` visible `¹⁷⁸ᵐ²HfB₂–¹²C` host matrix (`η_A = 10/33`, `E_x = +2.446 MeV` isomer gateway) and `18.8495 kg` co-located Stinespring-folded `16̄` anti-baryon buffer (`η_D = 23/33`).
+   * Holds `3.38822 EJ` gross (`3.03310 EJ` net electric at 89.519% DEC), serving as the catalytic reaction seed that satisfies the ADM Gravitational Gauss Law (`E_μν ≡ 0`) while anti-matter refills stream continuously from dark storage.
+
+5. **Active Heegaard–Floer Symplectic Shield Sleeve (`NAC-06` — 384.88 kg, 0.0850 m³):**
+   * An 8-layer concentric Diamond-on-GaN transducer sleeve that replaces 1,500.00 kg of heavy passive W-Cu and borated-polyethylene shielding.
+   * Driven at `f_symp = 124 f_tick = 6.2642 MHz`, it executes boundary symplectic transformations `T^∂_ij ∈ Sp(2g, Z)` that decouple the visible gauge vertex by `S = (10/33)² = 100/1089 ≈ 0.09182736`.
+   * Shunts `90.8173%` of residual bremsstrahlung and stray phonon flux into the dark ledger (`ΔS_A ≡ 0`), suppressing total vessel radiation attenuation to `8.23 × 10⁻¹²` and holding external crew dose to `0.114 mSv/yr < 0.120 mSv/yr` at `895.19 PW` Impulse output.
+
+6. **REBCO Magnetic Deflection Coils (18.5 T):**
+   * High-temperature superconducting solenoid windings integrated circumferentially around the active sleeve and DEC throat.
+   * Compresses charged annihilation products (`e±`, `π±`) into the central DEC entrance aperture (`r_L ≤ 0.92 mm`) while providing high-beta magnetic flux compression.
+
+7. **5-Stage Relativistic Direct Energy Conversion (DEC) Duct (`NAC-04` — 720.40 kg, 0.4120 m³):**
+   * Converts the collimated high-energy particle and photon stream directly into `0.015–2.700 MV` HVDC bus power with `89.519%` net conversion efficiency (`η_conv`):
+     - *Stage 1 (Forward-Compton Photo-Converter, η₁ = 26.400%):* Interleaved W/Ta micro-foils absorbing axial gamma quanta via Klein–Nishina forward scattering.
+     - *Stage 2 (Bethe–Heitler Pair-Induction Matrix, η₂ = 12.100%):* High-Z porous tungsten foam coupled to transverse magnetic dipoles for inductive $e^-/e^+$ power extraction.
+     - *Stage 3 (High-Beta MHD Solenoid, η₃ = 29.800%):* Diverging 18.5 T magnetic trumpet harvesting inductive motional EMF from the expanding diamagnetic lepton/pion plasma.
+     - *Stage 4A (Epithermal Retarding Grids, η₄_A = 7.300%):* Low-Z beryllium electrostatic grids decelerating intermediate-energy ions while suppressing bremsstrahlung.
+     - *Stage 4B (Venetian-Blind MV Collector, η₄_B = 13.919%):* Tri-rail graded CVD-diamond/molybdenum louvers (+0.8, +1.8, +2.7 MV DC) with a -50 kV Sternglass suppressor grid blocking secondary electron emission.
+
+---
+
+### Technical Integration into `shbt-recon`
+
+The compacted `SHBT-MAR-312C` nacelle is not an isolated power unit; it is natively integrated into five core operational subsystems of `shbt-recon`:
+
+```text
+╭────────────────────────────────────────────────────────────────────────────────────────╮
+│          SHBT-MAR-312C / SHBT-IBR-312 INTEGRATION MATRIX IN SHBT-RECON                 │
+╰────────────────────────────────────────────────────────────────────────────────────────╯
+
+   [ SHBT-IBR-312 Magazine ] ─────────► [ 16-Bank SRAM Arena ] ──► AVX-512 Givens Remap
+   • 38 to 704 Cores (0 m³ Steric)      (33,792 B @ 0x70000000)   (shbt_remap() @ f_tick)
+                 │
+                 ▼
+   [ Annular Seed Wafer (37.7 kg) ] ──► [ 5-Stage DEC Duct ] ────► [ 0.015 - 2.7 MV HVDC ]
+   • τ_B = 1,453.4 | f_M = 0.782        (89.519% Efficiency)      │
+   • G_isomer = 61.15 | 3.033 EJ net                              ├─► 6.805 PW Burst Bus
+                 ▲                                                │   (De-renders 10²⁸ nucleons)
+                 │                                                │
+   [ R_synth^MAR Breeder Foundry ] ◄──────────────────────────────┴─► 504 Gbps DMA Streaming
+   • Closed-Loop Daughter Cores                                       (C-ABI Ring Buffer)
+   • 14,293 Cores (Mode 1a) / 106,611 Cores (Mode 1c)
+```
+---
+
 ## Translocator System Topology
 
 ```
