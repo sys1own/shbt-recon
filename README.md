@@ -7,7 +7,21 @@
 3. **Compacted `SHBT-MAR-312C` Catalytic Wafer Reactor & Active Symplectic Nacelle (`2,257.70 kg`, `0.8589 m³`):** Scales the stationary primary core by 1/10th into an annular **Micro-Wafer Borrmann/Mössbauer Catalytic Seed Die** (`M_seed = 37.699 kg`, `V_seed = 0.003590 m³ = 3.59 L`, `ρ = 10.501 g/cm³`, `3.38822 EJ` gross / `3.03310 EJ` net electric, `τ_B = 1,453.4 >> 10`, `ε_B = 0.9852`, `f_M = 0.782 ≥ 0.74`, `T_op = 21.13 K ≤ 32.92 K`, `σ_max = 124.60 MPa ≤ 350.00 MPa`) and replaces 1,500.00 kg of passive shielding with an **8-Layer Active Heegaard–Floer Symplectic Shield Sleeve** (`384.88 kg`, `0.0850 m³`, `S = 100/1089 ≈ 0.09182736`, `0.114 mSv/yr < 0.120 mSv/yr` dose at `895.19 PW` Impulse), slashing dry nacelle mass by **-44.89%** and volume by **-34.51%**.
 4. **Multi-Ton Dark-Sector Anyon Braid Fuel Magazine & Sub-Millisecond Hot-Swap (`SHBT-IBR-312`):** Stores tens to hundreds of 376.99 kg fuel cores (or 37.699 kg micro-wafer batches) in the 124-channel Fibonacci anyon dark ledger (`η_D = 23/33`) with zero steric collision cross-section (`ΔV_steric ≡ 0.0000 m³`, `σ_collision ≡ 0.0000 m²`, `Δ_fr ≡ 0`) across 3 operating tiers (Tier 1: 38 cores / 14,325.62 kg fuel in 2,112 B SRAM, wet mass 16,583.32 kg ≤ 16,600.00 kg; Tier 2: 704 cores / 265.4 tons in 33,792 B SRAM ring buffer; Tier 3: 106,611 cores in-situ breeder), streaming refills in 317.8 μs (Impulse core) / 50.80 μs (micro-batch) with 0.00% bus droop and 99.999999967% duty cycle (downtime ratio < 10⁻⁷).
 
-## System Overview
+> **Quick Navigation / Table of Contents:**
+> - [1. System Overview](#1-system-overview)
+> - [2. Translocator System Topology & Dual-Power Dispatch Architecture](#2-translocator-system-topology--dual-power-dispatch-architecture)
+> - [3. Synthetic Matter Re-Rendering & Bipartite SHBT-MAR-312 Fuel Foundry (R_synth & R_synth^MAR)](#3-synthetic-matter-re-rendering--bipartite-shbt-mar-312-fuel-foundry-r_synth--r_synthmar)
+> - [4. Compacted SHBT-MAR-312C Catalytic Wafer Reactor & Active Symplectic Nacelle](#4-compacted-shbt-mar-312c-catalytic-wafer-reactor--active-symplectic-nacelle)
+> - [5. SHBT-IBR-312 Dark-Sector Anyon Braid Fuel Magazine & Autonomous Hot-Swap](#5-shbt-ibr-312-dark-sector-anyon-braid-fuel-magazine--autonomous-hot-swap)
+> - [6. Unrefueled Intergalactic Transit Profiles](#6-unrefueled-intergalactic-transit-profiles)
+> - [7. Bare-Metal C11 Hardware MMIO Register Contracts & SRAM Arena Layout](#7-bare-metal-c11-hardware-mmio-register-contracts--sram-arena-layout)
+> - [8. Workspace Topology & CLI Workflows](#8-workspace-topology--cli-workflows)
+> - [9. Master 102-Gate Verification Matrix & Z3 Formal SMT Proofs](#9-master-102-gate-verification-matrix--z3-formal-smt-proofs)
+> - [10. SHBT Ecosystem Topology & Crosswalk](#10-shbt-ecosystem-topology--crosswalk)
+
+---
+
+## 1. System Overview
 
 * **Macroscopic Stinespring Dilation** — isometric state de-rendering via `V_unified^macro` for `N_local ∈ [10²³, 10²⁸]` particles with invariant rational capacity partitioning (`η_A = 10/33`, `η_D = 23/33`), trace norm preservation (`Δ_norm < 10⁻¹²⁰`), and zero unitarity residual (`ε_unitary = 0`).
 * **2PN Relativistic Causal Authorization** — second post-Newtonian metric expansion `g_μν` in harmonic coordinates `(M_odot, J₂, S_odot)` for relativistic targets `(v ≥ 0.1c)`, enforced by a hardware lightcone interlock `(Δs²_2PN ≤ 0)`; dual-wavelength heterodyne metrology at `σ_r ≤ 0.144 pm/√Hz` synchronized to a Ytterbium optical lattice clock (`σ_t ≤ 10⁻¹⁸ s`); emergency GaN current-shunt quench in `τ_quench < 2.50 ns`.
@@ -29,80 +43,9 @@
 
 ---
 
-## Compacted SHBT-MAR-312C Nacelle Architecture & Translocator Integration
-
-![SHBT-MAR-312-IBR Compacted Nacelle Cutaway](figures/shbt_mar312_ibr_cutaway.png)
-
-The **SHBT-MAR-312C** compacted propulsion nacelle (`crates/sglt-lanr-power/src/compacted_nacelle.rs`) scales the stationary 376.99 kg (0.0359 m³) monolithic reactor core down by 1/10th into an annular **Micro-Wafer Borrmann/Mössbauer Catalytic Seed Die** (`M_seed = 37.699 kg`, `V_seed = 0.003590 m³ = 3.59 L`, `ρ = 10.501 g/cm³`) and replaces 1,500.00 kg of heavy passive shielding with an active 8-layer Heegaard–Floer symplectic shield sleeve. This architecture slashes total dry nacelle mass by **-44.89%** (from 4,096.99 kg to **2,257.70 kg**) and nacelle volume by **-34.51%** (from 1.3114 m³ to **0.8589 m³**), expanding the structural payload reserve to **1,942.30 kg** below the 4,200.00 kg flight ceiling.
-
-### Cutaway Subsystem Architecture
-
-The engineering cutaway diagram illustrates the axial propulsion and energy-conversion assembly:
-
-1. **Dark-Braid Transducer Ring (`NAC-02` — 145.20 kg, 0.0425 m³):**
-   * Mounted at the nacelle intake collar, this ring interfaces the 124-channel Fibonacci anyon dark ledger (`η_D = 23/33`) with the physical core cavity.
-   * Couples directly to `V_unified^macro` and the bipartite coset unitary beam-splitter `W_split(π/4)` to stream Stinespring-folded `16̄` anti-baryon batches dynamically into the active catalytic reaction zone with zero steric collision cross-section (`σ_collision ≡ 0.0000 m²`, `ΔV_steric ≡ 0.0000 m³`).
-
-2. **Ti-6Al-4V Cryostat Shell & LHe Cold Plate (`NAC-05` — 524.02 kg, 0.1550 m³):**
-   * Dual-wall titanium alloy pressure vessel containing the multi-gigawatt two-phase supercritical Helium-4 cooling loops (`P_transient ≥ 1.4208 GW`).
-   * Sustains baseline core cryogenics at `T_op = 21.13 K`, holding a minimum thermal quench headroom of `ΔT_headroom = 11.79 K` below the REBCO superconducting critical temperature (`T_crit = 32.92 K`) under petawatt discharge.
-
-3. **CVD Diamond Borrmann Cavity Matrix (`NAC-03` — 245.50 kg, 0.0520 m³):**
-   * Synthesized from dislocation-free, isotopically pure Type-IIa `¹²C` CVD diamond (`K = 2,250 W/m·K`).
-   * Forms the anomalous Borrmann transmission throat collimating `98.52%` (`ε_B = 0.9852`) of the annihilation gamma-ray and relativistic charged-particle stream along the axial `[001]` diamond lattice direction (`τ_B = 1,453.4 >> 10`) into a narrow forward cone (`θ_1/2 < 18°`).
-   * Provides high Lamb–Mössbauer recoilless fraction (`f_M = 0.7820 ≥ 0.74`) and acoustic phonon dissipation, limiting peak diamond burst stress to `σ_max = 124.60 MPa ≤ 350.00 MPa` (safety factor 2.809).
-
-4. **Annular Catalytic Seed Wafer Die (`NAC-01` — 37.699 kg, 0.00359 m³):**
-   * Located at the focal waist of the diamond cavity (`R_out = 0.1650 m`, `R_in = 0.0450 m`, axial thickness `L_seed = 0.045347 m = 4.535 cm`).
-   * Consists of an epitaxial composite: `18.8495 kg` visible `¹⁷⁸ᵐ²HfB₂–¹²C` host matrix (`η_A = 10/33`, `E_x = +2.446 MeV` isomer gateway) and `18.8495 kg` co-located Stinespring-folded `16̄` anti-baryon buffer (`η_D = 23/33`).
-   * Holds `3.38822 EJ` gross (`3.03310 EJ` net electric at 89.519% DEC), serving as the catalytic reaction seed that satisfies the ADM Gravitational Gauss Law (`E_μν ≡ 0`) while anti-matter refills stream continuously from dark storage.
-
-5. **Active Heegaard–Floer Symplectic Shield Sleeve (`NAC-06` — 384.88 kg, 0.0850 m³):**
-   * An 8-layer concentric Diamond-on-GaN transducer sleeve that replaces 1,500.00 kg of heavy passive W-Cu and borated-polyethylene shielding.
-   * Driven at `f_symp = 124 f_tick = 6.2642 MHz`, it executes boundary symplectic transformations `T^∂_ij ∈ Sp(2g, Z)` that decouple the visible gauge vertex by `S = (10/33)² = 100/1089 ≈ 0.09182736`.
-   * Shunts `90.8173%` of residual bremsstrahlung and stray phonon flux into the dark ledger (`ΔS_A ≡ 0`), suppressing total vessel radiation attenuation to `8.23 × 10⁻¹²` and holding external crew dose to `0.114 mSv/yr < 0.120 mSv/yr` at `895.19 PW` Impulse output.
-
-6. **REBCO Magnetic Deflection Coils (18.5 T):**
-   * High-temperature superconducting solenoid windings integrated circumferentially around the active sleeve and DEC throat.
-   * Compresses charged annihilation products (`e±`, `π±`) into the central DEC entrance aperture (`r_L ≤ 0.92 mm`) while providing high-beta magnetic flux compression.
-
-7. **5-Stage Relativistic Direct Energy Conversion (DEC) Duct (`NAC-04` — 720.40 kg, 0.4120 m³):**
-   * Converts the collimated high-energy particle and photon stream directly into `0.015–2.700 MV` HVDC bus power with `89.519%` net conversion efficiency (`η_conv`):
-     - *Stage 1 (Forward-Compton Photo-Converter, η₁ = 26.400%):* Interleaved W/Ta micro-foils absorbing axial gamma quanta via Klein–Nishina forward scattering.
-     - *Stage 2 (Bethe–Heitler Pair-Induction Matrix, η₂ = 12.100%):* High-Z porous tungsten foam coupled to transverse magnetic dipoles for inductive $e^-/e^+$ power extraction.
-     - *Stage 3 (High-Beta MHD Solenoid, η₃ = 29.800%):* Diverging 18.5 T magnetic trumpet harvesting inductive motional EMF from the expanding diamagnetic lepton/pion plasma.
-     - *Stage 4A (Epithermal Retarding Grids, η₄_A = 7.300%):* Low-Z beryllium electrostatic grids decelerating intermediate-energy ions while suppressing bremsstrahlung.
-     - *Stage 4B (Venetian-Blind MV Collector, η₄_B = 13.919%):* Tri-rail graded CVD-diamond/molybdenum louvers (+0.8, +1.8, +2.7 MV DC) with a -50 kV Sternglass suppressor grid blocking secondary electron emission.
-
----
-
-### Technical Integration into `shbt-recon`
-
-The compacted `SHBT-MAR-312C` nacelle is not an isolated power unit; it is natively integrated into five core operational subsystems of `shbt-recon`:
+## 2. Translocator System Topology & Dual-Power Dispatch Architecture
 
 ```text
-╭────────────────────────────────────────────────────────────────────────────────────────╮
-│          SHBT-MAR-312C / SHBT-IBR-312 INTEGRATION MATRIX IN SHBT-RECON                 │
-╰────────────────────────────────────────────────────────────────────────────────────────╯
-
-   [ SHBT-IBR-312 Magazine ] ─────────► [ 16-Bank SRAM Arena ] ──► AVX-512 Givens Remap
-   • 38 to 704 Cores (0 m³ Steric)      (33,792 B @ 0x70000000)   (shbt_remap() @ f_tick)
-                 │
-                 ▼
-   [ Annular Seed Wafer (37.7 kg) ] ──► [ 5-Stage DEC Duct ] ────► [ 0.015 - 2.7 MV HVDC ]
-   • τ_B = 1,453.4 | f_M = 0.782        (89.519% Efficiency)      │
-   • G_isomer = 61.15 | 3.033 EJ net                              ├─► 6.805 PW Burst Bus
-                 ▲                                                │   (De-renders 10²⁸ nucleons)
-                 │                                                │
-   [ R_synth^MAR Breeder Foundry ] ◄──────────────────────────────┴─► 504 Gbps DMA Streaming
-   • Closed-Loop Daughter Cores                                       (C-ABI Ring Buffer)
-   • 14,293 Cores (Mode 1a) / 106,611 Cores (Mode 1c)
-```
----
-
-## Translocator System Topology
-
-```
 ╭────────────────────────────────────────────────────────────────────────────────────────╮
 │          SHBT-RECON MACROSCOPIC STATE TRANSLOCATION & GATEWAY ARCHITECTURE             │
 ╰────────────────────────────────────────────────────────────────────────────────────────╯
@@ -156,40 +99,8 @@ The compacted `SHBT-MAR-312C` nacelle is not an isolated power unit; it is nativ
  │ • Causal Register Bank (0x28–0x2C): Real-time hardware assertion of Δs²_2PN ≤ 0        │
  ╰────────────────────────────────────────────────────────────────────────────────────────╯
 ```
-## Workspace Topology
 
-```text
-shbt-recon/
-├── Cargo.toml                      # Cargo workspace manifest
-├── main.tex                        # Unified LaTeX manuscript
-├── recon.pdf                       # Compiled publication specification
-├── crates/
-│   ├── sglt-translocator-core/     # Stinespring isometry, min-jerk, swarm relabeling
-│   ├── sglt-transducer-fea/        # Two-phase He-4 boiling FEA, Diamond-on-GaN, tamping
-│   ├── sglt-hil-microkernel/       # shbt-os microkernel FFI wrapper, MMIO, ECC
-│   ├── sglt-lanr-power/            # 1,800-module LANR ledger, entropy debt balancing
-│   ├── sglt-metrology-causal/      # 2PN metric calculator, causal interlock
-│   ├── sglt-recon-deconv/          # Fibonacci fusion tree, TQEC decoder grid
-│   ├── sglt-gst-metamaterial/      # GST self-healing radiation-hard switches
-│   ├── sglt-gpu-physics/           # CUDA/ROCm Stinespring kernel + Givens remap
-│   ├── sglt-hyperdual-uq/          # Hyper-dual AD Bayesian UQ engine
-│   ├── sglt-webgpu-vis/            # Wasm/WebGPU WGSL field visualizer
-│   ├── shbt-recon-core/            # ADM 3+1, Lorentzian audit, SPSC telemetry ring
-│   ├── shbt-recon-kernel/          # C11 runtime bindings (SECDED, remap, recover)
-│   ├── shbt-recon-thermo/          # Kapitza boundary, Landauer C_get
-│   ├── shbt-recon-metrology/       # TMSV metrology mesh, GUM Monte Carlo
-│   ├── shbt-recon-eda/             # GDSII/STEP exporters, 12-layer interposer S2P
-│   └── shbt-recon-cli/             # PyO3 C-extension FFI bindings
-├── kernel/                         # Bare-metal C11 microkernel (shbt_causal_kernel.c)
-├── formal/                         # Z3 SMT proof suite (verify_recon_battery.py)
-├── include/                        # Unified C-ABI headers (shbt_recon_abi.h, shbt_recon_mmio.h)
-├── eda_outputs/                    # Generated GDSII, STEP, S2P artifacts
-├── python/shbt_recon/              # Python API & CLI orchestrator
-└── tests/                          # Integration test harness
-
-```
-
-## Dual-Power Dispatch Topology
+### Dual-Power Dispatch Topology
 
 ```text
 [LANR Baseload (1,047 kW w/TEG) + SHBT-MAR-312 / MAR-312C Reactor (1.0 CEU = 10 × Wafer)]
@@ -209,7 +120,9 @@ PCSS crowbar quenches to 0 W within τ ≤ 2.18 ns for symplectic address
 relabeling (T<sup>∂</sup><sub>ij</sub> ∈ Sp(2g, ℤ)), keeping |det(g) + 1|
 ≤ 10⁻¹², ‖β^i‖ ≤ 10⁻¹⁴ m/s, and E_μν ≡ 0 under petawatt pulses.
 
-## Synthetic Matter Re-Rendering Pipeline (`R_synth` & `R_synth^MAR`)
+---
+
+## 3. Synthetic Matter Re-Rendering & Bipartite SHBT-MAR-312 Fuel Foundry (`R_synth` & `R_synth^MAR`)
 
 The station operates in dual mode. In **1:1 translocation mode** the pipeline is symmetric (`de-render → dark ledger → causal egress → re-render`). In **synthesis mode**, generic bulk feedstock (`SiC / HfO₂ / B₄C`, raw planetary slag, or pre-refined `HfB₂–¹²C`) is de-rendered into the dark completion ledger (`η_D = 23/33`), the boundary character transmutation operator applies either single-sector visible Cartan weight shifts (`R_synth`) or bipartite `so(10)₃₁₂ / [su(2)₂₆ × su(3)₈]` coset spinor folding (`R_synth^MAR`), and the target isotope, compound, or dual-sector fuel core is re-rendered at `x_tar`:
 
@@ -221,7 +134,7 @@ R_synth^MAR(ρ_in) = T^∂(x_tar) · S_synth^MAR(ω_target, θ_coset) · D_deren
 S_synth^MAR(ω_target, θ_coset) = diag( U_Cartan(Δλ_vis) · P_{K^π=16+}(ω_target),  D_{B̄} · U_coset(θ_coset, {Δ₁, Δ₂, Δ₃}) ) · W_split(π/4)
 ```
 
-### Synthesis Parameter Ledger (7 Canonical Products — `crates/sglt-translocator-core/src/synthesis.rs`)
+### 3.1 Synthesis Parameter Ledger (7 Canonical Products — `crates/sglt-translocator-core/src/synthesis.rs`)
 
 | Product | Code | Z | A | ΔB_nuc (MeV) | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -233,7 +146,7 @@ S_synth^MAR(ω_target, θ_coset) = diag( U_Cartan(Δλ_vis) · P_{K^π=16+}(ω_t
 | Stinespring-Folded `16̄` Anti-Baryon Lattice | `0x06` | -72 | -178 | 2.446 | Pure topological stasis lattice folded into the `η_D = 23/33` dark ledger via 124 Fibonacci braids (`Γ_{B̄→B} = 0 s⁻¹`) |
 | `SHBT-MAR-312C` Catalytic Seed Wafer Die | `0x07` | 72 | 178 | 2.446 | Annular micro-wafer catalytic seed die (`37.699 kg`, `3.59 L`, `0.1 CEU`, `3.38822 EJ` gross / `3.03310 EJ` net electric: `18.8495 kg` visible `¹⁷⁸ᵐ²HfB₂–¹²C` + `18.8495 kg` folded `16̄` buffer) for compacted mobile gateway nacelles |
 
-### Bipartite Coset Synthesis Architecture (`SHBT-RECON-SYNTH-MAR312` → `SHBT-MAR-312`)
+### 3.2 Bipartite Coset Synthesis Architecture (`SHBT-RECON-SYNTH-MAR312` → `SHBT-MAR-312`)
 
 To synthesize the monolithic **376.99 kg (`2.270287 × 10²⁹` nucleons, `V = 0.0359 m³`, `ρ = 10.501 g/cm³`, `E_total = 33.8822 EJ`) `SHBT-MAR-312` fuel core** for [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp), the unitary beam-splitter `W_split(π/4)` enforces a deterministic **50/50 Bipartite Split (`η_{B̄} = 0.500`, MMIO `0x3C = 0x8000`)** of the de-rendered nucleon stream:
 
@@ -248,11 +161,11 @@ To synthesize the monolithic **376.99 kg (`2.270287 × 10²⁹` nucleons, `V = 0
 
 Because `D_{B̄}` projects the `16̄` spinor onto the gauge-neutral dark ledger (`η_D = 23/33`), all active visible gauge variances vanish (`Tr(ρ*_{B̄} Q²_{SU(3)}) = 0`, `Tr(ρ*_{B̄} Q²_EM) = 0`, `Δ_fr = 0`), yielding **zero active render cost `C_{B̄}(ρ*_{B̄}) = 0 W`** and **zero spontaneous standby annihilation `Γ_{B̄→B} = 0 s⁻¹`** without magnetic traps or cryogenic boil-off.
 
-## `shbt-recon` → `shbt-warp` Fuel Supply Chain, Foundry Energy Ledger & Breeder Throughput
+### 3.3 Foundry Mass-Energy Ledger & Closed-Loop Breeder Throughput
 
 Because `shbt-recon` de-renders existing bulk matter nucleons (`2.270287 × 10²⁹` nucleons that *already supply* the `M_core c² = 33.8822 EJ` rest-mass energy) and performs an isometric topological rotation (`16 → 16̄`) rather than creating baryon–antibaryon pairs out of the quantum vacuum, the external energy required to manufacture a `376.99 kg` `SHBT-MAR-312` fuel core is reduced by **`1,581×` to `119,094×`**:
 
-### Foundry Mass-Energy Ledger (`376.99 kg` / `33.8822 EJ` `SHBT-MAR-312` Core)
+#### Foundry Mass-Energy Ledger (`376.99 kg` / `33.8822 EJ` `SHBT-MAR-312` Core)
 
 | Foundry Mode | Feedstock Composition | Isomer Excitation `ΔE_isomer` | Nuclear Binding `ΔE_bind` | Coset & Bit-Step Loss `ΔE_coset + ΔE_step` | Total Net Input `ΔE_synth` | Energy Reduction & Foundry Gain `Q_foundry` vs. Mode 2 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -261,7 +174,7 @@ Because `shbt-recon` de-renders existing bulk matter nucleons (`2.270287 × 10²
 | **Mode 1b** | Raw Unsorted `Fe / Si / C` Planetary Slag Feedstock | `0.2025 PJ` | `20.1492 PJ` (`0.56180 MeV/A`) | `1.0783 PJ` (`94.20%` SMES recovery) | **`21.4300 PJ`** | **`1,581×` reduction** (`3.20` orders of magnitude; `Q_foundry = 1,581`) |
 | **Mode 2** | Vacuum Pair-Creation Baseline (`2 M_core c²` threshold) | — | — | — | **`33,882.17 PJ` (`33.8822 EJ`)** | **`1.0×` baseline** (`M_core c²`; `Q_foundry = 1.0`) |
 
-### Multi-Driver Synthesis Throughput & Closed-Loop `SHBT-MAR-312` Breeder Turnaround
+#### Multi-Driver Synthesis Throughput & Closed-Loop `SHBT-MAR-312` Breeder Turnaround
 
 | Power Driver Platform | Electrical Rating (`P_net`) | Mode 1c Duration (`0.2845 PJ`) | Mode 1a Duration (`2.1220 PJ`) | Mode 1a Daily Output (`cores/day`) | Mode 1b Duration (`21.4300 PJ`) | Mode 2 Vacuum Baseline (`33.8822 EJ`) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -279,12 +192,165 @@ In closed-loop breeder operation, a single active `SHBT-MAR-312` reactor supplyi
 
 **MMIO dispatch:** the synthesis target specification occupies the bank-switched window `0x28`–`0x3F` (selected by `SHBT_CTRL_SYNTH_BANK_SEL`, bit 5 of `system_control`), including `synth_antibaryon_ratio_q16` (`0x3C`, `0x8000 = 32768` for `η_{B̄} = 0.500`) and `synth_coset_weight_q16` (`0x3E`, `0xB400 = 46080` for `Δh_vis = 45/64 = 0.703125`); `shbt_synth_dispatch()` transitions through FSM states `0x04` (`TRANSMUTATION_BURST`) and `0x06` (`COSET_ANTIBARYON_FOLD`) before symplectic co-crystallization `0x08` (`SYMPLECTIC_CRYSTALLIZATION`).
 
-## 128-Byte `shbt_recon_mmio_t` Register Contract
+---
 
-Dual-cacheline C11 packed structure at physical base `0x70000000`
-(`include/shbt_recon_mmio.h`, `kernel/include/shbt_recon_mmio.h`), verified
-by compile-time `_Static_assert`: `sizeof == 128`,
-`offsetof(isomer_soc_millijoules) == 64`, `offsetof(hardware_crc32c) == 112`.
+## 4. Compacted SHBT-MAR-312C Catalytic Wafer Reactor & Active Symplectic Nacelle
+
+![SHBT-MAR-312-IBR Compacted Nacelle Cutaway](figures/shbt_mar312_ibr_cutaway.png)
+
+The **`SHBT-MAR-312C`** compacted propulsion nacelle (`crates/sglt-lanr-power/src/compacted_nacelle.rs`) scales the stationary 376.99 kg (0.0359 m³) monolithic reactor core down by 1/10th into an annular **Micro-Wafer Borrmann/Mössbauer Catalytic Seed Die** (`M_seed = 37.699 kg`, `V_seed = 0.003590 m³ = 3.59 L`, `0.1 CEU`, `ρ = 10.501 g/cm³`, `R_out = 0.1650 m`, `R_in = 0.0450 m`, `L_seed = 0.045347 m = 4.535 cm`, storing `3.38822 EJ` gross / `3.03310 EJ` net electric per wafer refill) and replaces 1,500.00 kg of heavy passive shielding with an **8-Layer Active Heegaard–Floer Symplectic Shield Sleeve** (`384.88 kg`, `0.0850 m³`, `S = (10/33)² = 100/1089 ≈ 0.09182736`). This architecture slashes total dry nacelle mass by **-44.89%** (from 4,096.99 kg to **2,257.70 kg**) and nacelle volume by **-34.51%** (from 1.3114 m³ to **0.8589 m³**), expanding the structural payload reserve to **1,942.30 kg** below the 4,200.00 kg flight ceiling (46.25% reserve).
+
+### 4.1 Cutaway Subsystem Architecture
+
+The engineering cutaway diagram illustrates the axial propulsion and energy-conversion assembly:
+
+1. **Dark-Braid Transducer Ring (`NAC-02` — 145.20 kg, 0.0425 m³):**
+   * Mounted at the nacelle intake collar, this ring interfaces the 124-channel Fibonacci anyon dark ledger (`η_D = 23/33`) with the physical core cavity.
+   * Couples directly to `V_unified^macro` and the bipartite coset unitary beam-splitter `W_split(π/4)` to stream Stinespring-folded `16̄` anti-baryon batches dynamically into the active catalytic reaction zone with zero steric collision cross-section (`σ_collision ≡ 0.0000 m²`, `ΔV_steric ≡ 0.0000 m³`).
+
+2. **Ti-6Al-4V Cryostat Shell & LHe Cold Plate (`NAC-05` — 524.02 kg, 0.1550 m³):**
+   * Dual-wall titanium alloy pressure vessel containing the multi-gigawatt two-phase supercritical Helium-4 cooling loops (`P_transient ≥ 1.4208 GW`).
+   * Sustains baseline core cryogenics at `T_op = 21.13 K`, holding a minimum thermal quench headroom of `ΔT_headroom = 11.79 K` below the REBCO superconducting critical temperature (`T_crit = 32.92 K`) under petawatt discharge.
+
+3. **CVD Diamond Borrmann Cavity Matrix (`NAC-03` — 245.50 kg, 0.0520 m³):**
+   * Synthesized from dislocation-free, isotopically pure Type-IIa `¹²C` CVD diamond (`K = 2,250 W/m·K`).
+   * Forms the anomalous Borrmann transmission throat collimating `98.52%` (`ε_B = 0.9852`) of the annihilation gamma-ray and relativistic charged-particle stream along the axial `[001]` diamond lattice direction (`τ_B = 1,453.4 >> 10`) into a narrow forward cone (`θ_1/2 < 18°`).
+   * Provides high Lamb–Mössbauer recoilless fraction (`f_M = 0.7820 ≥ 0.74`) and acoustic phonon dissipation, limiting peak diamond burst stress to `σ_max = 124.60 MPa ≤ 350.00 MPa` (safety factor 2.809).
+
+4. **Annular Catalytic Seed Wafer Die (`NAC-01` — 37.699 kg, 0.00359 m³):**
+   * Located at the focal waist of the diamond cavity (`R_out = 0.1650 m`, `R_in = 0.0450 m`, axial thickness `L_seed = 0.045347 m = 4.535 cm`).
+   * Consists of an epitaxial composite: `18.8495 kg` visible `¹⁷⁸ᵐ²HfB₂–¹²C` host matrix (`η_A = 10/33`, `E_x = +2.446 MeV` isomer gateway) and `18.8495 kg` co-located Stinespring-folded `16̄` anti-baryon buffer (`η_D = 23/33`).
+   * Holds `3.38822 EJ` gross (`3.03310 EJ` net electric at 89.519% DEC), serving as the catalytic reaction seed that satisfies the ADM Gravitational Gauss Law (`E_μν ≡ 0`) while anti-matter refills stream continuously from dark storage.
+
+5. **Active Heegaard–Floer Symplectic Shield Sleeve (`NAC-06` — 384.88 kg, 0.0850 m³):**
+   * An 8-layer concentric Diamond-on-GaN transducer sleeve that replaces 1,500.00 kg of heavy passive W-Cu and borated-polyethylene shielding.
+   * Driven at `f_symp = 124 f_tick = 6.2642 MHz`, it executes boundary symplectic transformations `T^∂_ij ∈ Sp(2g, Z)` that decouple the visible gauge vertex by `S = (10/33)² = 100/1089 ≈ 0.09182736`.
+   * Shunts `90.8173%` of residual bremsstrahlung and stray phonon flux into the dark ledger (`ΔS_A ≡ 0`), suppressing total vessel radiation attenuation to `8.23 × 10⁻¹²` and holding external crew dose to `0.114 mSv/yr < 0.120 mSv/yr` at `895.19 PW` Impulse output.
+
+6. **REBCO Magnetic Deflection Coils (18.5 T):**
+   * High-temperature superconducting solenoid windings integrated circumferentially around the active sleeve and DEC throat.
+   * Compresses charged annihilation products (`e±`, `π±`) into the central DEC entrance aperture (`r_L ≤ 0.92 mm`) while providing high-beta magnetic flux compression.
+
+7. **5-Stage Relativistic Direct Energy Conversion (DEC) Duct (`NAC-04` — 720.40 kg, 0.4120 m³):**
+   * Converts the collimated high-energy particle and photon stream directly into `0.015–2.700 MV` HVDC bus power with `89.519%` net conversion efficiency (`η_conv`):
+     - *Stage 1 (Forward-Compton Photo-Converter, η₁ = 26.400%):* Interleaved W/Ta micro-foils absorbing axial gamma quanta via Klein–Nishina forward scattering.
+     - *Stage 2 (Bethe–Heitler Pair-Induction Matrix, η₂ = 12.100%):* High-Z porous tungsten foam coupled to transverse magnetic dipoles for inductive e⁻/e⁺ power extraction.
+     - *Stage 3 (High-Beta MHD Solenoid, η₃ = 29.800%):* Diverging 18.5 T magnetic trumpet harvesting inductive motional EMF from the expanding diamagnetic lepton/pion plasma.
+     - *Stage 4A (Epithermal Retarding Grids, η₄_A = 7.300%):* Low-Z beryllium electrostatic grids decelerating intermediate-energy ions while suppressing bremsstrahlung.
+     - *Stage 4B (Venetian-Blind MV Collector, η₄_B = 13.919%):* Tri-rail graded CVD-diamond/molybdenum louvers (+0.8, +1.8, +2.7 MV DC) with a -50 kV Sternglass suppressor grid blocking secondary electron emission.
+
+### 4.2 Four Boundary-Conformal Lower Bounds on the Visible Host Lattice
+
+Although the topological dark ledger stores multi-ton folded baryon reserves with strictly zero spatial displacement, four fundamental physical lower bounds prohibit reducing visible host lattice mass to zero (`M_vis → 0`):
+
+1. **ADM Gravitational Gauss Law & Reference Frame Orientation (RFO) Lock:** The projected electric Weyl curvature defect `E_μν = C_μαμβ n^α n^β` vanishes identically (`E_μν ≡ 0`) if and only if the holographic boundary state preserves the asymptotic Poincaré surface integral `M_ADM = (1/16π G_N) ∮ (∂_j h_ij - ∂_i h_jj) dS^i = Tr(ρ_∂ H_Sugawara)`. Eliminating the visible lattice eliminates local generator support `J^a_vis(z)`, causing `E_μν ≠ 0` and tripping the CCZ4 interlock within `2.10 ns`.
+2. **Borrmann Anomalous Transmission Optical Depth & Pendellösung Extinction:** Collimation of annihilation products along `[001]` diamond channels requires Borrmann optical depth `τ_B = L_seed / λ_ext >> 1`. With Pendellösung extinction distance `λ_ext = 31.2 μm` for `40.0 keV` X-rays in diamond, `τ_B = 0.045347 m / (31.2 × 10⁻⁶ m) = 1,453.4 >> 10`, yielding forward anomalous transmission `ε_B = 0.9852` along `(220)` Bragg planes (GATE-IBR-01).
+3. **Mössbauer Coherent Phonon Dissipation & Quench Headroom:** At `T_op = 21.13 K`, the Lamb–Mössbauer recoilless fraction is `f_M = 0.7820 ≥ 0.74`. Peak diamond burst temperature reaches `T_core,burst = 21.33 K`, providing an exceptional thermal headroom of `ΔT_headroom = 32.92 K - 21.13 K = 11.79 K` below the REBCO quench limit (`T_crit = 32.92 K`), with diamond von Mises stress `σ_max = 124.60 MPa << 350.00 MPa` (THM-IBR-01).
+4. **8-Layer Active Heegaard–Floer Symplectic Shield Sleeve:** Replaces `1,500.00 kg` of passive W-Cu shielding with an active 8-layer `384.88 kg` (`0.0850 m³`) symplectic transducer sleeve (`NAC-06C`) comprising diamond-on-GaN layers encased in an `18.5 T` REBCO superconducting magnetic sheath. Driving boundary symplectic transformations decouples the visible gauge vertex by `S = (10/33)² = 100/1089 ≈ 0.09182736`, shunting `1 - S = 90.8173%` of stray flux into the dark ledger (`ΔS_A ≡ 0`) and holding crew dose to `0.114 mSv/yr < 0.120 mSv/yr` at `895.19 PW` Impulse (GATE-IBR-06).
+
+### 4.3 Itemized 8-Subsystem Nacelle Budget (Standard vs. Compacted)
+
+| Subsystem ID | Subsystem Description | Standard MAR-312 (kg) | Compacted MAR-312C (kg) | Mass Delta | Standard Volume (m³) | Compacted Volume (m³) | Volume Delta |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `NAC-01` | Active Catalytic Core / Seed Wafer | `376.99` | `37.70` | `-90.00%` | `0.0359` | `0.00359` | `-90.00%` |
+| `NAC-02` | Dark-Braid Transducer Ring / Injector | `0.00` | `145.20` | `+145.20 kg` | `0.0000` | `0.04250` | `+0.0425 m³` |
+| `NAC-03` | CVD Diamond Borrmann Cavity Matrix | `65.12` | `245.50` | `+180.38 kg` | `0.0185` | `0.05200` | `+0.0335 m³` |
+| `NAC-04` | 5-Stage Relativistic DEC Collector Duct | `840.00` | `720.40` | `-14.24%` | `0.4200` | `0.41200` | `-1.90%` |
+| `NAC-05` | Ti-6Al-4V Cryostat & LHe Cold Plate | `520.00` | `524.02` | `+0.77%` | `0.2850` | `0.15500` | `-45.61%` |
+| `NAC-06` | Shielding (Passive W-Cu vs Active Symplectic) | `1,884.88` | `384.88` | `-79.58%` | `0.3450` | `0.08500` | `-75.36%` |
+| `NAC-07` | SI-SiC/GaN PCSS Crowbars & SMES Bus | `230.00` | `125.00` | `-45.65%` | `0.1120` | `0.06400` | `-42.86%` |
+| `NAC-08` | TMSV Metrology Bench & C11 Avionics Bay | `180.00` | `75.00` | `-58.33%` | `0.0950` | `0.04481` | `-52.83%` |
+| **Total** | **Propulsion Nacelle Flight Envelope** | **`4,096.99`** | **`2,257.70`** | **`-44.89%`** | **`1.3114`** | **`0.85890`** | **`-34.51%`** |
+
+Dry nacelle mass drops to **`2,257.70 kg`** (saving `1,839.29 kg`), expanding the structural payload margin to **`1,942.30 kg`** below the `4,200.00 kg` flight ceiling (`46.25%` reserve).
+
+### 4.4 Technical Integration Matrix in `shbt-recon`
+
+The compacted `SHBT-MAR-312C` nacelle is not an isolated power unit; it is natively integrated into five core operational subsystems of `shbt-recon`:
+
+```text
+╭────────────────────────────────────────────────────────────────────────────────────────╮
+│          SHBT-MAR-312C / SHBT-IBR-312 INTEGRATION MATRIX IN SHBT-RECON                 │
+╰────────────────────────────────────────────────────────────────────────────────────────╯
+
+   [ SHBT-IBR-312 Magazine ] ─────────► [ 16-Bank SRAM Arena ] ──► AVX-512 Givens Remap
+   • 38 to 704 Cores (0 m³ Steric)      (33,792 B @ 0x70000000)   (shbt_remap() @ f_tick)
+                 │
+                 ▼
+   [ Annular Seed Wafer (37.7 kg) ] ──► [ 5-Stage DEC Duct ] ────► [ 0.015 - 2.7 MV HVDC ]
+   • τ_B = 1,453.4 | f_M = 0.782        (89.519% Efficiency)      │
+   • G_isomer = 61.15 | 3.033 EJ net                              ├─► 6.805 PW Burst Bus
+                 ▲                                                │   (De-renders 10²⁸ nucleons)
+                 │                                                │
+   [ R_synth^MAR Breeder Foundry ] ◄──────────────────────────────┴─► 504 Gbps DMA Streaming
+   • Closed-Loop Daughter Cores                                       (C-ABI Ring Buffer)
+   • 14,293 Cores (Mode 1a) / 106,611 Cores (Mode 1c)
+```
+
+---
+
+## 5. SHBT-IBR-312 Dark-Sector Anyon Braid Fuel Magazine & Autonomous Hot-Swap
+
+The **`SHBT-IBR-312`** system (`DarkBraidMagazine` in `crates/sglt-lanr-power/src/compacted_nacelle.rs`, mapped to `include/shbt_ibr312_mmio.h`) folds and buffers multi-ton fuel reserves into the `124`-channel Fibonacci anyon dark ledger (`η_D = 23/33`).
+
+### 5.1 Zero Steric Volume Superposition Proof
+
+Because the dark-sector anyon projection operator satisfies `Π_vis ρ_dark Π_vis ≡ 0`, the spatial metric volume expectation value on the spatial Cauchy slice `Σ_t` is strictly:
+`⟨V_vol⟩ = Tr(ρ_dark V_vol) ≡ 0.0000 m³`, and the gauge collision cross-section vanishes identically: `σ_collision(ρ_dark) ≡ 0.0000 m²`.
+Simultaneously, the boundary ADM mass integral satisfies `M_ADM = M_nacelle + M_fuel`, preserving exact gravitational mass-energy equivalence (`E_stored = M_fuel c²`) with zero volumetric expansion (GATE-IBR-03, THM-IBR-02).
+
+### 5.2 Three Operating Tiers
+
+| Magazine Tier | SRAM Storage Architecture | Stored Cores | Micro-Refills | Fuel Mass (kg) | Gross Energy (EJ) | Net Energy (EJ) | Physical Steric Volume |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Tier 1 (Direct)** | Single Frame (`2,112 B` SRAM) | `38` | `380` | `14,325.62` | `1,287.52` | `1,152.58` | **`0.0000 m³` (Exact)** |
+| **Tier 2 (Deep)** | 16-Bank Arena (`33,792 B` SRAM) | `704` | `7,040` | `265,400.96` | `23,853.07` | `21,353.02` | **`0.0000 m³` (Exact)** |
+| **Tier 3 (Breeder)** | Closed-Loop In-Situ Foundry | `106,611` | `1,066,110` | `40,191,270.0` | `3,612,196` | `3,233,601` | **`0.0000 m³` (Exact)** |
+
+In **Tier 1**, total wet spacecraft propulsion mass is `2,257.70 kg + 14,325.62 kg = 16,583.32 kg ≤ 16,600.00 kg`, satisfying the `N_local ≤ 10²⁸` single-frame Stinespring dilation limit with `+16.68 kg` margin (GATE-IBR-04).
+
+### 5.3 8-State Autonomous Hot-Swap FSM Protocol
+
+Refueling occurs via an 8-state hardware finite state machine (`IbrFsmState`):
+
+| State ID | State Name | Physical & Holographic Operation | Step Latency | Bus Droop |
+| :--- | :--- | :--- | :--- | :--- |
+| `S0` | `NOMINAL_BURN` | Steady-state mass-annihilation power output; TMSV metrology monitoring | Continuous | `0.00%` |
+| `S1` | `SOC_THRESHOLD_DETECT` | Catalytic seed wafer SoC drops below 10.0% (`SoC ≤ 0.10`); trips reload IRQ | `< 2.10 ns` | `0.00%` |
+| `S2` | `SMES_BUS_CLAMP` | 94.20% SMES coil assumes traction load; isolates DC collector rail | `< 5.00 μs` | **`0.00%`** |
+| `S3` | `GIVENS_BANK_ALIGN` | AVX-512 Givens rotations align target frame in `.stinespring_magazine` SRAM | `12.40 μs` | `0.00%` |
+| `S4` | `STINESPRING_UNFOLD` | Callan–Symanzik operator unfolds `16̄` spinor batch into seed wafer | `50.80 μs` / `317.8 μs` | `0.00%` |
+| `S5` | `SUGAWARA_PARITY_LOCK` | Sugawara shift `Δh_vis = 45/64` and `Δ_fr ≡ 0` parity locked | `6.20 μs` | `0.00%` |
+| `S6` | `MOSSBAUER_SYNC` | 40.0 keV X-ray seed laser realigns diamond (220) Borrmann electric-field nodes | `18.50 μs` | `0.00%` |
+| `S7` | `HANDOFF_RESUME` | Traction load transferred from SMES back to DEC duct; full power restored | `8.10 μs` | `0.00%` |
+
+Reload latency is `50.80 μs` for a micro-batch and `317.8 μs` for a full `376.99 kg` core in Impulse mode, bounding cumulative downtime to less than `10⁻⁷` and sustaining a continuous propulsion duty cycle of **`99.999999967%`** (GATE-IBR-05, GATE-IBR-08).
+
+---
+
+## 6. Unrefueled Intergalactic Transit Profiles
+
+Coupling the macroscopic translocator and `shbt-warp` corridor dynamics with the compacted `SHBT-MAR-312C` nacelle and `SHBT-IBR-312` dark magazine enables unrefueled interstellar and intergalactic transits (`crates/sglt-translocator-core/src/intergalactic.rs`). Crew biological proper time is uniformly dilated via `T_crew = α_cabin · T_coord = 10⁻³ T_coord`:
+
+| Mission Target & ID | Distance | Velocity Regime | Coordinate Time | Crew Proper Time | Cores (Refills) | Reload Downtime | Duty Cycle |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **5. Andromeda (M31)** | `2.537 Mly` | Cruise (`89.6c`) | `28,314.7 yr` | `28.31 yr` | `5.99` (`60`) | `1.902 s` | `99.9999998%` |
+| **5. Andromeda (M31)** | `2.537 Mly` | Burst (`681.2c`) | `3,724.3 yr` | `3.72 yr` | `69.87` (`699`) | `2.921 s` | `99.9999975%` |
+| **5. Andromeda (M31)** | `2.537 Mly` | Impulse (`89,618c`) | `28.309 yr` | **`10.33 days`** | `915.55` (`9,156`) | **`0.291 s`** | **`99.999999967%`** |
+| **6. Virgo / M87** | `53.49 Mly` | Cruise (`89.6c`) | `596,986.6 yr` | `596.99 yr` | `126.20` (`1,262`) | `40.106 s` | `99.9999999%` |
+| **6. Virgo / M87** | `53.49 Mly` | Burst (`681.2c`) | `78,523.2 yr` | `78.52 yr` | `1,473.05` (`14,731`) | `61.588 s` | `99.9999975%` |
+| **6. Virgo / M87** | `53.49 Mly` | Impulse (`89,618c`) | `596.867 yr` | **`217.99 days`** | `19,303.5` (`193,035`) | **`6.135 s`** | **`99.999999967%`** |
+| **7A. Laniakea Core** | `500.0 Mly` | Impulse (`89,618c`) | `5,579.2 yr` | `5.58 yr` | `180,440.3` | `57.344 s` | `99.999999967%` |
+| **7B. Impulse Horizon** | `295.42 Mly` | Impulse (`89,618c`) | `3,296.4 yr` | `3.30 yr` | `106,611.0` (1 Tier-3) | `33.881 s` | `99.999999967%` |
+| **7C. Cosmological Horizon** | `45.18 Gly` | Cruise (`89.6c`) | `5.042 × 10⁸ yr` | `504,241 yr` | Multi-Hop In-Situ | Continuous | `99.9999999%` |
+
+---
+
+## 7. Bare-Metal C11 Hardware MMIO Register Contracts & SRAM Arena Layout
+
+### 7.1 128-Byte `shbt_recon_mmio_t` Register Contract (`0x70000000`)
+
+Dual-cacheline C11 packed structure at physical base `0x70000000` (`include/shbt_recon_mmio.h`, `kernel/include/shbt_recon_mmio.h`), verified by compile-time `_Static_assert`: `sizeof == 128`, `offsetof(isomer_soc_millijoules) == 64`, `offsetof(hardware_crc32c) == 112`.
 
 **Cacheline 0 — Control / Dispatch FSM / 2PN Causal / Metric Invariance:**
 
@@ -341,95 +407,7 @@ by compile-time `_Static_assert`: `sizeof == 128`,
 | `0x70` | `hardware_crc32c` | `u32` | Hardware CRC-32C across `0x00..0x6F` |
 | `0x74`–`0x7F` | `ibr_telemetry` (union w/ `reserved_c1_pad[12]`) | — | `0x74`: `ibr_crew_dose_nsv_yr` (`u32`, 114,000 nSv/yr = 0.114 mSv/yr); `0x78`: `ibr_frame_angle_q64` (`u64`, Q0.64 decoupling angle) |
 
-## Compacted SHBT-MAR-312C Catalytic Wafer Nacelle & Active Symplectic Shielding
-
-The **`SHBT-MAR-312C`** architecture (`crates/sglt-lanr-power/src/compacted_nacelle.rs`) scales the stationary `376.99 kg` (`0.0359 m³`) reactor core down by 1/10th into an annular monolithic **Micro-Wafer Borrmann/Mössbauer Catalytic Seed Die** (`M_seed = 37.699 kg`, `V_seed = 0.003590 m³ = 3.59 L`, `ρ = 10.501 g/cm³`: `18.8495 kg` visible `¹⁷⁸ᵐ²HfB₂–¹²C` + `18.8495 kg` folded `16̄` buffer storing `3.38822 EJ` gross / `3.03310 EJ` net electric). The core disk geometry spans `R_out = 0.1650 m`, `R_in = 0.0450 m`, and axial length `L_seed = 0.045347 m` (`4.535 cm`).
-
-### Four Boundary-Conformal Lower Bounds on the Visible Host Lattice
-
-Although the topological dark ledger stores multi-ton folded baryon reserves with strictly zero spatial displacement, four fundamental physical lower bounds prohibit reducing visible host lattice mass to zero (`M_vis → 0`):
-
-1. **ADM Gravitational Gauss Law & Reference Frame Orientation (RFO) Lock:** The projected electric Weyl curvature defect `E_μν = C_μαμβ n^α n^β` vanishes identically (`E_μν ≡ 0`) if and only if the holographic boundary state preserves the asymptotic Poincaré surface integral `M_ADM = (1/16π G_N) ∮ (∂_j h_ij - ∂_i h_jj) dS^i = Tr(ρ_∂ H_Sugawara)`. Eliminating the visible lattice eliminates local generator support `J^a_vis(z)`, causing `E_μν ≠ 0` and tripping the CCZ4 interlock within `2.10 ns`.
-2. **Borrmann Anomalous Transmission Optical Depth & Pendellösung Extinction:** Collimation of annihilation products along `[001]` diamond channels requires Borrmann optical depth `τ_B = L_seed / λ_ext >> 1`. With Pendellösung extinction distance `λ_ext = 31.2 μm` for `40.0 keV` X-rays in diamond, `τ_B = 0.045347 m / (31.2 × 10⁻⁶ m) = 1,453.4 >> 10`, yielding forward anomalous transmission `ε_B = 0.9852` along `(220)` Bragg planes (GATE-IBR-01).
-3. **Mössbauer Coherent Phonon Dissipation & Quench Headroom:** At `T_op = 21.13 K`, the Lamb–Mössbauer recoilless fraction is `f_M = 0.7820 ≥ 0.74`. Peak diamond burst temperature reaches `T_core,burst = 21.33 K`, providing an exceptional thermal headroom of `ΔT_headroom = 32.92 K - 21.13 K = 11.79 K` below the REBCO quench limit (`T_crit = 32.92 K`), with diamond von Mises stress `σ_max = 124.60 MPa << 350.00 MPa` (THM-IBR-01).
-4. **8-Layer Active Heegaard–Floer Symplectic Shield Sleeve:** Replaces `1,500.00 kg` of passive W-Cu shielding with an active 8-layer `384.88 kg` (`0.0850 m³`) symplectic transducer sleeve (`NAC-06C`) comprising diamond-on-GaN layers encased in an `18.5 T` REBCO superconducting magnetic sheath. Driving boundary symplectic transformations decouples the visible gauge vertex by `S = (10/33)² = 100/1089 ≈ 0.09182736`, shunting `1 - S = 90.8173%` of stray flux into the dark ledger (`ΔS_A ≡ 0`) and holding crew dose to `0.114 mSv/yr < 0.120 mSv/yr` at `895.19 PW` Impulse (GATE-IBR-06).
-
-### Itemized 8-Subsystem Nacelle Budget (Standard vs. Compacted)
-
-| Subsystem ID | Subsystem Description | Standard MAR-312 (kg) | Compacted MAR-312C (kg) | Mass Delta | Standard Volume (m³) | Compacted Volume (m³) | Volume Delta |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `NAC-01` | Active Catalytic Core / Seed Wafer | `376.99` | `37.70` | `-90.00%` | `0.0359` | `0.00359` | `-90.00%` |
-| `NAC-02` | Dark-Braid Transducer Ring / Injector | `0.00` | `145.20` | `+145.20 kg` | `0.0000` | `0.04250` | `+0.0425 m³` |
-| `NAC-03` | CVD Diamond Borrmann Cavity Matrix | `65.12` | `245.50` | `+180.38 kg` | `0.0185` | `0.05200` | `+0.0335 m³` |
-| `NAC-04` | 5-Stage Relativistic DEC Collector Duct | `840.00` | `720.40` | `-14.24%` | `0.4200` | `0.41200` | `-1.90%` |
-| `NAC-05` | Ti-6Al-4V Cryostat & LHe Cold Plate | `520.00` | `524.02` | `+0.77%` | `0.2850` | `0.15500` | `-45.61%` |
-| `NAC-06` | Shielding (Passive W-Cu vs Active Symplectic) | `1,884.88` | `384.88` | `-79.58%` | `0.3450` | `0.08500` | `-75.36%` |
-| `NAC-07` | SI-SiC/GaN PCSS Crowbars & SMES Bus | `230.00` | `125.00` | `-45.65%` | `0.1120` | `0.06400` | `-42.86%` |
-| `NAC-08` | TMSV Metrology Bench & C11 Avionics Bay | `180.00` | `75.00` | `-58.33%` | `0.0950` | `0.04481` | `-52.83%` |
-| **Total** | **Propulsion Nacelle Flight Envelope** | **`4,096.99`** | **`2,257.70`** | **`-44.89%`** | **`1.3114`** | **`0.85890`** | **`-34.51%`** |
-
-Dry nacelle mass drops to **`2,257.70 kg`** (saving `1,839.29 kg`), expanding the structural payload margin to **`1,942.30 kg`** below the `4,200.00 kg` flight ceiling (`46.25%` reserve).
-
----
-
-## SHBT-IBR-312 Dark-Sector Anyon Braid Fuel Magazine
-
-The **`SHBT-IBR-312`** system (`DarkBraidMagazine` in `crates/sglt-lanr-power/src/compacted_nacelle.rs`, mapped to `include/shbt_ibr312_mmio.h`) folds and buffers multi-ton fuel reserves into the `124`-channel Fibonacci anyon dark ledger (`η_D = 23/33`).
-
-### Zero Steric Volume Superposition Proof
-
-Because the dark-sector anyon projection operator satisfies `Π_vis ρ_dark Π_vis ≡ 0`, the spatial metric volume expectation value on the spatial Cauchy slice `Σ_t` is strictly:
-`⟨V_vol⟩ = Tr(ρ_dark V_vol) ≡ 0.0000 m³`, and the gauge collision cross-section vanishes identically: `σ_collision(ρ_dark) ≡ 0.0000 m²`.
-Simultaneously, the boundary ADM mass integral satisfies `M_ADM = M_nacelle + M_fuel`, preserving exact gravitational mass-energy equivalence (`E_stored = M_fuel c²`) with zero volumetric expansion (GATE-IBR-03, THM-IBR-02).
-
-### Three Operating Tiers
-
-| Magazine Tier | SRAM Storage Architecture | Stored Cores | Micro-Refills | Fuel Mass (kg) | Gross Energy (EJ) | Net Energy (EJ) | Physical Steric Volume |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Tier 1 (Direct)** | Single Frame (`2,112 B` SRAM) | `38` | `380` | `14,325.62` | `1,287.52` | `1,152.58` | **`0.0000 m³` (Exact)** |
-| **Tier 2 (Deep)** | 16-Bank Arena (`33,792 B` SRAM) | `704` | `7,040` | `265,400.96` | `23,853.07` | `21,353.02` | **`0.0000 m³` (Exact)** |
-| **Tier 3 (Breeder)** | Closed-Loop In-Situ Foundry | `106,611` | `1,066,110` | `40,191,270.0` | `3,612,196` | `3,233,601` | **`0.0000 m³` (Exact)** |
-
-In **Tier 1**, total wet spacecraft propulsion mass is `2,257.70 kg + 14,325.62 kg = 16,583.32 kg ≤ 16,600.00 kg`, satisfying the `N_local ≤ 10²⁸` single-frame Stinespring dilation limit with `+16.68 kg` margin (GATE-IBR-04).
-
-### 8-State Autonomous Hot-Swap FSM Protocol
-
-Refueling occurs via an 8-state hardware finite state machine (`IbrFsmState`):
-
-| State ID | State Name | Physical & Holographic Operation | Step Latency | Bus Droop |
-| :--- | :--- | :--- | :--- | :--- |
-| `S0` | `NOMINAL_BURN` | Steady-state mass-annihilation power output; TMSV metrology monitoring | Continuous | `0.00%` |
-| `S1` | `SOC_THRESHOLD_DETECT` | Catalytic seed wafer SoC drops below 10.0% (`SoC ≤ 0.10`); trips reload IRQ | `< 2.10 ns` | `0.00%` |
-| `S2` | `SMES_BUS_CLAMP` | 94.20% SMES coil assumes traction load; isolates DC collector rail | `< 5.00 μs` | **`0.00%`** |
-| `S3` | `GIVENS_BANK_ALIGN` | AVX-512 Givens rotations align target frame in `.stinespring_magazine` SRAM | `12.40 μs` | `0.00%` |
-| `S4` | `STINESPRING_UNFOLD` | Callan–Symanzik operator unfolds `16̄` spinor batch into seed wafer | `50.80 μs` / `317.8 μs` | `0.00%` |
-| `S5` | `SUGAWARA_PARITY_LOCK` | Sugawara shift `Δh_vis = 45/64` and `Δ_fr ≡ 0` parity locked | `6.20 μs` | `0.00%` |
-| `S6` | `MOSSBAUER_SYNC` | 40.0 keV X-ray seed laser realigns diamond (220) Borrmann electric-field nodes | `18.50 μs` | `0.00%` |
-| `S7` | `HANDOFF_RESUME` | Traction load transferred from SMES back to DEC duct; full power restored | `8.10 μs` | `0.00%` |
-
-Reload latency is `50.80 μs` for a micro-batch and `317.8 μs` for a full `376.99 kg` core in Impulse mode, bounding cumulative downtime to less than `10⁻⁷` and sustaining a continuous propulsion duty cycle of **`99.999999967%`** (GATE-IBR-05, GATE-IBR-08).
-
----
-
-## Unrefueled Intergalactic Transit Profiles
-
-Coupling the macroscopic translocator and `shbt-warp` corridor dynamics with the compacted `SHBT-MAR-312C` nacelle and `SHBT-IBR-312` dark magazine enables unrefueled interstellar and intergalactic transits (`crates/sglt-translocator-core/src/intergalactic.rs`). Crew biological proper time is uniformly dilated via `T_crew = α_cabin · T_coord = 10⁻³ T_coord`:
-
-| Mission Target & ID | Distance | Velocity Regime | Coordinate Time | Crew Proper Time | Cores (Refills) | Reload Downtime | Duty Cycle |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **5. Andromeda (M31)** | `2.537 Mly` | Cruise (`89.6c`) | `28,314.7 yr` | `28.31 yr` | `5.99` (`60`) | `1.902 s` | `99.9999998%` |
-| **5. Andromeda (M31)** | `2.537 Mly` | Burst (`681.2c`) | `3,724.3 yr` | `3.72 yr` | `69.87` (`699`) | `2.921 s` | `99.9999975%` |
-| **5. Andromeda (M31)** | `2.537 Mly` | Impulse (`89,618c`) | `28.309 yr` | **`10.33 days`** | `915.55` (`9,156`) | **`0.291 s`** | **`99.999999967%`** |
-| **6. Virgo / M87** | `53.49 Mly` | Cruise (`89.6c`) | `596,986.6 yr` | `596.99 yr` | `126.20` (`1,262`) | `40.106 s` | `99.9999999%` |
-| **6. Virgo / M87** | `53.49 Mly` | Burst (`681.2c`) | `78,523.2 yr` | `78.52 yr` | `1,473.05` (`14,731`) | `61.588 s` | `99.9999975%` |
-| **6. Virgo / M87** | `53.49 Mly` | Impulse (`89,618c`) | `596.867 yr` | **`217.99 days`** | `19,303.5` (`193,035`) | **`6.135 s`** | **`99.999999967%`** |
-| **7A. Laniakea Core** | `500.0 Mly` | Impulse (`89,618c`) | `5,579.2 yr` | `5.58 yr` | `180,440.3` | `57.344 s` | `99.999999967%` |
-| **7B. Impulse Horizon** | `295.42 Mly` | Impulse (`89,618c`) | `3,296.4 yr` | `3.30 yr` | `106,611.0` (1 Tier-3) | `33.881 s` | `99.999999967%` |
-| **7C. Cosmological Horizon** | `45.18 Gly` | Cruise (`89.6c`) | `5.042 × 10⁸ yr` | `504,241 yr` | Multi-Hop In-Situ | Continuous | `99.9999999%` |
-
----
-
-## Legacy SHBT-MMIO-1 Register Map
+### 7.2 Legacy 56-Byte SHBT-MMIO-1 2PN Causal Register Map & Satellite Apertures
 
 Normative packed 56-byte 2PN causal engine block at base `0x70000000` (`include/shbt_recon_abi.h`, `kernel/include/shbt_causal_kernel.h`):
 
@@ -464,7 +442,7 @@ Two satellite apertures extend the map:
 
 The TMSV interlock state block is a 128-byte, 64-byte-aligned DMA structure (`squeezing_r`, `attenuation_db`, `displacement_sd`, `r_3sigma_bound`, `metric_g00_g0i[4]`, `metric_gij_diag[4]`, `interlock_status`).
 
-## SRAM `UnifiedStinespringFrame` Layout
+### 7.3 SRAM `UnifiedStinespringFrame` (2,112 B) & 16-Bank Magazine Arena (33,792 B)
 
 ```text
 2,112-byte arena
@@ -472,12 +450,47 @@ The TMSV interlock state block is a 128-byte, 64-byte-aligned DMA structure (`sq
 └── 0x280 – 0x840  1,472 B  Dark Ledger
                             ├── 992 B   124 Fibonacci braid descriptors (×8 B)
                             └── 480 B   SECDED / checkpoint metadata
-
 ```
 
 Telemetry is transported over a zero-copy SPSC POSIX shared-memory ring with 64-byte cache-aligned frames (`#[repr(C, align(64))]`).
 
-## CLI Commands & Workflows
+---
+
+## 8. Workspace Topology & CLI Workflows
+
+### 8.1 Workspace Directory Structure
+
+```text
+shbt-recon/
+├── Cargo.toml                      # Cargo workspace manifest
+├── main.tex                        # Unified LaTeX manuscript
+├── recon.pdf                       # Compiled publication specification
+├── crates/
+│   ├── sglt-translocator-core/     # Stinespring isometry, min-jerk, swarm relabeling
+│   ├── sglt-transducer-fea/        # Two-phase He-4 boiling FEA, Diamond-on-GaN, tamping
+│   ├── sglt-hil-microkernel/       # shbt-os microkernel FFI wrapper, MMIO, ECC
+│   ├── sglt-lanr-power/            # 1,800-module LANR ledger, entropy debt balancing
+│   ├── sglt-metrology-causal/      # 2PN metric calculator, causal interlock
+│   ├── sglt-recon-deconv/          # Fibonacci fusion tree, TQEC decoder grid
+│   ├── sglt-gst-metamaterial/      # GST self-healing radiation-hard switches
+│   ├── sglt-gpu-physics/           # CUDA/ROCm Stinespring kernel + Givens remap
+│   ├── sglt-hyperdual-uq/          # Hyper-dual AD Bayesian UQ engine
+│   ├── sglt-webgpu-vis/            # Wasm/WebGPU WGSL field visualizer
+│   ├── shbt-recon-core/            # ADM 3+1, Lorentzian audit, SPSC telemetry ring
+│   ├── shbt-recon-kernel/          # C11 runtime bindings (SECDED, remap, recover)
+│   ├── shbt-recon-thermo/          # Kapitza boundary, Landauer C_get
+│   ├── shbt-recon-metrology/       # TMSV metrology mesh, GUM Monte Carlo
+│   ├── shbt-recon-eda/             # GDSII/STEP exporters, 12-layer interposer S2P
+│   └── shbt-recon-cli/             # PyO3 C-extension FFI bindings
+├── kernel/                         # Bare-metal C11 microkernel (shbt_causal_kernel.c)
+├── formal/                         # Z3 SMT proof suite (verify_recon_battery.py)
+├── include/                        # Unified C-ABI headers (shbt_recon_abi.h, shbt_recon_mmio.h)
+├── eda_outputs/                    # Generated GDSII, STEP, S2P artifacts
+├── python/shbt_recon/              # Python API & CLI orchestrator
+└── tests/                          # Integration test harness
+```
+
+### 8.2 CLI Commands, Simulation & Verification Workflows
 
 ```bash
 # Build the freestanding C11 microkernel reference library
@@ -500,7 +513,6 @@ python python/shbt_recon/cli/main.py intergalactic --target m31 --tier impulse -
 # Formal SMT proof suites (6 battery/IBR + 6 synthesis theorems = 12/12 Z3)
 python3 formal/verify_recon_battery.py
 python3 formal/verify_recon_synthesis.py
-
 ```
 
 Rust workspace unit tests and the Python integration harness:
@@ -508,12 +520,15 @@ Rust workspace unit tests and the Python integration harness:
 ```bash
 cargo test --workspace
 python tests/run_all_tests.py
-
 ```
 
 Latency-bound gates are environment-aware: under virtualized CI (`SGLT_CI_VIRTUAL_ENV`), the SECDED / AVX-512 / recovery timers report the nominal hardware-in-loop bounds and are flagged accordingly.
 
-## Master 102-Gate Verification Matrix
+---
+
+## 9. Master 102-Gate Verification Matrix & Z3 Formal SMT Proofs
+
+### 9.1 Master 102-Gate Verification Matrix (102/102 PASS)
 
 All one hundred and two gates (`G-01`–`G-70` + `GATE-BAT-01`–`GATE-BAT-08` + `GATE-SYNTH-01`–`GATE-SYNTH-16` + `GATE-IBR-01`–`GATE-IBR-08`) pass against live simulation output (`verification_matrix.json`), spanning the ten subsystem domains: 2PN metric & causal interlock, TMSV quantum metrology, Diamond-on-GaN cryogenic stack, GST metamaterial radiation hardening, multi-GPU physics engine, hyper-dual AD UQ engine, WebGPU native visualizer, the ¹⁷⁸ᵐ²Hf isomer battery (upstream `sys1own/shbt-warp`), the synthetic matter re-rendering pipeline, and the compacted `SHBT-MAR-312C` nacelle & `SHBT-IBR-312` dark-braid reload magazine.
 
@@ -622,7 +637,7 @@ All one hundred and two gates (`G-01`–`G-70` + `GATE-BAT-01`–`GATE-BAT-08` +
 | GATE-IBR-07 | ibr312 | Mission 5 Andromeda (2.537 Mly) Impulse Transit | T_crew ≤ 11.0 days (915.55 cores) | 10.33 days (0.291 s reload pause) |
 | GATE-IBR-08 | ibr312 | Intergalactic Propulsion Reload Duty Cycle Invariant | η_duty ≥ 99.9999% (Downtime < 10⁻⁷) | 99.999999967% |
 
-### Z3 Formal SMT Verification Suite (12/12 PROVED UNSAT)
+### 9.2 Z3 Formal SMT Verification Suite (12/12 PROVED UNSAT)
 
 Each theorem asserts the *negation* of the physical invariant in First-Order Logic and verifies that the Z3 SMT solver returns `unsat`:
 
@@ -641,7 +656,9 @@ Each theorem asserts the *negation* of the physical invariant in First-Order Log
 | `THM-IBR-01` | `formal/verify_recon_battery.py` | Compacted seed wafer Borrmann τ_B = 1453.4 > 10.0, ε_B = 0.9852, f_M = 0.782 ≥ 0.74, T_burst ≤ 32.92 K, σ_max ≤ 350.0 MPa | `unsat` |
 | `THM-IBR-02` | `formal/verify_recon_battery.py` | Zero-volume superposition ΔV_steric ≡ 0, Tier 1 wet mass ≤ 16,600 kg, downtime < 10⁻⁷, duty cycle ≥ 99.9999% | `unsat` |
 
-## SHBT Ecosystem Topology & Crosswalk
+---
+
+## 10. SHBT Ecosystem Topology & Crosswalk
 
 The `shbt-recon` digital twin is the Macroscopic State Translocation & Gateway pillar of the canonical 9-repository SHBT ecosystem:
 
@@ -708,4 +725,3 @@ The `shbt-recon` digital twin is the Macroscopic State Translocation & Gateway p
 | [`sys1own/shbt-qc`](https://github.com/sys1own/shbt-qc) | Bare-Metal Runtime & HIL Microkernel | Freestanding C11 `shbt-os` microkernel execution environment, normative base 56-byte `SHBT-MMIO-1` register layout at `0x70000000`, and SECDED Hamming(72,64) ECC. |
 | [`sys1own/shbt-sglt`](https://github.com/sys1own/shbt-sglt) | Relativistic Optics & Cryogenics | 2PN relativistic electron beam optics, CVD Diamond-on-GaN high-heat-flux substrate limits, and NbN / MgB <sub>2</sub> quench margin safeguards. |
 | [`sys1own/shbt-warp`](https://github.com/sys1own/shbt-warp) | Holographic Warp Drive, `SHBT-MAR-312` Reactor & `SHBT-EW-312` Wormhole | **Bidirectional power-foundry & wormhole partner:** supplies the 4th-Gen `SHBT-MAR-312` mass-annihilation battery-reactor architecture (`33.8822 EJ`, `5-stage DEC η_conv = 89.519%`, `895.19 TW` Cruise / `6.805 PW` Burst / `895.19 PW` Impulse); in return, `shbt-recon` synthesizes the `376.99 kg` `SHBT-MAR-312` dual-sector fuel core (`R_synth^MAR`, `2.1220 PJ` Mode 1a / `0.2845 PJ` Mode 1c) in an autonomous closed-loop breeder (`14,293` daughter cores per inventory) and provides the Type I Gateway layer (`V_unified^macro`, 124 Fibonacci braids `η_D = 23/33`, `Sp(2g, Z)` routing, `Δs²_2PN ≤ 0`) for `shbt-warp`'s `SHBT-EW-312` Effective Traversable Wormhole System. |
-
