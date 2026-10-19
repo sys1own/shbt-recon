@@ -4,9 +4,11 @@
 
 pub mod compacted_nacelle;
 pub mod enthalpy;
+pub mod fp_closure;
 pub mod isomer;
 
 pub use compacted_nacelle::*;
+pub use fp_closure::*;
 
 /// Active LANR module count.
 pub const MODULE_COUNT: u32 = 1800;

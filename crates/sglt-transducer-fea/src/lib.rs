@@ -4,7 +4,10 @@
 
 pub mod boiling;
 pub mod debye;
+pub mod fp_closure;
 pub mod tamping;
+
+pub use fp_closure::*;
 
 /// Saturated He-4 bath temperature (K).
 pub const T_BATH_K: f64 = 4.20;

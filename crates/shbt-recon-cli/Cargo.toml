@@ -13,6 +13,7 @@ shbt-recon-thermo = { path = "../shbt-recon-thermo" }
 shbt-recon-metrology = { path = "../shbt-recon-metrology" }
 shbt-recon-eda = { path = "../shbt-recon-eda" }
 sglt-lanr-power = { path = "../sglt-lanr-power" }
+sglt-transducer-fea = { path = "../sglt-transducer-fea" }
 sglt-translocator-core = { path = "../sglt-translocator-core" }
 pyo3 = { version = "0.23", optional = true }
 

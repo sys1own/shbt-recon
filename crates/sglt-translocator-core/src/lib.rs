@@ -3,12 +3,14 @@
 //! minimum-jerk trajectory integration, and SPSC shared-memory telemetry.
 
 pub mod dilation;
+pub mod fp_closure;
 pub mod intergalactic;
 pub mod minjerk;
 pub mod stepping;
 pub mod swarm;
 pub mod synthesis;
 
+pub use fp_closure::*;
 pub use intergalactic::*;
 pub use sglt_lanr_power::compacted_nacelle::*;
 pub use shbt_recon_core::telemetry;

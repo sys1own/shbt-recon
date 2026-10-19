@@ -257,6 +257,7 @@ version = "0.1.0"
 dependencies = [
  "pyo3",
  "sglt-lanr-power",
+ "sglt-transducer-fea",
  "sglt-translocator-core",
  "shbt-recon-core",
  "shbt-recon-eda",
