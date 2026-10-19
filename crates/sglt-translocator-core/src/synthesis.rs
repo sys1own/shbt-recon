@@ -167,6 +167,16 @@ pub const TARGET_FOLDED_ANTIBARYON_LATTICE: SynthesisTarget = SynthesisTarget {
     weight_shift_magnitude: 4,
 };
 
+/// SHBT-MAR-312C annular catalytic seed wafer die (37.699 kg, 0.1 CEU).
+pub const TARGET_MAR312C_CATALYTIC_SEED_WAFER: SynthesisTarget = SynthesisTarget {
+    name: "SHBT-MAR-312C catalytic seed wafer",
+    atomic_number: 72,
+    nucleon_number: 178,
+    binding_delta_mev: 2.446,
+    formation_enthalpy_kj_mol: -334.0,
+    weight_shift_magnitude: 4,
+};
+
 /// Baseline 4-target product ledger (retained for backward compatibility).
 pub const TARGET_PRODUCTS: [SynthesisTarget; 4] = [
     TARGET_HFB2_ISOMER,
@@ -175,17 +185,18 @@ pub const TARGET_PRODUCTS: [SynthesisTarget; 4] = [
     TARGET_CVD_DIAMOND,
 ];
 
-/// Full 6-target product ledger including MAR-312 dual-sector core and folded anti-baryon lattice.
-pub const ALL_TARGET_PRODUCTS: [SynthesisTarget; 6] = [
+/// Full 7-target product ledger including MAR-312 dual-sector core, folded anti-baryon lattice, and MAR-312C wafer.
+pub const ALL_TARGET_PRODUCTS: [SynthesisTarget; 7] = [
     TARGET_HFB2_ISOMER,
     TARGET_DECABORANE,
     TARGET_SILICON28,
     TARGET_CVD_DIAMOND,
     TARGET_MAR312_DUAL_SECTOR_CORE,
     TARGET_FOLDED_ANTIBARYON_LATTICE,
+    TARGET_MAR312C_CATALYTIC_SEED_WAFER,
 ];
 
-/// Canonical synthetic product catalog enum (6 products total).
+/// Canonical synthetic product catalog enum (7 products total).
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum SynthesisProduct {
@@ -195,6 +206,7 @@ pub enum SynthesisProduct {
     CvdDiamond = 0x04,
     Mar312DualSectorCore = 0x05,
     FoldedAntiBaryonLattice = 0x06,
+    Mar312cCatalyticSeedWafer = 0x07,
 }
 
 impl SynthesisProduct {
@@ -206,6 +218,7 @@ impl SynthesisProduct {
             SynthesisProduct::CvdDiamond,
             SynthesisProduct::Mar312DualSectorCore,
             SynthesisProduct::FoldedAntiBaryonLattice,
+            SynthesisProduct::Mar312cCatalyticSeedWafer,
         ]
     }
 
@@ -221,6 +234,7 @@ impl SynthesisProduct {
             Self::CvdDiamond => (6, 0),
             Self::Mar312DualSectorCore => (72, 6),
             Self::FoldedAntiBaryonLattice => (72, 6),
+            Self::Mar312cCatalyticSeedWafer => (72, 6),
         }
     }
 
@@ -232,12 +246,13 @@ impl SynthesisProduct {
             Self::CvdDiamond => (12, 0),
             Self::Mar312DualSectorCore => (178, 12),
             Self::FoldedAntiBaryonLattice => (178, 12),
+            Self::Mar312cCatalyticSeedWafer => (178, 12),
         }
     }
 
     pub fn antibaryon_ratio(&self) -> f64 {
         match self {
-            Self::Mar312DualSectorCore => 0.500,
+            Self::Mar312DualSectorCore | Self::Mar312cCatalyticSeedWafer => 0.500,
             Self::FoldedAntiBaryonLattice => 1.000,
             _ => 0.0,
         }
@@ -245,14 +260,14 @@ impl SynthesisProduct {
 
     pub fn coset_weight_shift(&self) -> f64 {
         match self {
-            Self::Mar312DualSectorCore | Self::FoldedAntiBaryonLattice => 45.0 / 64.0,
+            Self::Mar312DualSectorCore | Self::FoldedAntiBaryonLattice | Self::Mar312cCatalyticSeedWafer => 45.0 / 64.0,
             _ => 0.0,
         }
     }
 
     pub fn binding_delta_mev(&self) -> f64 {
         match self {
-            Self::Hfb2Isomer | Self::Mar312DualSectorCore => 2.446,
+            Self::Hfb2Isomer | Self::Mar312DualSectorCore | Self::Mar312cCatalyticSeedWafer => 2.446,
             Self::Decaborane => 8.668,
             Self::Silicon28 => 0.310,
             Self::CvdDiamond | Self::FoldedAntiBaryonLattice => 0.0,
@@ -261,7 +276,7 @@ impl SynthesisProduct {
 
     pub fn energy_density_j_kg(&self) -> f64 {
         match self {
-            Self::Mar312DualSectorCore | Self::FoldedAntiBaryonLattice => 8.987_551_787_368_176e16,
+            Self::Mar312DualSectorCore | Self::FoldedAntiBaryonLattice | Self::Mar312cCatalyticSeedWafer => 8.987_551_787_368_176e16,
             Self::Hfb2Isomer => 1.3263e12,
             _ => 0.0,
         }
@@ -269,11 +284,47 @@ impl SynthesisProduct {
 
     pub fn mass_density_g_cm3(&self) -> f64 {
         match self {
-            Self::Mar312DualSectorCore | Self::FoldedAntiBaryonLattice => 10.50,
+            Self::Mar312DualSectorCore | Self::FoldedAntiBaryonLattice | Self::Mar312cCatalyticSeedWafer => 10.50,
             Self::Hfb2Isomer => 10.50,
             Self::Decaborane => 0.94,
             Self::Silicon28 => 2.33,
             Self::CvdDiamond => 3.52,
+        }
+    }
+
+    pub fn mass_kg(&self) -> f64 {
+        match self {
+            Self::Mar312DualSectorCore => 376.99,
+            Self::FoldedAntiBaryonLattice => 188.495,
+            Self::Mar312cCatalyticSeedWafer => 37.699,
+            _ => 1.0,
+        }
+    }
+
+    pub fn gross_energy_ej(&self) -> f64 {
+        match self {
+            Self::Mar312DualSectorCore => 33.8822,
+            Self::FoldedAntiBaryonLattice => 16.9411,
+            Self::Mar312cCatalyticSeedWafer => 3.38822,
+            _ => 0.0,
+        }
+    }
+
+    pub fn net_electric_ej(&self) -> f64 {
+        match self {
+            Self::Mar312DualSectorCore => 30.3310,
+            Self::FoldedAntiBaryonLattice => 15.1655,
+            Self::Mar312cCatalyticSeedWafer => 3.03310,
+            _ => 0.0,
+        }
+    }
+
+    pub fn ceu_ratio(&self) -> f64 {
+        match self {
+            Self::Mar312DualSectorCore => 1.0,
+            Self::FoldedAntiBaryonLattice => 0.5,
+            Self::Mar312cCatalyticSeedWafer => 0.1,
+            _ => 0.0,
         }
     }
 }
@@ -592,6 +643,10 @@ impl SelfRefuelBreeder {
     pub const NET_CORE_ENERGY_PJ: f64 = 30331.0; // 30.3310 EJ net electric
     pub const GROSS_CORE_ENERGY_PJ: f64 = 33882.17; // 33.8822 EJ gross
     pub const CORE_MASS_KG: f64 = 376.99;
+    pub const NET_WAFER_ENERGY_PJ: f64 = 3033.10; // 3.03310 EJ net electric (0.1 CEU)
+    pub const GROSS_WAFER_ENERGY_PJ: f64 = 3388.22; // 3.38822 EJ gross (0.1 CEU)
+    pub const WAFER_MASS_KG: f64 = 37.699;
+    pub const CEU_WAFER_RATIO: f64 = 0.100;
 
     pub fn new() -> Self {
         Self {
@@ -619,6 +674,33 @@ impl SelfRefuelBreeder {
         let total_daughter_cores = (Self::NET_CORE_ENERGY_PJ / delta_e_synth_pj).floor() as u64;
         let surplus_cores_exported = total_daughter_cores.saturating_sub(1);
         let q_breeder_net = Self::NET_CORE_ENERGY_PJ / delta_e_synth_pj;
+
+        SelfRefuelCycle {
+            mode,
+            delta_e_synth_pj,
+            self_refuel_fraction,
+            duration_cruise_s,
+            duration_burst_s,
+            duration_impulse_s,
+            total_daughter_cores,
+            surplus_cores_exported,
+            q_breeder_net,
+        }
+    }
+
+    /// Calculate the closed-loop self-refueling parameters for a single catalytic seed wafer (0.1 CEU).
+    pub fn evaluate_wafer_cycle(mode: FoundryMode) -> SelfRefuelCycle {
+        let delta_e_synth_pj = mode.synthesis_energy_pj() * Self::CEU_WAFER_RATIO;
+        let self_refuel_fraction = delta_e_synth_pj / Self::NET_WAFER_ENERGY_PJ;
+        let delta_e_j = delta_e_synth_pj * 1e15;
+
+        let duration_cruise_s = delta_e_j / PowerDriver::BreederCruise.power_w();
+        let duration_burst_s = delta_e_j / PowerDriver::BreederSustainedBurst.power_w();
+        let duration_impulse_s = delta_e_j / PowerDriver::BreederImpulse.power_w();
+
+        let total_daughter_cores = (Self::NET_WAFER_ENERGY_PJ / delta_e_synth_pj).floor() as u64;
+        let surplus_cores_exported = total_daughter_cores.saturating_sub(1);
+        let q_breeder_net = Self::NET_WAFER_ENERGY_PJ / delta_e_synth_pj;
 
         SelfRefuelCycle {
             mode,
@@ -883,6 +965,38 @@ mod tests {
         assert_eq!(breeder.local_replacements_completed, 1);
         assert_eq!(breeder.energy_remaining_pj, SelfRefuelBreeder::NET_CORE_ENERGY_PJ);
         assert_eq!(breeder.state_of_charge(), 1.0);
+    }
+
+    #[test]
+    fn wafer_cycle_and_product_0x07_verification() {
+        // Verify ALL_TARGET_PRODUCTS has 7 entries
+        assert_eq!(ALL_TARGET_PRODUCTS.len(), 7);
+        for t in ALL_TARGET_PRODUCTS {
+            let op = TransmutationOperator::for_target(&t);
+            assert!(op.is_isometric(), "{} residual {}", t.name, op.isometry_residual());
+            let d = SynthesisPlanner::plan_weight_shift(&t);
+            assert_eq!(SynthesisPlanner::framing_residual(&d), 0.0);
+        }
+
+        // Verify Product 0x07 properties
+        let p7 = SynthesisProduct::Mar312cCatalyticSeedWafer;
+        assert_eq!(p7.code(), 0x07);
+        assert_eq!(p7.target_z(), (72, 6));
+        assert_eq!(p7.target_a(), (178, 12));
+        assert_eq!(p7.antibaryon_ratio(), 0.500);
+        assert_eq!(p7.coset_weight_shift(), 45.0 / 64.0);
+        assert_eq!(p7.binding_delta_mev(), 2.446);
+        assert_eq!(p7.mass_kg(), 37.699);
+        assert_eq!(p7.gross_energy_ej(), 3.38822);
+        assert_eq!(p7.net_electric_ej(), 3.03310);
+        assert_eq!(p7.ceu_ratio(), 0.100);
+
+        // Verify wafer cycle at 895.19 PW impulse (31.78 us turnaround)
+        let wc_1c = SelfRefuelBreeder::evaluate_wafer_cycle(FoundryMode::Mode1c);
+        assert!((wc_1c.delta_e_synth_pj - 0.02845).abs() < 1e-6);
+        assert!((wc_1c.duration_impulse_s - 0.00003178).abs() < 1e-7);
+        assert_eq!(wc_1c.total_daughter_cores, 106611);
+        assert_eq!(wc_1c.surplus_cores_exported, 106610);
     }
 }
 

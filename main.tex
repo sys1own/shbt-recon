@@ -61,7 +61,7 @@
 Modular State Translocator: Architecture, EDA Hardware-in-the-Loop,\\
 Compacted Mass-Annihilation Reactor (\texttt{SHBT-MAR-312-IBR}), and 102-Gate Verification Record}\\[0.5em]
 \large Master Technical Specification for the \texttt{sys1own/shbt-recon} Digital Twin}
-\author{}
+\author{bn}
 \date{October 2026 \quad $\cdot$ \quad Release v2.4.0}
 
 \begin{document}
@@ -640,6 +640,8 @@ yielding a specific mass energy density of:
 \end{equation}
 Coherent emission without lattice self-absorption is maintained inside an anomalous Borrmann dynamical Laue cavity at cryogenic temperature ($T \le 21.13$~K). The Borrmann parameter reaches $\epsilon_B = 0.9852$ with recoilless Mössbauer fraction $f_M \ge 0.782$ (Gate \texttt{GATE-BAT-05}), suppressing photoelectric absorption by over two orders of magnitude and guiding radiation into the direct energy converter.
 
+The stationary $376.99$~kg ($0.0359~\text{m}^3$) monolithic core represents the normalized \textbf{$1.0$~Core Equivalent Unit ($1.0$~CEU) Foundry Output and Stationary Ground/Stargate Baseline} (Product Code \texttt{0x05}), storing $33.8822$~EJ gross / $30.3310$~EJ net electric. For mobile gateway and deep-space Jump-Cruiser applications where nacelle dry mass must be minimized, the reactor is compacted into the \textbf{$0.1$~CEU \texttt{SHBT-MAR-312C} Catalytic Seed Wafer} ($M_{\text{seed}} = 37.699$~kg, $V_{\text{seed}} = 3.59$~L, Product Code \texttt{0x07}), storing $3.38822$~EJ gross / $3.03310$~EJ net electric per wafer refill. The active wafer operates inside the $2{,}257.70$~kg active symplectic nacelle and is continuously replenished via the \texttt{SHBT-IBR-312} Dark-Sector Anyon Braid Reload Magazine across Tier~1 ($38$~CEU in a single $2{,}112$~B frame) and Tier~2 ($704$~CEU in a $33.0$~KB ring buffer) with zero steric volume cross-section ($\Delta V_{\text{steric}} \equiv 0$).
+
 \FloatBarrier
 \subsection{5-Stage Hybrid Relativistic DEC Cascade Architecture}
 \label{subsec:dec_cascade}
@@ -1085,8 +1087,9 @@ Code & Target Product & $Z$ & $A$ & Target Mass & $\Delta B_{\text{nuc}}$ (MeV) 
 \texttt{0x02} & $^{11}\text{B}_{10}\text{H}_{14}$ Decaborane & 5 & 11 & $174.12$~g/mol & $8.668$ & $2/320$ & Monoisotopic neutron shielding; boron neutron capture arrays \\
 \texttt{0x03} & $^{28}\text{Si}$ Substrate & 14 & 28 & $27.98$~g/mol & $0.310$ & $1/320$ & Spin-free semiconductor quantum dots; isotopic qubits \\
 \texttt{0x04} & CVD Diamond (Dislocation-Free) & 6 & 12 & $12.01$~g/mol & $0.000$ & $1/320$ & Ultra-high thermal conductivity ($2250~\text{W/m}\cdot\text{K}$) substrates \\
-\texttt{0x05} & \texttt{SHBT-MAR-312} Fuel Core & 72 & 178 & $376.99$~kg & $2.446$ & $45/64$ & Monolithic dual-sector fuel core for \texttt{shbt-warp} propulsion \\
+\texttt{0x05} & \texttt{SHBT-MAR-312} Fuel Core & 72 & 178 & $376.99$~kg & $2.446$ & $45/64$ & Monolithic dual-sector $1.0$~CEU core for \texttt{shbt-warp} propulsion \\
 \texttt{0x06} & Folded $\overline{\mathbf{16}}$ Anti-Baryon Lattice & $-72$ & $-178$ & $188.495$~kg & $2.446$ & $45/64$ & Stinespring-folded dark-ledger refuel matrix \\
+\texttt{0x07} & \texttt{SHBT-MAR-312C} Seed Wafer & 72 & 178 & $37.699$~kg & $2.446$ & $45/64$ & Compacted $0.1$~CEU catalytic seed wafer for mobile gateway nacelles \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1327,8 +1330,8 @@ int shbt_synth_dispatch(shbt_recon_mmio_t *mmio, uint8_t target_code) {
     mmio->dispatch_fsm_state = SHBT_STATE_TRANSMUTATION_BURST;
     mmio->bank0.synth.synth_status |= SYNTH_STATUS_DYNKIN_LOCKED;
 
-    // Phase 2: Coset Anti-Baryon Fold (0x06) if MAR-312 core selected
-    if (target_code == 0x05 || target_code == 0x06) {
+    // Phase 2: Coset Anti-Baryon Fold (0x06) if MAR-312 core / wafer selected
+    if (target_code == 0x05 || target_code == 0x06 || target_code == 0x07) {
         mmio->bank0.synth.synth_antibaryon_ratio_q16 = 0x8000; // 0.50000
         mmio->bank0.synth.synth_coset_weight_q16     = 0xB400; // 45/64
         mmio->dispatch_fsm_state = SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD;
@@ -1338,7 +1341,7 @@ int shbt_synth_dispatch(shbt_recon_mmio_t *mmio, uint8_t target_code) {
     // Phase 3: Symplectic Crystallization & Stasis Cooldown (0x08)
     mmio->bank0.synth.synth_status |= SHBT_SYNTH_CBARB_ZERO_VERIFIED;
     mmio->dispatch_fsm_state = SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION;
-    return 0; // Success: Monolithic 376.99 kg fuel core locked in stasis
+    return 0; // Success: Monolithic 376.99 kg fuel core / 37.699 kg wafer locked in stasis
 }
 \end{lstlisting}
 

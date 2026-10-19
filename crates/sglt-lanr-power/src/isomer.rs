@@ -135,6 +135,12 @@ impl DispatchMode {
     }
 }
 
+use crate::compacted_nacelle::{
+    DarkBraidMagazine, ReactorNacelleMode,
+    AUTO_HOT_SWAP_SOC_THRESHOLD, HOT_SWAP_MICRO_BATCH_LATENCY_S,
+    MAR312C_SEED_GROSS_EJ, MAR312C_SEED_NET_EJ,
+};
+
 /// 6-phase SHBT-MAR-312 dispatch state machine.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -166,12 +172,24 @@ pub struct IsomerBatteryState {
     pub phase: DispatchPhase,
     /// Selected power mode.
     pub mode: DispatchMode,
+    /// Active reactor nacelle configuration mode.
+    pub nacelle_mode: ReactorNacelleMode,
+    /// Active seed wafer state-of-charge (0.0 to 1.0, 3.03310 EJ net per 37.699 kg wafer).
+    pub active_wafer_soc: f64,
+    /// Stored reserve Core Equivalent Units in anyon braid magazine (1.0 CEU = 10 wafer refills).
+    pub magazine_remaining_ceu: f64,
+    /// Active dark-sector anyon braid reload magazine instance (Tier 1, 2, or 3).
+    pub dark_magazine: Option<DarkBraidMagazine>,
+    /// Total autonomous hot-swap refills executed.
+    pub total_hot_swaps: u64,
+    /// Latency of the most recent hot-swap reload (seconds).
+    pub last_swap_latency_s: f64,
 }
 
 pub type Mar312BatteryState = IsomerBatteryState;
 
 impl IsomerBatteryState {
-    /// Fully charged core in standby stasis.
+    /// Default compacted catalytic wafer reactor in standby stasis (Tier 1 Magazine).
     pub fn new() -> Self {
         Self {
             energy_remaining_joules: MAR312_TOTAL_ENERGY_JOULES,
@@ -179,12 +197,68 @@ impl IsomerBatteryState {
             is_crowbar_tripped: false,
             phase: DispatchPhase::StandbyStasis,
             mode: DispatchMode::Cruise,
+            nacelle_mode: ReactorNacelleMode::CompactedWaferMar312cIbr,
+            active_wafer_soc: 1.0,
+            magazine_remaining_ceu: 38.0,
+            dark_magazine: Some(DarkBraidMagazine::new_tier1()),
+            total_hot_swaps: 0,
+            last_swap_latency_s: 0.0,
+        }
+    }
+
+    /// Stationary monolithic core configuration baseline (4,096.99 kg nacelle).
+    pub fn new_stationary() -> Self {
+        Self {
+            energy_remaining_joules: MAR312_TOTAL_ENERGY_JOULES,
+            is_armed: false,
+            is_crowbar_tripped: false,
+            phase: DispatchPhase::StandbyStasis,
+            mode: DispatchMode::Cruise,
+            nacelle_mode: ReactorNacelleMode::StationaryMonolithicMar312,
+            active_wafer_soc: 1.0,
+            magazine_remaining_ceu: 0.0,
+            dark_magazine: None,
+            total_hot_swaps: 0,
+            last_swap_latency_s: 0.0,
+        }
+    }
+
+    /// Compacted catalytic wafer reactor with specified dark magazine tier.
+    pub fn new_compacted(tier: usize) -> Self {
+        let mag = match tier {
+            2 => DarkBraidMagazine::new_tier2(16),
+            3 => DarkBraidMagazine::new_tier3(106611.0),
+            _ => DarkBraidMagazine::new_tier1(),
+        };
+        let ceu = mag.total_cores_stored;
+        Self {
+            energy_remaining_joules: MAR312_TOTAL_ENERGY_JOULES,
+            is_armed: false,
+            is_crowbar_tripped: false,
+            phase: DispatchPhase::StandbyStasis,
+            mode: DispatchMode::Cruise,
+            nacelle_mode: ReactorNacelleMode::CompactedWaferMar312cIbr,
+            active_wafer_soc: 1.0,
+            magazine_remaining_ceu: ceu,
+            dark_magazine: Some(mag),
+            total_hot_swaps: 0,
+            last_swap_latency_s: 0.0,
         }
     }
 
     /// State-of-charge fraction (0.0 to 1.0).
     pub fn state_of_charge(&self) -> f64 {
         (self.energy_remaining_joules / MAR312_TOTAL_ENERGY_JOULES).clamp(0.0, 1.0)
+    }
+
+    /// Net electric energy remaining in the active wafer die (J).
+    pub fn wafer_energy_net_j(&self) -> f64 {
+        self.active_wafer_soc * MAR312C_SEED_NET_EJ * 1e18
+    }
+
+    /// Gross annihilation energy remaining in the active wafer die (J).
+    pub fn wafer_energy_gross_j(&self) -> f64 {
+        self.active_wafer_soc * MAR312C_SEED_GROSS_EJ * 1e18
     }
 
     /// Discharge a burst pulse of `gross_power_watts` for
@@ -211,6 +285,29 @@ impl IsomerBatteryState {
             );
         }
         self.energy_remaining_joules -= gross_energy;
+
+        if self.nacelle_mode == ReactorNacelleMode::CompactedWaferMar312cIbr {
+            let wafer_gross_j = MAR312C_SEED_GROSS_EJ * 1e18;
+            self.active_wafer_soc -= gross_energy / wafer_gross_j;
+            // Execute automated hot-swap whenever active wafer SoC drops <= 5% (151.655 PJ net remaining)
+            if self.active_wafer_soc <= AUTO_HOT_SWAP_SOC_THRESHOLD {
+                if let Some(ref mut mag) = self.dark_magazine {
+                    if mag.micro_refills_remaining > 0 {
+                        mag.micro_refills_remaining -= 1;
+                        mag.total_cores_stored = (mag.micro_refills_remaining as f64) / 10.0;
+                        mag.total_reloads += 1;
+                        mag.last_reload_latency_s = HOT_SWAP_MICRO_BATCH_LATENCY_S;
+                        mag.current_wafer_soc = 1.0;
+                    }
+                }
+                if self.magazine_remaining_ceu >= 0.1 {
+                    self.magazine_remaining_ceu -= 0.1;
+                }
+                self.active_wafer_soc = 1.0;
+                self.total_hot_swaps += 1;
+                self.last_swap_latency_s = HOT_SWAP_MICRO_BATCH_LATENCY_S;
+            }
+        }
         Ok(gross_power_watts * MAR312_DEC_EFFICIENCY)
     }
 
@@ -248,6 +345,7 @@ pub fn borrmann_net_gain() -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::compacted_nacelle::*;
 
     #[test]
     #[allow(clippy::assertions_on_constants)]
@@ -288,5 +386,37 @@ mod tests {
         assert!(bat
             .discharge_pulse(1.0e12, BURST_GROSS_POWER_W)
             .is_err());
+    }
+
+    #[test]
+    fn test_compacted_wafer_auto_reload() {
+        let mut bat = IsomerBatteryState::new(); // CompactedWaferMar312cIbr, 38 CEU
+        assert_eq!(bat.nacelle_mode, ReactorNacelleMode::CompactedWaferMar312cIbr);
+        assert_eq!(bat.active_wafer_soc, 1.0);
+        assert_eq!(bat.magazine_remaining_ceu, 38.0);
+        assert_eq!(bat.total_hot_swaps, 0);
+
+        bat.phase = DispatchPhase::FoldingBurst;
+        // Discharge 96% of the 3.38822 EJ wafer: gross_energy = 0.96 * 3.38822e18 J = 3.2526912e18 J
+        // In Exawatt Impulse (1.000 EW = 1e18 W), duration = 3.2526912 seconds
+        let _gross_pulse = 3.2526912e18;
+        let p_net = bat.discharge_pulse(3.2526912, 1.0e18).expect("pulse must succeed");
+        assert!((p_net - 895.19e15).abs() < 1e11);
+
+        // Active wafer dropped <= 5%, triggering 50.80 us hot-swap reload from magazine
+        assert_eq!(bat.total_hot_swaps, 1);
+        assert_eq!(bat.last_swap_latency_s, 50.80e-6);
+        assert_eq!(bat.active_wafer_soc, 1.0);
+        assert!((bat.magazine_remaining_ceu - 37.9).abs() < 1e-4);
+        assert_eq!(bat.dark_magazine.unwrap().micro_refills_remaining, 379);
+    }
+
+    #[test]
+    fn test_ceu_identity_1_to_10() {
+        let base_core_gross = MAR312_TOTAL_ENERGY_JOULES;
+        let wafer_gross = MAR312C_SEED_GROSS_EJ * 1e18;
+        assert!((base_core_gross - 10.0 * wafer_gross).abs() < 1e14);
+        assert!((MAR312_CORE_MASS_KG - 10.0 * MAR312C_SEED_WAFER_MASS_KG).abs() < 1e-4);
+        assert!((MAR312_NET_ELECTRICAL_ENERGY_JOULES - 10.0 * (MAR312C_SEED_NET_EJ * 1e18)).abs() < 1e14);
     }
 }

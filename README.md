@@ -61,15 +61,15 @@
                        └────────────────── Causal Egress Path ─────────────┘
                                            (Subluminal Authorized Transit)
 
-══════════════════════════════════════════════════════════════════════════════════════════
+ ══════════════════════════════════════════════════════════════════════════════════════════
  [ DUAL-TIER ENERGY & CRYOGENIC TRANSDUCER DISPATCH ]
- ╭────────────────────────────────────────────╮      ╭────────────────────────────────────╮
- │ Continuous Baseline: 1,800-Module LANR Grid│      │ Primary Plant: SHBT-MAR-312 Reactor│
- │ • 999.054 kW DC Net Array @ 400 V DC       │      │ • 376.99 kg | 33.8822 EJ Monolith  │
- │ • 965.950 kW Housekeeping Load Floor       │      │ • 5-Stage DEC (η = 89.519%): 6.8 PW│
- │ • Net Operational Margin: +81.104 kW       │      │ • 0.015 - 2.700 MV HVDC Bus        │
- │ • Baseload Generation: 1,047.054 kW (w/TEG)│      │ • Self-Fueling: 14,293 Cores (M1a) │
- ╰─────────────────────┬──────────────────────╯      ╰──────────────────┬─────────────────╯
+ ╭────────────────────────────────────────────╮  ╭────────────────────────────────────────────╮
+ │ Continuous Baseline: 1,800-Module LANR Grid│  │ Primary: SHBT-MAR-312 / MAR-312C + IBR-312 │
+ │ • 999.054 kW DC Net Array @ 400 V DC       │  │ • 1.0 CEU: 376.99 kg | 33.882 EJ Baseline  │
+ │ • 965.950 kW Housekeeping Load Floor       │  │ • 0.1 CEU: 37.699 kg Wafer (2,257.7 kg Nac)│
+ │ • Net Operational Margin: +81.104 kW       │  │ • SHBT-IBR-312: Dark Anyon Reload Magazine │
+ │ • Baseload Generation: 1,047.054 kW (w/TEG)│  │ • 50.80 μs Hot-Swap | 5-Stage DEC (89.52%) │
+ ╰─────────────────────┬──────────────────────╯  ╰─────────────────────┬──────────────────────╯
                        │                                                │
                        ▼                                                ▼
  ╭────────────────────────────────────────────────────────────────────────────────────────╮
@@ -122,7 +122,9 @@ shbt-recon/
 ## Dual-Power Dispatch Topology
 
 ```text
-[LANR Baseload (1,047 kW w/TEG) + SHBT-MAR-312 Reactor Core (33.8822 EJ)]
+[LANR Baseload (1,047 kW w/TEG) + SHBT-MAR-312 / MAR-312C Reactor (1.0 CEU = 10 × Wafer)]
+  │
+  ├──► [SHBT-IBR-312 Anyon Magazine (38..704 CEU)] ──► 50.80 μs Dark-Braid Hot-Swap
   │
   ├──► [5-Stage Relativistic DEC (89.519%)] ──► [0.015 - 2.700 MV HVDC Bus (6.805 PW Burst)]
   │                                                   │
@@ -149,7 +151,7 @@ R_synth^MAR(ρ_in) = T^∂(x_tar) · S_synth^MAR(ω_target, θ_coset) · D_deren
 S_synth^MAR(ω_target, θ_coset) = diag( U_Cartan(Δλ_vis) · P_{K^π=16+}(ω_target),  D_{B̄} · U_coset(θ_coset, {Δ₁, Δ₂, Δ₃}) ) · W_split(π/4)
 ```
 
-### Synthesis Parameter Ledger (6 Canonical Products — `crates/sglt-translocator-core/src/synthesis.rs`)
+### Synthesis Parameter Ledger (7 Canonical Products — `crates/sglt-translocator-core/src/synthesis.rs`)
 
 | Product | Code | Z | A | ΔB_nuc (MeV) | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -157,8 +159,9 @@ S_synth^MAR(ω_target, θ_coset) = diag( U_Cartan(Δλ_vis) · P_{K^π=16+}(ω_t
 | `¹¹B₁₀H₁₄` decaborane | `0x02` | 5 | 11 | 8.668 | Monoisotopic `p-¹¹B` fusion targetry (`shbt-power`); exothermic DEC capture channel |
 | `²⁸Si` substrate | `0x03` | 14 | 28 | 0.310 | Isotopically pure semiconductor substrate; Landauer purification entropy routed to dark sink |
 | `¹²C` CVD diamond | `0x04` | 6 | 12 | 0.000 | Dislocation-free lattice reconstruction (`K = 2,250 W/m·K`) |
-| `SHBT-MAR-312` Dual-Sector Fuel Core | `0x05` | 72 | 178 | 2.446 | Monolithic `376.99 kg` (`0.0359 m³`, `33.8822 EJ`) dual-sector core (`188.495 kg` visible `¹⁷⁸ᵐ²HfB₂–¹²C` host + `188.495 kg` folded `16̄` anti-baryon ledger) powering [`shbt-warp`](https://github.com/sys1own/shbt-warp) |
+| `SHBT-MAR-312` Dual-Sector Fuel Core | `0x05` | 72 | 178 | 2.446 | Monolithic `376.99 kg` (`0.0359 m³`, `33.8822 EJ`, `1.0 CEU`) dual-sector stationary core (`188.495 kg` visible `¹⁷⁸ᵐ²HfB₂–¹²C` host + `188.495 kg` folded `16̄` anti-baryon ledger) powering [`shbt-warp`](https://github.com/sys1own/shbt-warp) |
 | Stinespring-Folded `16̄` Anti-Baryon Lattice | `0x06` | -72 | -178 | 2.446 | Pure topological stasis lattice folded into the `η_D = 23/33` dark ledger via 124 Fibonacci braids (`Γ_{B̄→B} = 0 s⁻¹`) |
+| `SHBT-MAR-312C` Catalytic Seed Wafer Die | `0x07` | 72 | 178 | 2.446 | Annular micro-wafer catalytic seed die (`37.699 kg`, `3.59 L`, `0.1 CEU`, `3.38822 EJ` gross / `3.03310 EJ` net electric: `18.8495 kg` visible `¹⁷⁸ᵐ²HfB₂–¹²C` + `18.8495 kg` folded `16̄` buffer) for compacted mobile gateway nacelles |
 
 ### Bipartite Coset Synthesis Architecture (`SHBT-RECON-SYNTH-MAR312` → `SHBT-MAR-312`)
 
@@ -202,7 +205,7 @@ In closed-loop breeder operation, a single active `SHBT-MAR-312` reactor supplyi
 
 **Power & enthalpy ledger** (`crates/sglt-lanr-power/src/enthalpy.rs`): each run tracks the nuclear binding-energy differential `ΔB_nuc`, chemical formation enthalpy `ΔH_form`, and the Landauer configurational-entropy cost `P_Landauer = k_B T_base ln 2 · Ṅ_atoms · log₂(Ω_feedstock / Ω_target)`. The 1,800-module LANR array and TEG recovery cover the `965.950 kW` housekeeping load floor continuously (`+81.104 kW` net margin; `+33.104 kW` on LANR alone); endothermic burst injection up to `6.805 PW` (or `895.19 TW`–`895.19 PW` in impulse mode) drives the transmutation pulse while SiC/SMES inductive shunts recover `94.20%` of the reactive folding energy.
 
-**Non-negotiable invariants & Z3 formal verification:** `E_μν ≡ 0`, `Δ_fr ≡ 0`, `|det(g) + 1| ≤ 10⁻¹²`, `τ_quench ≤ 2.18 ns`, `ΔT_headroom ≥ 11.79 K` (`T_peak ≤ 32.92 K`). Verified across the **94-gate master harness** (`G-01..70` / `GATE-01..70`, `GATE-BAT-01..08`, `GATE-SYNTH-01..16`) and **10 Z3 SMT theorems**: `BAT-01..04` (`formal/verify_recon_battery.py`) and `SYNTH-01..06` (`formal/verify_recon_synthesis.py`, proving transmutation isometry `SYNTH-01`, first-law enthalpy balance `SYNTH-02`, framing closure `SYNTH-03`, thermal quench margin `SYNTH-04`, bipartite coset shift `Δh_vis = 45/64` & 124-braid cancellation `SYNTH-05`, and quiescent stasis `C_{B̄} = 0 ⇒ Γ_{B̄→B} = 0` with `M_core = 376.99 kg` `SYNTH-06`).
+**Non-negotiable invariants & Z3 formal verification:** `E_μν ≡ 0`, `Δ_fr ≡ 0`, `|det(g) + 1| ≤ 10⁻¹²`, `τ_quench ≤ 2.18 ns`, `ΔT_headroom ≥ 11.79 K` (`T_peak ≤ 32.92 K`). Verified across the **102-gate master harness** (`G-01..70` / `GATE-01..70`, `GATE-BAT-01..08`, `GATE-SYNTH-01..16`, `GATE-IBR-01..08`) and **12 Z3 SMT theorems**: `BAT-01..04` (`formal/verify_recon_battery.py`), `SYNTH-01..06` (`formal/verify_recon_synthesis.py`, proving transmutation isometry `SYNTH-01`, first-law enthalpy balance `SYNTH-02`, framing closure `SYNTH-03`, thermal quench margin `SYNTH-04`, bipartite coset shift `Δh_vis = 45/64` & 124-braid cancellation `SYNTH-05`, and quiescent stasis `C_{B̄} = 0 ⇒ Γ_{B̄→B} = 0` with `M_core = 376.99 kg` `SYNTH-06`), and `THM-IBR-01..02` (`formal/verify_recon_battery.py`, proving compacted seed wafer Borrmann transmission and zero-volume superposition).
 
 **MMIO dispatch:** the synthesis target specification occupies the bank-switched window `0x28`–`0x3F` (selected by `SHBT_CTRL_SYNTH_BANK_SEL`, bit 5 of `system_control`), including `synth_antibaryon_ratio_q16` (`0x3C`, `0x8000 = 32768` for `η_{B̄} = 0.500`) and `synth_coset_weight_q16` (`0x3E`, `0xB400 = 46080` for `Δh_vis = 45/64 = 0.703125`); `shbt_synth_dispatch()` transitions through FSM states `0x04` (`TRANSMUTATION_BURST`) and `0x06` (`COSET_ANTIBARYON_FOLD`) before symplectic co-crystallization `0x08` (`SYMPLECTIC_CRYSTALLIZATION`).
 
@@ -266,7 +269,7 @@ by compile-time `_Static_assert`: `sizeof == 128`,
 | `0x6C` | `ecc_syndrome_hamming` | `u16` | SECDED Hamming(72,64) syndrome |
 | `0x6E` | `ecc_double_error_flag` | `u16` | SECDED uncorrectable error count |
 | `0x70` | `hardware_crc32c` | `u32` | Hardware CRC-32C across `0x00..0x6F` |
-| `0x74` | `reserved_c1_pad` | `u8[12]` | Cacheline 1 terminating padding |
+| `0x74`–`0x7F` | `ibr_telemetry` (union w/ `reserved_c1_pad[12]`) | — | `0x74`: `ibr_crew_dose_nsv_yr` (`u32`, 114,000 nSv/yr = 0.114 mSv/yr); `0x78`: `ibr_frame_angle_q64` (`u64`, Q0.64 decoupling angle) |
 
 ## Compacted SHBT-MAR-312C Catalytic Wafer Nacelle & Active Symplectic Shielding
 
@@ -567,28 +570,6 @@ Each theorem asserts the *negation* of the physical invariant in First-Order Log
 | `SYNTH-06` | `formal/verify_recon_synthesis.py` | Quiescent stasis active render cost C_Bbar = 0 J ⇒ co-crystallized annihilation rate Γ ≡ 0 s⁻¹ | `unsat` |
 | `THM-IBR-01` | `formal/verify_recon_battery.py` | Compacted seed wafer Borrmann τ_B = 1453.4 > 10.0, ε_B = 0.9852, f_M = 0.782 ≥ 0.74, T_burst ≤ 32.92 K, σ_max ≤ 350.0 MPa | `unsat` |
 | `THM-IBR-02` | `formal/verify_recon_battery.py` | Zero-volume superposition ΔV_steric ≡ 0, Tier 1 wet mass ≤ 16,600 kg, downtime < 10⁻⁷, duty cycle ≥ 99.9999% | `unsat` |
-
-
-## Standardized Engineering Nacelle Budget
-
-Modular self-contained nacelle envelope: 2.40 m × 1.80 m × 1.80 m, total
-mass 4,200.00 kg.
-
-| Subsystem Assembly | Dimensions / Allocation | Structural Material | Mass | Fraction |
-| --- | --- | --- | --- | --- |
-| SHBT-MAR-312 reactor core | monolithic dual-sector cylinder | visible ¹⁷⁸ᵐ²HfB₂–¹²C (188.50 kg) + 16̄ dark ledger (188.50 kg) | 376.99 kg | 8.98% |
-| Borrmann cavity structure | dynamical Laue optical frame | cryogenic silicon / sapphire | 84.50 kg | 2.01% |
-| Resonant X-ray seed laser | 40.0 keV diode driver module | solid-state laser optics | 62.30 kg | 1.48% |
-| 5-stage relativistic DEC | 5-stage concentric MHD/recoil/TEG stack | CVD diamond/Mo grids + MHD channel + superlattice TEG | 285.40 kg | 6.80% |
-| PCSS crowbars & SMES coil | high-speed optical switch pod | GaN/SiC PCSS + MgB₂ coil | 145.20 kg | 3.46% |
-| Primary heavy shielding | 12.5 cm radial jacket | tungsten alloy (95% W, 5% Ni-Fe) | 1,680.00 kg | 40.00% |
-| Secondary neutron shielding | 15.0 cm outer jacket | 5% borated polyethylene (B-HDPE) | 465.00 kg | 11.07% |
-| Diamond-on-GaN transducers | annular floor array | CVD diamond film on GaN HEMT | 94.60 kg | 2.25% |
-| Two-phase He cryostat shell | double-walled vacuum envelope | Ti-6Al-4V (Grade 5) | 320.00 kg | 7.62% |
-| Auxiliary thermal dumps | external heat-sink blocks | tungsten-copper (80/20 W-Cu) | 215.00 kg | 5.12% |
-| Avionics & TMSV optics | shielded electronics bay | Faraday-isolated Al-Li alloy | 148.50 kg | 3.54% |
-| Structural truss & mounts | kinematic load frame | carbon-fiber reinforced polymer | 322.50 kg | 7.68% |
-| **Total station envelope** | nacelle | standard translocator station | **4,200.00 kg** | **100.00%** |
 
 ## SHBT Ecosystem Topology & Crosswalk
 

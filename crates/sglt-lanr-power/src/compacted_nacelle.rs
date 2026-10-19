@@ -26,6 +26,29 @@ pub const STINESPRING_SINGLE_FRAME_LIMIT_KG: f64 = 16600.00;
 pub const STINESPRING_FRAME_SRAM_BYTES: usize = 2112;
 pub const MAX_STINESPRING_BANKS: usize = 16;
 
+/// The 1.0 CEU (Core Equivalent Unit) Architecture Identity:
+/// 1.0 CEU = 376.99 kg monolithic core (33.8822 EJ gross / 30.3310 EJ net) = 10 × 37.699 kg seed wafer refills.
+pub const CEU_CORE_GROSS_EJ: f64 = MAR312_BASE_CORE_GROSS_EJ;
+pub const CEU_CORE_NET_EJ: f64 = MAR312_BASE_CORE_NET_EJ;
+pub const CEU_WAFER_GROSS_EJ: f64 = MAR312C_SEED_GROSS_EJ;
+pub const CEU_WAFER_NET_EJ: f64 = MAR312C_SEED_NET_EJ;
+pub const CEU_WAFER_RATIO: f64 = 0.100;
+pub const WAFERS_PER_CEU: u32 = 10;
+pub const AUTO_HOT_SWAP_SOC_THRESHOLD: f64 = 0.05; // 5%
+pub const AUTO_HOT_SWAP_REMAINING_NET_PJ: f64 = 151.655; // 5% of 3.03310 EJ
+pub const HOT_SWAP_MICRO_BATCH_LATENCY_S: f64 = 50.80e-6; // 50.80 us
+pub const HOT_SWAP_FULL_CORE_LATENCY_S: f64 = 317.80e-6; // 317.8 us
+
+/// Reactor nacelle deployment mode.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ReactorNacelleMode {
+    /// Default flight & mobile gateway architecture: 2,257.70 kg dry nacelle,
+    /// 37.699 kg active annular seed wafer (0.1 CEU) + DarkBraidMagazine.
+    CompactedWaferMar312cIbr,
+    /// Stationary baseline: 4,096.99 kg dry nacelle, 376.99 kg monolithic core (1.0 CEU).
+    StationaryMonolithicMar312,
+}
+
 /// Annular Seed Wafer Geometry & Borrmann Parameters
 pub const MAR312C_SEED_R_OUT_M: f64 = 0.1650;
 pub const MAR312C_SEED_R_IN_M: f64 = 0.0450;
@@ -89,7 +112,7 @@ pub enum IbrFsmState {
     S7_HANDOFF_RESUME,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct IbrReloadTelemetry {
     pub mode: BraidReloadMode,
     pub fsm_state: IbrFsmState,
@@ -101,7 +124,7 @@ pub struct IbrReloadTelemetry {
     pub cores_remaining: f64,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct CompactedNacelleConfig {
     pub seed_mass_kg: f64,
     pub seed_vol_m3: f64,
@@ -143,7 +166,7 @@ impl CompactedNacelleConfig {
 }
 
 /// Dark-Sector Anyon Braid Reload Magazine (`SHBT-IBR-312`)
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct DarkBraidMagazine {
     pub tier: usize,
     pub banks_used: usize,

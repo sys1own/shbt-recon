@@ -22,6 +22,10 @@ pub const T_BASE_K: f64 = 21.13;
 pub const BASELINE_DEBT_W: f64 = 906.00e3;
 /// Peak net burst injection available from the SHBT-MAR-312 rail (W): 6.805 PW.
 pub const MAX_BURST_INJECTION_W: f64 = isomer::NET_BURST_POWER_W;
+/// Net electrical energy per 1.0 CEU core (J): 30.3310 EJ.
+pub const CEU_CORE_NET_JOULES: f64 = isomer::MAR312_NET_ELECTRICAL_ENERGY_JOULES;
+/// Net electrical energy per 0.1 CEU seed wafer refill (J): 3.03310 EJ.
+pub const CEU_WAFER_NET_JOULES: f64 = crate::compacted_nacelle::MAR312C_SEED_NET_EJ * 1e18;
 
 /// Per-run enthalpy ledger entry.
 #[derive(Clone, Copy, Debug)]

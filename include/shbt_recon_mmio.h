@@ -139,7 +139,13 @@ typedef struct {
     volatile uint16_t ecc_syndrome_hamming;   /* 0x6C: SECDED Hamming(72,64) syndrome     */
     volatile uint16_t ecc_double_error_flag;  /* 0x6E: SECDED Uncorrectable error count   */
     volatile uint32_t hardware_crc32c;        /* 0x70: Hardware CRC-32C across 0x00..0x6F */
-    volatile uint8_t  reserved_c1_pad[12];    /* 0x74: Cacheline 1 terminating padding    */
+    union {
+        volatile uint8_t  reserved_c1_pad[12];/* 0x74: Cacheline 1 terminating padding    */
+        struct {
+            volatile uint32_t ibr_crew_dose_nsv_yr;  /* 0x74: Crew cabin dose rate (114,000 nSv/yr) */
+            volatile uint64_t ibr_frame_angle_q64;   /* 0x78: Frame decoupling angle (Q0.64)        */
+        } ibr_telemetry;
+    };
 } shbt_recon_mmio_t;
 
 #pragma pack(pop)
@@ -151,6 +157,10 @@ _Static_assert(offsetof(shbt_recon_mmio_t, isomer_soc_millijoules) == 64,
                "FATAL: Cacheline 1 boundary misaligned; must start at offset 64.");
 _Static_assert(offsetof(shbt_recon_mmio_t, hardware_crc32c) == 112,
                "FATAL: Hardware CRC32C field misaligned; must sit at offset 112.");
+_Static_assert(offsetof(shbt_recon_mmio_t, ibr_telemetry.ibr_crew_dose_nsv_yr) == 0x74,
+               "FATAL: ibr_crew_dose_nsv_yr offset mismatch; must sit at offset 0x74.");
+_Static_assert(offsetof(shbt_recon_mmio_t, ibr_telemetry.ibr_frame_angle_q64) == 0x78,
+               "FATAL: ibr_frame_angle_q64 offset mismatch; must sit at offset 0x78.");
 _Static_assert(offsetof(shbt_recon_mmio_t, bank0) == 0x28,
                "FATAL: bank-switched window must begin at offset 0x28.");
 _Static_assert(offsetof(shbt_recon_mmio_t, bank0.synth.synth_target_z) == 0x28,
