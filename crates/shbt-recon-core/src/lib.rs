@@ -12,9 +12,11 @@
 pub mod adm;
 pub mod causal;
 pub mod fp_closure;
+pub mod hyperframe;
 pub mod kinematics;
 pub mod stinespring;
 pub mod telemetry;
 pub mod translocate;
 
 pub use fp_closure::*;
+pub use hyperframe::*;

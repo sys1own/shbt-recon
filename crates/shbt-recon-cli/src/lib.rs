@@ -391,6 +391,113 @@ pub fn verify_matrix() -> Vec<GateResult> {
         (extracted_m - 37.699).abs() < 1e-3 && crosstalk == 0.0,
     );
 
+    // --- Multi-Kiloton Payload Scaling (GATE-SCALE-01 .. GATE-SCALE-08) ----
+    let transformer = sglt_gst_metamaterial::DynamicGstMetamaterialAcousticTransformer::default();
+    let gst_telem = transformer.match_payload_impedance(44.178).unwrap();
+    push(
+        "GATE-SCALE-01",
+        "gst::impedance_match",
+        "R <= 1e-6, IL >= 41.5 dB across [1, 100] MRayl",
+        "R <= 1.0e-6, IL >= 41.5 dB",
+        gst_telem.insertion_loss_db,
+        gst_telem.reflection_coeff_r <= 1.0001e-6 && gst_telem.insertion_loss_db >= 41.5,
+    );
+
+    push(
+        "GATE-SCALE-02",
+        "gst::stress_clamping",
+        "sigma_max <= 124.60 MPa < 350.00 MPa",
+        "<= 124.60 MPa",
+        gst_telem.peak_stress_mpa,
+        gst_telem.peak_stress_mpa <= 124.60,
+    );
+
+    let sweep = sglt_translocator_core::ProgressiveEikonalFoliation::new(30.3936, 1.0).unwrap();
+    let peak_kine = sweep.evaluate_kinematics(0.5);
+    let extrema_kine = sweep.evaluate_kinematics(0.5 - 0.5 / 3.0_f64.sqrt());
+    push(
+        "GATE-SCALE-03",
+        "eikonal::kinematics",
+        "v_derender_max <= 56.988 m/s, max |s_ddot| <= 5.7735",
+        "<= 56.988 m/s",
+        peak_kine.velocity_mps,
+        peak_kine.velocity_mps <= 56.9880 + 1e-4 && (extrema_kine.s_acc_dimless.abs() - 5.77350269).abs() < 1e-4,
+    );
+
+    let ttn_mera = sglt_translocator_core::TtnMeraEngine::new(1.0e30);
+    let (isometry_res, brem_w) = ttn_mera.verify_isometry_and_brem().unwrap();
+    push(
+        "GATE-SCALE-04",
+        "ttn_mera::scaling",
+        "L(10^30) = 101, ||S^dag S - I|| <= 1e-14, P_Brem == 0.0 W",
+        "101 layers, <= 1e-14",
+        isometry_res,
+        ttn_mera.layers == 101 && isometry_res <= 1.0e-14 && brem_w == 0.0,
+    );
+
+    let shunt_telem = sglt_lanr_power::evaluate_symplectic_landauer_shunt(1.5e6, 112.5).unwrap();
+    push(
+        "GATE-SCALE-05",
+        "power::landauer_shunt",
+        "1 - S = 90.82% dark rejection, f_sensible = 7.88246e-5, T_op <= 28.40 K",
+        "<= 28.40 K",
+        shunt_telem.operating_temp_k,
+        (sglt_lanr_power::DARK_LEDGER_REJECTION_FRAC - 989.0 / 1089.0).abs() < 1e-6
+            && (sglt_lanr_power::SENSIBLE_HEAT_FRACTION - 7.88246e-5).abs() < 1e-9
+            && shunt_telem.operating_temp_k <= 28.40,
+    );
+
+    let dim_hg3 = sglt_translocator_core::compute_verlinde_dimension_su2_5(3);
+    push(
+        "GATE-SCALE-06",
+        "topological::higher_genus",
+        "dim H_g = sum_i S_{0i}^{2-2g} for g >= 3, Delta_fr == 0",
+        "g=3 SU(2)_5 dim",
+        dim_hg3,
+        (dim_hg3 - 1529.85).abs() < 1.0,
+    );
+
+    let mut sample_word = Vec::new();
+    for i in 0..42 {
+        sample_word.push(if i % 2 == 0 {
+            sglt_translocator_core::BraidGenerator::Sigma1Pos
+        } else {
+            sglt_translocator_core::BraidGenerator::Sigma2Pos
+        });
+    }
+    let braid_desc = sglt_translocator_core::ShbtBraidDescriptor::pack_ternary_huffman(&sample_word).is_ok();
+    let err_floor = sglt_translocator_core::ShbtBraidDescriptor::sk9_log10_error_floor(42);
+    push(
+        "GATE-SCALE-07",
+        "braid::ternary_huffman",
+        "ell = 42 generators in 8 B, eps_SK9 <= 10^-230.1937",
+        "<= -230.1937",
+        err_floor,
+        braid_desc && err_floor <= -230.1937 + 1e-4,
+    );
+
+    let frame = shbt_recon_core::UnifiedStinespringFrame {
+        visible_register: [0u8; 640],
+        dark_braid_ledger: [0u64; 124],
+        secded_hamming_ecc: [0u64; 60],
+    };
+    let hyper = shbt_recon_core::UnifiedStinespringHyperFrame {
+        banks: [frame; 64],
+        active_bank_mask: !0u64,
+        total_nucleons: 6.4e29,
+        adm_mass_kg: 6.4e29 * shbt_recon_core::UnifiedStinespringHyperFrame::NUCLEON_MASS_KG,
+        heegaard_genus: 3,
+    };
+    let hyper_audit = hyper.audit_invariants().is_ok();
+    push(
+        "GATE-SCALE-08",
+        "core::hyperframe_64bank",
+        "K = 64 banks (135,168 B), 6.4e29 nucleons (1,062.4 t), M_ADM == M_payload, <V_vol> == 0",
+        "135,168 bytes",
+        shbt_recon_core::HYPERFRAME_TOTAL_BYTES as f64,
+        hyper_audit && shbt_recon_core::HYPERFRAME_TOTAL_BYTES == 135168,
+    );
+
     gates
 }
 

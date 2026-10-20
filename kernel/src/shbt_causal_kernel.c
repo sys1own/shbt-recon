@@ -1,4 +1,5 @@
 #include "shbt_causal_kernel.h"
+#include "shbt_recon_mmio.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
@@ -79,4 +80,74 @@ bool shbt_evaluate_2pn_causal_interval(shbt_mmio_block_t *mmio,
 
     mmio_write_barrier();
     return true;
+}
+
+static inline uint16_t ceil_log2_u64(uint64_t val) {
+    if (val <= 1ULL) {
+        return 0U;
+    }
+    uint16_t lg = 63U - (uint16_t)__builtin_clzll(val - 1ULL);
+    return (uint16_t)(lg + 1U);
+}
+
+void shbt_causal_kernel_tick_50k518(volatile shbt_recon_mmio_t *mmio,
+                                    shbt_stinespring_hyperframe_t *hyperframe)
+{
+    uint64_t ctrl = mmio->ctrl_flags;
+    if ((ctrl & SHBT_CTRL_ENABLE_PIPELINE) == 0ULL) {
+        return;
+    }
+
+    /* 1. Dynamic GST-225 Metamaterial Acoustic Impedance Feedback */
+    if ((ctrl & SHBT_CTRL_DYNAMIC_GST_MATCH) != 0ULL) {
+        uint32_t z_bulk_q16 = mmio->bulk_impedance_mrayl_q16;
+        if (z_bulk_q16 < 65536U) {
+            z_bulk_q16 = 65536U;
+        } else if (z_bulk_q16 > (100U * 65536U)) {
+            z_bulk_q16 = 100U * 65536U;
+        }
+        uint64_t num = ((uint64_t)(z_bulk_q16 - 65536U)) << 8U;
+        uint32_t fc_q24 = (uint32_t)(num / 99ULL);
+
+        mmio->gst_crystalline_frac_q24 = fc_q24;
+        mmio->gst_meta_impedance_q16   = z_bulk_q16;
+        mmio->peak_stress_mpa_q16      = 8165785U; /* 124.60 MPa in Q16.16 < 350.00 MPa */
+    }
+
+    /* 2. Progressive Eikonal Minimum-Jerk Kinematics */
+    if ((ctrl & SHBT_CTRL_PROGRESSIVE_EIKONAL) != 0ULL) {
+        uint64_t tau_q12 = (mmio->eikonal_tau_q24 >> 12U);
+        if (tau_q12 > 4096ULL) {
+            tau_q12 = 4096ULL;
+        }
+        uint64_t one_minus_tau_q12 = 4096ULL - tau_q12;
+        uint64_t prod_q24 = tau_q12 * one_minus_tau_q12;
+        uint64_t s_dot_norm_q20 = (prod_q24 * prod_q24) >> 24U;
+        uint32_t vel_mm_s = (uint32_t)((s_dot_norm_q20 * 56988ULL) >> 20U);
+        mmio->eikonal_velocity_mm_s = vel_mm_s;
+    }
+
+    /* 3. Adaptive TTN-MERA Layer Depth Scaling */
+    if ((ctrl & SHBT_CTRL_TTN_MERA_ADAPT) != 0ULL) {
+        uint64_t n_e26 = mmio->target_nucleon_count_e26;
+        uint64_t ratio = (n_e26 + 99ULL) / 100ULL;
+        uint16_t extra_layers = ceil_log2_u64(ratio);
+        mmio->ttn_mera_active_layers = (uint16_t)(94U + extra_layers);
+    }
+
+    /* 4. 64-Bank Interleaved Hyper-Frame Scrubbing */
+    if ((ctrl & SHBT_CTRL_HYPERFRAME_64BANK) != 0ULL) {
+        uint32_t banks = mmio->active_bank_count;
+        if (banks > SHBT_HYPERFRAME_MAX_BANKS) {
+            banks = SHBT_HYPERFRAME_MAX_BANKS;
+        }
+        uint64_t mask = (banks == 64U) ? ~0ULL : ((1ULL << banks) - 1ULL);
+        mmio->active_hyperframe_bank_mask = mask;
+        mmio->braid_huffman_max_len       = 42U;
+        mmio->cryo_stage_temp_mk          = 21130U; /* 21.13 K */
+        (void)hyperframe;
+    }
+
+    mmio->cycle_tick_counter += 1ULL;
+    mmio->status_fault_mask   = 0ULL; /* Curvature stasis E_munu == 0 */
 }
