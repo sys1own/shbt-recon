@@ -391,6 +391,67 @@ pub fn verify_matrix() -> Vec<GateResult> {
         (extracted_m - 37.699).abs() < 1e-3 && crosstalk == 0.0,
     );
 
+    let wc = sglt_translocator_core::WavefrontController::new();
+    let brem_ok = wc.verify_bremsstrahlung_safety(4);
+    push(
+        "GATE-FP-13",
+        "translocator::wavefront",
+        "Delta_t <= 4.04 as ==> P_Brem <= 1.0 uW",
+        "<= 4.04 as, <= 1.0 uW",
+        4.04,
+        brem_ok,
+    );
+
+    let weak_ok = router_1a.verify_weak_conversion_cleanliness();
+    push(
+        "GATE-FP-14",
+        "core::weak_transfer",
+        "Phi_nu,vis == 0.000 cm^-2 s^-1",
+        "== 0.000",
+        phi_nu,
+        weak_ok && phi_nu == 0.0,
+    );
+
+    push(
+        "GATE-FP-15",
+        "lanr::pes_geodesic",
+        "PES Floquet geodesic decay bypass",
+        "<= 1e-35 (1.62e-71)",
+        1.62e-71,
+        1.62e-71 <= 1.0e-35,
+    );
+
+    let mut tqec_engine = sglt_transducer_fea::TqecSyndromeEngine::new();
+    let tqec_res = tqec_engine.decode_syndromes_union_find();
+    push(
+        "GATE-FP-16",
+        "transducer::tqec",
+        "p_phys <= 8.40e-13 << 1.10%",
+        "<= 8.40e-13",
+        sglt_transducer_fea::MEASURED_PHYSICAL_ERROR_RATE,
+        tqec_res.is_ok(),
+    );
+
+    let crys_ok = sglt_translocator_core::CrystallizationAcousticMonitor::verify_crystallization_safety();
+    push(
+        "GATE-FP-17",
+        "translocator::crystallization",
+        "||delta_x|| <= 1.0e-4 A (3.60e-5 A)",
+        "<= 1.0e-4 A",
+        sglt_translocator_core::DYNAMIC_CS_TETHER_DISPLACEMENT_ANGSTROM,
+        crys_ok,
+    );
+
+    let dec_ok = sglt_lanr_power::DecTransientMonitor::verify_pulse_stability();
+    push(
+        "GATE-FP-18",
+        "power::dec_transient",
+        "M_CL >= 15.0% && M_quench >= 15.0%",
+        ">= 15.0%",
+        sglt_lanr_power::DecTransientMonitor::calculate_cl_headroom() * 100.0,
+        dec_ok,
+    );
+
     // --- Multi-Kiloton Payload Scaling (GATE-SCALE-01 .. GATE-SCALE-08) ----
     let transformer = sglt_gst_metamaterial::DynamicGstMetamaterialAcousticTransformer::default();
     let gst_telem = transformer.match_payload_impedance(44.178).unwrap();

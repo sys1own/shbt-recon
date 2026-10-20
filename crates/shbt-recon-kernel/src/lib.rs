@@ -98,6 +98,55 @@ const _: () = assert!(std::mem::offset_of!(ShbtReconMmio, synth_antibaryon_ratio
 const _: () = assert!(std::mem::offset_of!(ShbtReconMmio, synth_coset_weight_q16) == 0x3E);
 const _: () = assert!(std::mem::offset_of!(ShbtReconMmio, isomer_soc_millijoules) == 64);
 
+/// First-Principles Flat MMIO register mapping layout (128 bytes, 64-byte aligned).
+#[repr(C, align(64))]
+#[derive(Clone, Copy, Debug, Default)]
+pub struct ShbtReconMmioFirstPrinciples {
+    pub system_status_flags: u64,
+    pub de_rendering_tau_q32: u64,
+    pub target_coord_x_nm: u64,
+    pub target_coord_y_nm: u64,
+    pub eikonal_velocity_kms: u32,
+    pub kohn_sham_shift_ev_q16: u32,
+    pub cryo_temp_millikelvin: u32,
+    pub phononic_damping_coeff: u32,
+    pub rebco_coil_current_amperes: u32,
+    pub magnetic_nozzle_field_mt: u32,
+    pub synth_jitter_bound_q16: u16,
+    pub synth_tether_displacement_q16: u16,
+    pub reserved_gate_align: u32,
+    pub dec_discharge_energy_uj: u64,
+    pub dec_space_charge_margin_q16: u16,
+    pub tqec_syndrome_err_rate_q16: u16,
+    pub rebco_quench_headroom_q16: u32,
+    pub poynting_recovery_flux_w: u64,
+    pub mhd_diamagnetic_beta_q16: u32,
+    pub anyon_braid_cycle_count: u32,
+    pub dark_ledger_wzw_checksum: u64,
+    pub hardware_pad: [u8; 24],
+}
+
+const _: () = assert!(std::mem::size_of::<ShbtReconMmioFirstPrinciples>() == 128);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, synth_jitter_bound_q16) == 0x38);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, synth_tether_displacement_q16) == 0x3A);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, dec_discharge_energy_uj) == 0x40);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, dec_space_charge_margin_q16) == 0x48);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, tqec_syndrome_err_rate_q16) == 0x4A);
+const _: () = assert!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, rebco_quench_headroom_q16) == 0x4C);
+
+pub fn shbt_kernel_record_wavefront_jitter(mmio: &mut ShbtReconMmioFirstPrinciples, jitter_as: u16) {
+    mmio.synth_jitter_bound_q16 = jitter_as;
+}
+
+pub fn shbt_kernel_record_tether_displacement(mmio: &mut ShbtReconMmioFirstPrinciples, disp_q16: u16) {
+    mmio.synth_tether_displacement_q16 = disp_q16;
+}
+
+pub fn shbt_kernel_record_dec_margins(mmio: &mut ShbtReconMmioFirstPrinciples, cl_margin_q16: u16, quench_margin_q16: u32) {
+    mmio.dec_space_charge_margin_q16 = cl_margin_q16;
+    mmio.rebco_quench_headroom_q16 = quench_margin_q16;
+}
+
 pub const SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD: u8 = 0x06;
 pub const SHBT_SYNTH_RG_LOCK_312: u32 = 1 << 16;
 pub const SHBT_SYNTH_CBARB_ZERO_VERIFIED: u32 = 1 << 17;
@@ -450,5 +499,28 @@ mod tests {
         assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_last_latency_ns), 0x70);
         assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_crew_dose_nsv_yr), 0x74);
         assert_eq!(std::mem::offset_of!(ShbtIbr312Mmio, ibr_frame_angle_q64), 0x78);
+    }
+
+    #[test]
+    fn test_first_principles_mmio_layout() {
+        assert_eq!(std::mem::size_of::<ShbtReconMmioFirstPrinciples>(), 128);
+        assert_eq!(std::mem::align_of::<ShbtReconMmioFirstPrinciples>(), 64);
+        assert_eq!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, synth_jitter_bound_q16), 0x38);
+        assert_eq!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, synth_tether_displacement_q16), 0x3A);
+        assert_eq!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, dec_discharge_energy_uj), 0x40);
+        assert_eq!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, dec_space_charge_margin_q16), 0x48);
+        assert_eq!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, tqec_syndrome_err_rate_q16), 0x4A);
+        assert_eq!(std::mem::offset_of!(ShbtReconMmioFirstPrinciples, rebco_quench_headroom_q16), 0x4C);
+
+        let mut mmio = ShbtReconMmioFirstPrinciples::default();
+        shbt_kernel_record_wavefront_jitter(&mut mmio, 4);
+        assert_eq!(mmio.synth_jitter_bound_q16, 4);
+
+        shbt_kernel_record_tether_displacement(&mut mmio, 3605);
+        assert_eq!(mmio.synth_tether_displacement_q16, 3605);
+
+        shbt_kernel_record_dec_margins(&mut mmio, 11718, 10892);
+        assert_eq!(mmio.dec_space_charge_margin_q16, 11718);
+        assert_eq!(mmio.rebco_quench_headroom_q16, 10892);
     }
 }

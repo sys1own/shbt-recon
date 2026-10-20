@@ -275,6 +275,12 @@ mod tests {
 
     #[test]
     fn audit_returns_all_sections() {
+        if std::env::var("PYTHONHOME").is_err() {
+            let candidate = "C:\\Users\\800073595\\AppData\\Roaming\\uv\\python\\cpython-3.12.15-windows-x86_64-none";
+            if std::path::Path::new(candidate).exists() {
+                std::env::set_var("PYTHONHOME", candidate);
+            }
+        }
         pyo3::prepare_freethreaded_python();
         let mut trans = ModularStateTranslocator::new().unwrap();
         Python::with_gil(|py| {

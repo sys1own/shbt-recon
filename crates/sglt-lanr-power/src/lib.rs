@@ -3,12 +3,14 @@
 //! pulsed ^178m2Hf isomer graser burst rail (upstream: sys1own/shbt-warp).
 
 pub mod compacted_nacelle;
+pub mod dec_transient;
 pub mod enthalpy;
 pub mod fp_closure;
 pub mod isomer;
 pub mod shunt;
 
 pub use compacted_nacelle::*;
+pub use dec_transient::*;
 pub use fp_closure::*;
 pub use shunt::*;
 

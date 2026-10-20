@@ -124,7 +124,7 @@ mod tests {
             for n in 0..8 {
                 let cmd = element_phase_command(m, n, 0.05, -0.05, 0.1);
                 let v = element_drive_voltage(cmd);
-                assert!(v >= V_ON_VOLTS && v <= V_SAT_VOLTS);
+                assert!((V_ON_VOLTS..=V_SAT_VOLTS).contains(&v));
             }
         }
 

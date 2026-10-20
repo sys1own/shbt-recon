@@ -151,3 +151,22 @@ void shbt_causal_kernel_tick_50k518(volatile shbt_recon_mmio_t *mmio,
     mmio->cycle_tick_counter += 1ULL;
     mmio->status_fault_mask   = 0ULL; /* Curvature stasis E_munu == 0 */
 }
+
+void shbt_kernel_record_wavefront_jitter(volatile shbt_recon_mmio_t *mmio, uint16_t jitter_as) {
+    if (mmio) {
+        mmio->synth_jitter_bound_q16 = jitter_as;
+    }
+}
+
+void shbt_kernel_record_tether_displacement(volatile shbt_recon_mmio_t *mmio, uint16_t disp_q16) {
+    if (mmio) {
+        mmio->synth_tether_displacement_q16 = disp_q16;
+    }
+}
+
+void shbt_kernel_record_dec_margins(volatile shbt_recon_mmio_t *mmio, uint16_t cl_margin_q16, uint32_t quench_margin_q16) {
+    if (mmio) {
+        mmio->dec_space_charge_margin_q16 = cl_margin_q16;
+        mmio->rebco_quench_headroom_q16 = quench_margin_q16;
+    }
+}
