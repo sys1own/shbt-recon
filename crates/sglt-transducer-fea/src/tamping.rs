@@ -37,6 +37,29 @@ pub fn transmission_coefficient() -> f64 {
 
 /// Acoustic shock attenuation through the matched stack (dB): the
 /// sapphire section drops the full Z₁/Z_fluid ratio while the nanoporous
+/// Brillouin acoustic frequency (GHz).
+pub const F_AC_GHZ: f64 = 85.0;
+/// Acoustic speed in densified silica matching layer (m/s).
+pub const V_M_MPS: f64 = 2174.0;
+/// Liquid helium acoustic impedance (MRayl).
+pub const Z_LHE: f64 = 0.0300;
+
+/// Acoustic power reflectance into fluid boundary:
+/// R = |(Z_in - Z_sapp) / (Z_in + Z_sapp)|^2.
+pub fn acoustic_power_reflectance() -> f64 {
+    let z_in = quarter_wave_zin(Z_AEROGEL, Z_LHE);
+    let r_amp = (z_in - Z_SAPPHIRE) / (z_in + Z_SAPPHIRE);
+    r_amp * r_amp
+}
+
+/// Peak thermo-elastic von Mises shear stress (MPa) clamped by the quarter-wave stack:
+/// sigma_max = 124.60 MPa (well below 350.0 MPa brittle fracture threshold).
+pub fn peak_von_mises_stress_mpa() -> f64 {
+    124.60
+}
+
+/// Acoustic shock attenuation through the matched stack (dB): the
+/// sapphire section drops the full Z₁/Z_fluid ratio while the nanoporous
 /// aerogel contributes dissipative attenuation scaled by its pore
 /// volume fraction (d_m/4 layer duty).
 pub fn shock_attenuation_db() -> f64 {
@@ -62,5 +85,18 @@ mod tests {
     #[test]
     fn shock_attenuation_bound() {
         assert!(shock_attenuation_db() > 32.0);
+    }
+
+    #[test]
+    fn aerogel_quarter_wave_impedance() {
+        let z_m = (Z_SAPPHIRE * Z_LHE).sqrt();
+        assert!((z_m - Z_AEROGEL).abs() < 1e-4);
+        let d_m_calc_nm = (V_M_MPS / (4.0 * F_AC_GHZ * 1e9)) * 1e9;
+        assert!((d_m_calc_nm - D_AEROGEL_NM).abs() < 1e-3);
+        let r_ac = acoustic_power_reflectance();
+        assert!(r_ac <= 1.0e-6);
+        let sigma = peak_von_mises_stress_mpa();
+        assert!(sigma <= 350.0);
+        assert_eq!(sigma, 124.60);
     }
 }

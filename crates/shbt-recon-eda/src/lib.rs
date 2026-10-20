@@ -10,3 +10,4 @@ pub mod gdsii;
 pub mod step;
 pub mod substrate;
 pub mod s2p;
+pub mod emitter;
