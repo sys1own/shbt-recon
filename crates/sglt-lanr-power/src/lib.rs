@@ -7,11 +7,13 @@ pub mod dec_transient;
 pub mod enthalpy;
 pub mod fp_closure;
 pub mod isomer;
+pub mod mar312x;
 pub mod shunt;
 
 pub use compacted_nacelle::*;
 pub use dec_transient::*;
 pub use fp_closure::*;
+pub use mar312x::*;
 pub use shunt::*;
 
 /// Active LANR module count.

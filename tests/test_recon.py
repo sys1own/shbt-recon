@@ -163,7 +163,11 @@ def test_verification_matrix_114_gates():
     import json
     with open("verification_matrix.json", encoding="utf-8") as f:
         data = json.load(f)
-    assert data["total_gates"] == 114
+    assert data["total_gates"] == 144
+    for i in range(1, 9):
+        assert data["gates"].get(f"GATE-SCALE-{i:02d}") == "PASS"
+        assert data["gates"].get(f"GATE-UNIV-{i:02d}") == "PASS"
+        assert data["gates"].get(f"GATE-MARX-{i:02d}") == "PASS"
     assert all(status == "PASS" for status in data["gates"].values())
     for i in range(1, 9):
         gate_id = f"GATE-IBR-{i:02d}"

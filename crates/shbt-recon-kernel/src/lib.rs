@@ -7,6 +7,8 @@
 //! - AVX-512 Givens channel remapping `shbt_remap` + current-shunt interlock
 //! - 4-stage post-quench recovery sequencer ≤ 120.00 ns
 //! - SHBT-MMIO-1 14-register block, 56 bytes at 0x70000000
+//! - Phase 1–4 `SHBT-MAR-312X` + `R_univ^SWARM` + `R_clone^SWARM` + `SHBT-STEN`
+//!   command opcodes, fault bitmasks, and Three-Tier synthesis dispatch (`shbt_synth_dispatch_on`).
 //!
 //! Timing assertions are environment-aware: when `SGLT_CI_VIRTUAL_ENV` is
 //! set (virtualized CI without a calibrated TSC), benchmarks are exercised
@@ -93,6 +95,12 @@ pub struct ShbtReconMmio {
     pub reserved_c1_pad: [u8; 12],
 }
 
+impl Default for ShbtReconMmio {
+    fn default() -> Self {
+        unsafe { std::mem::zeroed() }
+    }
+}
+
 const _: () = assert!(std::mem::size_of::<ShbtReconMmio>() == 128);
 const _: () = assert!(std::mem::offset_of!(ShbtReconMmio, synth_antibaryon_ratio_q16) == 0x3C);
 const _: () = assert!(std::mem::offset_of!(ShbtReconMmio, synth_coset_weight_q16) == 0x3E);
@@ -147,11 +155,23 @@ pub fn shbt_kernel_record_dec_margins(mmio: &mut ShbtReconMmioFirstPrinciples, c
     mmio.rebco_quench_headroom_q16 = quench_margin_q16;
 }
 
+pub const SHBT_STATE_IDLE_STASIS: u8 = 0x01;
+pub const SHBT_STATE_STANDBY_STASIS: u8 = 0x01;
+pub const SHBT_STATE_PRE_COOL_VERIFY: u8 = 0x01;
+pub const SHBT_STATE_TRIGGER_ARMED: u8 = 0x02;
+pub const SHBT_STATE_DEC_HARVEST_ACTIVE: u8 = 0x03;
+pub const SHBT_STATE_TRANSMUTATION_BURST: u8 = 0x04;
 pub const SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD: u8 = 0x06;
+pub const SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION: u8 = 0x08;
+pub const SHBT_STATE_EMERGENCY_QUENCH: u8 = 0x10;
+
 pub const SHBT_SYNTH_RG_LOCK_312: u32 = 1 << 16;
 pub const SHBT_SYNTH_CBARB_ZERO_VERIFIED: u32 = 1 << 17;
 pub const SHBT_SYNTH_BRAID_PARITY_OK: u32 = 1 << 18;
 pub const SHBT_SYNTH_FRAMING_FAULT: u32 = 1 << 31;
+
+pub const SHBT_SYNTH_COSET_WEIGHT_MAR312_Q16: u16 = 0xB400;
+pub const SHBT_SYNTH_COSET_WEIGHT_UNIV_DYNAMIC_Q16: u16 = 0xFFFF;
 
 /* Control Bitflags */
 pub const SHBT_MAR_SYMPLECTIC_SHIELD_LOCK: u32 = 1 << 8;
@@ -169,6 +189,64 @@ pub const SHBT_IBR_CREW_DOSE_NSV_YR: u32 = 114000;
 pub const SHBT_MAR312C_SEED_MASS_G: u32 = 37699;
 pub const SHBT_IBR312_MAGAZINE_TOTAL_SIZE: usize = 33792;
 pub const SHBT_IBR312_MAGAZINE_BANKS: usize = 16;
+
+/* Phase 1–4 SHBT-MAR-312X & Universal Swarm Constants */
+pub const SHBT_MAR312X_NACELLE_MASS_G: u32 = 950_000;
+pub const SHBT_MAR312X_VOLUME_CM3: u32 = 350_000;
+pub const SHBT_MAR312X_DEC_X_EFF_PPM: u32 = 992_000;
+pub const SHBT_MAR312X_DIRECT_BUS_EFF_PPM: u32 = 998_500;
+pub const SHBT_MAR312X_SUPERHYDRIDE_FIELD_MT: u32 = 48_000;
+pub const SHBT_MAR312X_CRYO_OP_MK: u32 = 24_850;
+pub const SHBT_MAR312X_CRYO_CRIT_MK: u32 = 192_500;
+pub const SHBT_MAR312X_TIER4_GROSS_EW: u32 = 25;
+pub const SHBT_MAR312X_SINGLE_FRAME_CORES: u32 = 41;
+pub const SHBT_UNIV_DYNKIN_SLOTS_TOTAL: u32 = 346;
+pub const SHBT_UNIV_SPACE_GROUPS_MAX: u8 = 230;
+
+/* Phase 1–4 Command Opcodes (SHBT_SWARM_CMD_*) */
+pub const SHBT_SWARM_CMD_NOP: u32 = 0x0000_0000;
+pub const SHBT_SWARM_CMD_TOMITA_QUINE_COPY: u32 = 0x0000_0001;
+pub const SHBT_SWARM_CMD_VERLINDE_SPLIT: u32 = 0x0000_0002;
+pub const SHBT_SWARM_CMD_BIO_CLONE_RERENDER: u32 = 0x0000_0004;
+pub const SHBT_SWARM_CMD_STEN_PT_GOI_SOLVE: u32 = 0x0000_0008;
+pub const SHBT_SWARM_CMD_SP2G_ENTANGLE_SYNC: u32 = 0x0000_0010;
+pub const SHBT_SWARM_CMD_UNIV_SYNTH_FOLD: u32 = 0x0000_2000;
+pub const SHBT_SWARM_CMD_EXEC_UNIV_SYNTH: u32 = 0x0000_2000;
+pub const SHBT_SWARM_CMD_ZERO_COMP_DIRECT_RENDER: u32 = 0x0000_4000;
+pub const SHBT_SWARM_CMD_MERA_DAG_DEPLOY: u32 = 0x0000_8000;
+pub const SHBT_SWARM_CMD_MAR312X_FORGE_TIER4: u32 = 0x0001_0000;
+pub const SHBT_SWARM_CMD_MAR312X_DIRECT_BREED: u32 = 0x0002_0000;
+pub const SHBT_SWARM_CMD_MAR312X_AUTOPOIETIC_HEAL: u32 = 0x0004_0000;
+pub const SHBT_SWARM_CMD_PCSS_CROWBAR_TRIP: u32 = 0x8000_0000;
+
+/* Phase 1–4 Fault Bitmasks (SHBT_SWARM_FAULT_*) */
+pub const SHBT_SWARM_FAULT_NONE: u32 = 0x0000_0000;
+pub const SHBT_SWARM_FAULT_SECDED_SINGLE_CORR: u32 = 0x0000_0001;
+pub const SHBT_SWARM_FAULT_SECDED_DOUBLE_UNCORR: u32 = 0x0000_0002;
+pub const SHBT_SWARM_FAULT_CAYLEY_HASH_MISMATCH: u32 = 0x0000_0004;
+pub const SHBT_SWARM_FAULT_SUGAWARA_OVERFLOW: u32 = 0x0000_0008;
+pub const SHBT_SWARM_FAULT_ADM_MASS_DEFICIT: u32 = 0x0000_0010;
+pub const SHBT_SWARM_FAULT_CRYO_QUENCH_MARGIN: u32 = 0x0000_0020;
+pub const SHBT_SWARM_FAULT_CHIRAL_PARITY_DRIFT: u32 = 0x0000_0040;
+pub const SHBT_SWARM_FAULT_NO_CLONING_UNITARY: u32 = 0x0000_0080;
+pub const SHBT_SWARM_FAULT_BYZANTINE_BRAID_CUT: u32 = 0x0000_0100;
+pub const SHBT_SWARM_FAULT_CBF_BARRIER_BREACH: u32 = 0x0000_0200;
+pub const SHBT_SWARM_FAULT_EP2_DEGENERACY_LOST: u32 = 0x0000_0400;
+pub const SHBT_SWARM_FAULT_XENO_PRION_LOCK: u32 = 0x0000_0800;
+pub const SHBT_SWARM_FAULT_XENO_VIROID_LOCK: u32 = 0x0000_1000;
+pub const SHBT_SWARM_FAULT_WYCKOFF_TETHER_DRIFT: u32 = 0x0000_2000;
+pub const SHBT_SWARM_FAULT_SPACE_GROUP_INVALID: u32 = 0x0000_4000;
+pub const SHBT_SWARM_FAULT_PURCELL_BANDGAP_DRIFT: u32 = 0x0001_0000;
+pub const SHBT_SWARM_FAULT_SUPERHYDRIDE_DETETHER: u32 = 0x0002_0000;
+pub const SHBT_SWARM_FAULT_WEYL_CHERN_BACKSCATTER: u32 = 0x0004_0000;
+pub const SHBT_SWARM_FAULT_DIRECT_BUS_DESYNC: u32 = 0x0008_0000;
+pub const SHBT_SWARM_FAULT_FRENKEL_SHEAR_EXCEED: u32 = 0x0010_0000;
+
+/* Xenobiological Triage Bitmasks */
+pub const SHBT_SWARM_TRIAGE_CLASS_M0_HOMOCHIRAL: u32 = 0x0000_0001;
+pub const SHBT_SWARM_TRIAGE_CLASS_X0_PRION_LOCK: u32 = 0x0000_0002;
+pub const SHBT_SWARM_TRIAGE_CLASS_X1_MIRROR_VIROID: u32 = 0x0000_0004;
+pub const SHBT_SWARM_TRIAGE_CLASS_X2_SILICON_XNA: u32 = 0x0000_0008;
 
 /* 8-State Autonomous Hot-Swap FSM States */
 pub const IBR_FSM_S0_NOMINAL_BURN: u16 = 0x00;
@@ -303,6 +381,16 @@ extern "C" {
     fn shbt_simd_shunt_check(currents: *const f32) -> i32;
     /// `double shbt_simd_shunt_bench(unsigned iters)` — mean latency (ns).
     fn shbt_simd_shunt_bench(iters: u32) -> f64;
+    /// `int32_t shbt_synth_dispatch_on(shbt_recon_mmio_t *mmio)` — Three-Tier
+    /// synthesis FSM dispatcher (Tier I `R_synth`, Tier II `R_synth^MAR`,
+    /// Tier III `R_univ^SWARM` + X0/X1 xenobiological crowbar guard).
+    fn shbt_synth_dispatch_on(mmio: *mut ShbtReconMmio) -> i32;
+}
+
+/// Dispatch a synthesis FSM command across the Three-Tier hierarchy on a
+/// caller-supplied [`ShbtReconMmio`] block.
+pub fn synth_dispatch_on(mmio: &mut ShbtReconMmio) -> i32 {
+    unsafe { shbt_synth_dispatch_on(mmio as *mut ShbtReconMmio) }
 }
 
 /// SECDED Hamming(72,64) encode.
@@ -522,5 +610,60 @@ mod tests {
         shbt_kernel_record_dec_margins(&mut mmio, 11718, 10892);
         assert_eq!(mmio.dec_space_charge_margin_q16, 11718);
         assert_eq!(mmio.rebco_quench_headroom_q16, 10892);
+    }
+
+    #[test]
+    fn test_three_tier_synth_dispatch_and_xeno_crowbar() {
+        // Tier I (R_synth): single-sector visible synthesis
+        let mut mmio_t1 = ShbtReconMmio {
+            dispatch_fsm_state: SHBT_STATE_TRIGGER_ARMED,
+            cryo_temp_mgb2_mk: 20_000,
+            synth_target_z: 72,
+            synth_target_a: 178,
+            ..ShbtReconMmio::default()
+        };
+        assert_eq!(synth_dispatch_on(&mut mmio_t1), 0);
+        assert_eq!(mmio_t1.dispatch_fsm_state, SHBT_STATE_TRANSMUTATION_BURST);
+
+        // Tier II (R_synth^MAR): bipartite coset spinor folding (0x3C = 0x8000, 0x3E = 0xB400)
+        let mut mmio_t2 = ShbtReconMmio {
+            dispatch_fsm_state: SHBT_STATE_TRIGGER_ARMED,
+            cryo_temp_mgb2_mk: 20_000,
+            synth_target_z: 72,
+            synth_target_a: 178,
+            synth_status: SHBT_SYNTH_RG_LOCK_312,
+            synth_antibaryon_ratio_q16: 0x8000,
+            synth_coset_weight_q16: SHBT_SYNTH_COSET_WEIGHT_MAR312_Q16,
+            ..ShbtReconMmio::default()
+        };
+        assert_eq!(synth_dispatch_on(&mut mmio_t2), 0);
+        assert_eq!(mmio_t2.dispatch_fsm_state, SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION);
+
+        // Tier III (R_univ^SWARM): Dynamic Sugawara 0xFFFF + space group 225 (Fm-3m)
+        let mut mmio_t3 = ShbtReconMmio {
+            system_control: SHBT_SWARM_CMD_UNIV_SYNTH_FOLD,
+            dispatch_fsm_state: SHBT_STATE_TRIGGER_ARMED,
+            reserved_c0_0: 225,
+            cryo_temp_mgb2_mk: 20_000,
+            synth_target_z: 57,
+            synth_target_a: 139,
+            synth_coset_weight_q16: SHBT_SYNTH_COSET_WEIGHT_UNIV_DYNAMIC_Q16,
+            ..ShbtReconMmio::default()
+        };
+        assert_eq!(synth_dispatch_on(&mut mmio_t3), 0);
+        assert_eq!(mmio_t3.dispatch_fsm_state, SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION);
+
+        // Xenobiological Class X0/X1 lock trips 1.701 ps Weyl-Exciton crowbar -> EMERGENCY_QUENCH
+        let mut mmio_x0 = ShbtReconMmio {
+            dispatch_fsm_state: SHBT_STATE_TRIGGER_ARMED,
+            cryo_temp_mgb2_mk: 20_000,
+            synth_target_z: 6,
+            synth_target_a: 12,
+            synth_status: SHBT_SWARM_FAULT_XENO_PRION_LOCK,
+            ..ShbtReconMmio::default()
+        };
+        assert_eq!(synth_dispatch_on(&mut mmio_x0), -7);
+        assert_eq!(mmio_x0.pcss_crowbar_status, 1);
+        assert_eq!(mmio_x0.dispatch_fsm_state, SHBT_STATE_EMERGENCY_QUENCH);
     }
 }

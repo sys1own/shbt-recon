@@ -16,6 +16,8 @@ sglt-lanr-power = { path = "../sglt-lanr-power" }
 sglt-transducer-fea = { path = "../sglt-transducer-fea" }
 sglt-translocator-core = { path = "../sglt-translocator-core" }
 sglt-gst-metamaterial = { path = "../sglt-gst-metamaterial" }
+sglt-recon-deconv = { path = "../sglt-recon-deconv" }
+sglt-metrology-causal = { path = "../sglt-metrology-causal" }
 pyo3 = { version = "0.23", optional = true }
 
 [[bin]]

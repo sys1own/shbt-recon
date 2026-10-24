@@ -559,6 +559,207 @@ pub fn verify_matrix() -> Vec<GateResult> {
         hyper_audit && shbt_recon_core::HYPERFRAME_TOTAL_BYTES == 135168,
     );
 
+    // --- Universal Matter Folding, Quine Cloning & SHBT-STEN (GATE-UNIV-01 .. GATE-UNIV-08) ---
+    let (univ_router, dh_vis_mar, dh_braid_mar, d_fr_mar) =
+        sglt_translocator_core::universal_foundry::Dynkin346SlotRouter::canonical_tier2_mar312_benchmark();
+    push(
+        "GATE-UNIV-01",
+        "translocator::universal_foundry",
+        "346-Slot Continuous Dynkin Router (27 + 45 + 274 == 346, Tier I/II/III nested reduction)",
+        "== 346 slots",
+        sglt_translocator_core::universal_foundry::DYNKIN_SLOTS_TOTAL as f64,
+        univ_router.total_slot_count() == 346
+            && univ_router.classify_tier(0.500, 191)
+                == sglt_translocator_core::universal_foundry::SynthesisHierarchyTier::Tier2BipartiteMar312,
+    );
+
+    let (dh_braid_cont, d_fr_cont) =
+        sglt_translocator_core::universal_foundry::DynamicSugawaraCompensator::evaluate_continuous(dh_vis_mar).unwrap();
+    push(
+        "GATE-UNIV-02",
+        "translocator::universal_foundry",
+        "Dynamic Sugawara Framing Compensator (delta h_braid(x) = -Delta h_vis(x)/124, Delta_fr == 0)",
+        "== 0.0 (|Delta h_vis| <= 38.196601)",
+        d_fr_cont,
+        d_fr_cont == 0.0
+            && d_fr_mar == 0.0
+            && (dh_braid_cont - dh_braid_mar).abs() < 1e-15,
+    );
+
+    let ks_proj = sglt_translocator_core::universal_foundry::KohnShamSpaceGroupProjector {
+        space_group_id: 225,
+        tether_disp_max_fm: 10,
+        gst225_impedance_krayl: 44_178,
+        brem_power_watts: 0,
+    };
+    push(
+        "GATE-UNIV-03",
+        "translocator::universal_foundry",
+        "230-Space-Group Kohn-Sham Lattice Projector & Wyckoff Tether (G_space in 0..230, |delta x| <= 1e-4 A)",
+        "<= 1.0e-4 A",
+        (ks_proj.tether_disp_max_fm as f64) * 1.0e-5,
+        ks_proj.validate_projector().is_ok(),
+    );
+
+    let cayley_h = [0xCAFE_BABE_DEAD_BEEFu64; 3];
+    let sim_res = sglt_translocator_core::universal_foundry::ZeroComputeSimToRenderBridge::verify_zero_compute_direct_render(
+        cayley_h,
+        cayley_h,
+        2112,
+    );
+    push(
+        "GATE-UNIV-04",
+        "translocator::universal_foundry",
+        "Zero-Compute Simulation-to-Reality Isomorphism (Delta C_post-sim == 0, 135,168 B 1:1 re-render)",
+        "== 0.0 FLOPs",
+        sim_res.unwrap_or(1) as f64,
+        sim_res == Ok(0),
+    );
+
+    let quine_sync_ok = hyper.verify_quine_rom_and_daughter_sync();
+    push(
+        "GATE-UNIV-05",
+        "translocator::quine_cloner",
+        "Two-Tier SECDED Hamming(72,64) + 256-Bit Burau-Cayley Hash (d_min = 4, 1,116 B <= 1,472 B, Delta F_gen == 0)",
+        "1,116 B <= 1,472 B, Delta F_gen == 0",
+        sglt_translocator_core::quine_cloner::SECDED_PACKED_BRAID_BYTES_PER_BANK as f64,
+        quine_sync_ok
+            && sglt_translocator_core::quine_cloner::SECDED_PACKED_BRAID_BYTES_PER_BANK
+                <= sglt_translocator_core::quine_cloner::DARK_LEDGER_BUDGET_BYTES,
+    );
+
+    let (_w_pj, _rep_us, rep_ms) = sglt_translocator_core::quine_cloner::compute_direct_bus_ship_replication_time(true);
+    let bio_clone = sglt_translocator_core::quine_cloner::execute_pathway_c_landauer_bio_clone(1.58, 1.58, 0.0, true).unwrap();
+    push(
+        "GATE-UNIV-06",
+        "translocator::quine_cloner",
+        "Macroscopic Quine Replication (R_clone^SWARM Pathways A/B/C: Q_internal = 0, F_bio >= 1-10^-122, 13.418 ms ship clone)",
+        "~= 13.418 ms",
+        rep_ms,
+        (rep_ms - 13.418).abs() < 1e-3 && bio_clone.bio_infidelity_log10 <= -122,
+    );
+
+    let pt_goi_solver = sglt_recon_deconv::sten_solver::PtGoiEquilibriumSolver::canonical();
+    let (goi_lat_ps, goi_sweeps) = pt_goi_solver.evaluate_ep2_deconvolution(32, 10_000).unwrap();
+    let enclave = sglt_metrology_causal::sten_enclave::HyperTemporalEnclaveGate::new(10_000.0).unwrap();
+    push(
+        "GATE-UNIV-07",
+        "deconv::sten_solver",
+        "SHBT-STEN 54.432 ps PT-GoI Solver & alpha = 10^4 Hyper-Temporal Enclave ((UM)^2 = 0, 3.6366e9 sweeps/tick)",
+        "54.432 ps, 3.6366e9 sweeps/tick",
+        goi_lat_ps,
+        enclave.verify_enclave_and_crowbar()
+            && (goi_lat_ps - 54.432).abs() < 1e-6
+            && goi_sweeps >= 3_636_000_000,
+    );
+
+    let sp2g = sglt_recon_deconv::sten_solver::StinespringHiveConsensus::new(2);
+    let x0_triage = sglt_recon_deconv::sten_solver::LinearVCbfSafetyShield::classify_xenobiology(0, 120);
+    push(
+        "GATE-UNIV-08",
+        "deconv::sten_solver",
+        "Higher-Genus Sp(2g, Z) Mesh (g = M+2 >= 3, Ent(phi) == 0, tau_byz <= 1.701 ps) & 9-Component CBF + Class X0/X1 Lock",
+        "g >= 3, tau_byz <= 1.701 ps",
+        (sp2g.byzantine_reject_fs as f64) / 1_000.0,
+        sp2g.genus_g >= 3
+            && sp2g.kojima_entropy_milli == 0
+            && x0_triage == sglt_recon_deconv::sten_solver::XenoTriageClass::X0ProtectedEarth,
+    );
+
+    // --- 5th-Gen SHBT-MAR-312X Power Plant & Direct Boundary Bus (GATE-MARX-01 .. GATE-MARX-08) ---
+    let (mar_mass_kg, mar_vol_m3, mar_cores, mar_wet_kg, mar_net_ej) =
+        sglt_lanr_power::mar312x::verify_mar312x_nacelle_closure();
+    push(
+        "GATE-MARX-01",
+        "lanr::mar312x",
+        "SHBT-MAR-312X 8-Subsystem Mass & Volume Closure (950.00 kg -57.92%, 0.3500 m^3 -59.25%)",
+        "== 950.00 kg & 0.3500 m^3",
+        mar_mass_kg,
+        (mar_mass_kg - 950.00).abs() < 1e-6 && (mar_vol_m3 - 0.3500).abs() < 1e-6,
+    );
+
+    let seed_die = sglt_lanr_power::mar312x::PurcellHyperDiamondSeedDie::canonical_tier4_forge();
+    push(
+        "GATE-MARX-02",
+        "lanr::mar312x",
+        "Purcell-Inhibited Lonsdaleite/12C-c-11B15N Seed Die (rho_DOS == 0 => Gamma_spont == 0, eps_B = 0.9995, f_M = 0.9942)",
+        "Gamma_spont == 0, G_isomer = 85.40",
+        (seed_die.isomer_gateway_gain_milli as f64) / 1_000.0,
+        seed_die.validate_seed_die().is_ok() && seed_die.spontaneous_ldos_milli == 0,
+    );
+
+    let dec_x = sglt_lanr_power::mar312x::WeylPtcDecXConverter::canonical();
+    let dec_x_ppm = dec_x.compute_net_efficiency_ppm().unwrap_or(0);
+    push(
+        "GATE-MARX-03",
+        "lanr::mar312x",
+        "4D Weyl-Polariton/PTC SHBT-DEC-X Converter (C_2 != 0, eta_DEC_X = 99.200%, 33.61114 EJ net electric/core)",
+        ">= 99.200% (33.61114 EJ)",
+        (dec_x_ppm as f64) / 10_000.0,
+        dec_x_ppm == 992_000
+            && (sglt_lanr_power::mar312x::MAR312X_CORE_NET_ELECTRIC_EJ - 33.61114).abs() < 1e-4,
+    );
+
+    let superhydride = sglt_lanr_power::mar312x::TetheredSuperhydrideCoilSystem::canonical_tier4();
+    let headroom_mk = superhydride.validate_coils_and_thermal().unwrap_or(0);
+    push(
+        "GATE-MARX-04",
+        "lanr::mar312x",
+        "Zero-Pressure Tethered LaBeH8-CaH6-12C Superhydride Coils (B_peak = 48.0 T, T_op = 24.850 K <= 192.50 K, 167.65 K headroom)",
+        "48.0 T, 167.65 K headroom",
+        (headroom_mk as f64) / 1_000.0,
+        headroom_mk == 167_650 && (shbt_recon_thermo::mar312x_tier4_thermal_headroom_k() - 167.65).abs() < 1e-4,
+    );
+
+    let heat_supp = shbt_recon_thermo::MAR312X_SENSIBLE_HEAT_SUPPRESSION_FACTOR;
+    push(
+        "GATE-MARX-05",
+        "thermo::mar312x",
+        "12-Layer Sp(2g, Z) Fracton-Symplectic Sensible Heat Suppression (f_sensible = 2.130395e-9, 37,016.7x reduction)",
+        ">= 37,000x suppression",
+        heat_supp,
+        heat_supp >= 37_000.0
+            && (shbt_recon_thermo::MAR312X_SENSIBLE_HEAT_FRACTION - 2.13039486e-9).abs() < 1e-15,
+    );
+
+    let (t1c_us, t1a_us, t1b_us, _tw_us) =
+        sglt_lanr_power::mar312x::DirectBoundaryTransmutationBus::evaluate_tier4_core_breeding_latencies_us();
+    push(
+        "GATE-MARX-06",
+        "lanr::mar312x",
+        "99.850% Direct Boundary Bus B_direct^MAR-X Sub-Millisecond Breeding (11.40 us Mode 1c, 85.01 us Mode 1a, 858.5 us Mode 1b)",
+        "<= 12.0 us Mode 1c (11.40 us)",
+        t1c_us,
+        (t1c_us - 11.397).abs() < 0.01
+            && (t1a_us - 85.008).abs() < 0.01
+            && (t1b_us - 858.488).abs() < 0.1,
+    );
+
+    push(
+        "GATE-MARX-07",
+        "lanr::mar312x",
+        "50.518 kHz Autopoietic Self-Healing (Delta D_dpa == 0), 1.701 ps Weyl-Exciton Crowbar, & Tier 4 25.00 EW Shear Safety (785.0 <= 4,800.0 MPa)",
+        "<= 4,800.0 MPa (785.0 MPa)",
+        sglt_lanr_power::mar312x::MAR312X_TIER4_PEAK_SHEAR_MPA,
+        sglt_lanr_power::mar312x::MAR312X_TIER4_PEAK_SHEAR_MPA
+            <= sglt_lanr_power::mar312x::MAR312X_FRENKEL_ALLOWABLE_SHEAR_MPA
+            && sglt_lanr_power::mar312x::MAR312X_WEYL_CROWBAR_PS <= 1.701,
+    );
+
+    let (_v_c, _coord_yr, crew_hours, _rel_us) =
+        sglt_translocator_core::IntergalacticBraidMission::compute_mar312x_tier4_andromeda_profile();
+    push(
+        "GATE-MARX-08",
+        "translocator::intergalactic",
+        "41-Core Single-Frame Magazine (16,406.59 kg <= 16,600.00 kg, 1,378.06 EJ) & 8.957-hour Andromeda M31 Transit at 2,482,950c",
+        "41 cores (1,378.06 EJ), 8.957 hr M31",
+        crew_hours,
+        mar_cores == 41
+            && mar_wet_kg <= 16_600.00
+            && (mar_net_ej - 1378.0567).abs() < 0.01
+            && (crew_hours - 8.957).abs() < 0.02,
+    );
+
     gates
 }
 

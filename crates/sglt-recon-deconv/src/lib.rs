@@ -8,6 +8,8 @@ pub mod decoder;
 pub mod frame;
 pub mod fusion;
 pub mod lindblad;
+pub mod sten_solver;
+pub use sten_solver::*;
 
 /// Golden ratio — quantum dimension of the Fibonacci anyon.
 pub const PHI: f64 = std::f64::consts::GOLDEN_RATIO;

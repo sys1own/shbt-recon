@@ -49,6 +49,24 @@ impl UnifiedStinespringHyperFrame {
             collision_cross_section_m2,
         ))
     }
+
+    /// Verifies that Banks `00..31` (Read-Only Parent Quine ROM) and Banks `32..63`
+    /// (Active Daughter Synthesis Frame) are bit-for-bit synchronized (`Delta F_gen == 0`)
+    /// with zero post-simulation compilation compute (`Delta C_post-sim == 0`).
+    pub fn verify_quine_rom_and_daughter_sync(&self) -> bool {
+        let mut b = 0usize;
+        while b < 32 {
+            let mut k = 0usize;
+            while k < DARK_BRAID_DESCRIPTORS {
+                if self.banks[b].dark_braid_ledger[k] != self.banks[32 + b].dark_braid_ledger[k] {
+                    return false;
+                }
+                k += 1;
+            }
+            b += 1;
+        }
+        true
+    }
 }
 
 #[cfg(test)]

@@ -30,13 +30,15 @@ void shbt_dispatch_set_state(uint8_t state)
 }
 
 /* --------------------------------------------------------------------------
- * Synthetic matter re-rendering dispatch (dual-mode extension).
+ * Synthetic matter re-rendering dispatch (Three-Tier Nested Hierarchy:
+ * Tier I R_synth, Tier II R_synth^MAR, Tier III R_univ^SWARM & R_clone^SWARM).
  *
  * The synthesis bank overlays Cacheline 0 offsets 0x28-0x3F when
  * SHBT_CTRL_SYNTH_BANK_SEL is set.  Dispatch of state 0x04
  * (TRANSMUTATION_BURST) is gated on the same hardware interlocks as the
- * legacy folding burst: framing closure, isometry residual, and cryogenic
- * headroom must all be nominal before the burst is committed.
+ * legacy folding burst: framing closure, isometry residual, cryogenic
+ * headroom, and Phase 1-4 xenobiological/topological safety shields must all
+ * be nominal before the burst is committed.
  * -------------------------------------------------------------------------- */
 
 #define SHBT_CRYO_MGB2_BASE_MK   (21130U)   /* MgB2 rail base temp (mK)    */
@@ -55,13 +57,31 @@ void shbt_synth_program_target(uint32_t target_z, uint32_t target_a,
     mmio->bank0.synth.synth_binding_offset_q32 = (int32_t)binding_offset_q32;
 }
 
-/* Dispatch a synthesis FSM command.  Returns 0 on acceptance, negative on
- * interlock rejection.  When synth_antibaryon_ratio_q16 > 0, executes the
- * bipartite coset spinor folding sequence (0x04 -> 0x06 -> 0x08). */
-int32_t shbt_synth_dispatch(void)
+/* Dispatch a synthesis FSM command on a caller-supplied MMIO block (or the
+ * hardware aperture via shbt_synth_dispatch()).
+ * Returns 0 on acceptance, negative on interlock rejection:
+ *  - Tier I (R_synth): synth_antibaryon_ratio_q16 == 0 and coset_weight != 0xFFFF
+ *  - Tier II (R_synth^MAR): synth_antibaryon_ratio_q16 > 0 and coset_weight == 0xB400 (45/64)
+ *  - Tier III (R_univ^SWARM): coset_weight == 0xFFFF (Dynamic Sugawara delta h_braid(x) = -Delta h_vis(x)/124)
+ *    or SHBT_SWARM_CMD_UNIV_SYNTH_FOLD set, enforcing G_space <= 230, Wyckoff tether,
+ *    and X0/X1 xenobiological safety shield (1.701 ps Weyl-Exciton crowbar trip on violation).
+ */
+int32_t shbt_synth_dispatch_on(shbt_recon_mmio_t *mmio)
 {
-    shbt_recon_mmio_t *mmio = shbt_recon_mmio();
-    uint32_t synth_status = 0U;
+    uint32_t prior_status = mmio->bank0.synth.synth_status;
+    uint32_t synth_status = prior_status & SHBT_SYNTH_RG_LOCK_312;
+
+    /* Xenobiological & Topological Shield Gate (Classes X0/X1, Cayley Hash, Wyckoff Tether) */
+    if ((prior_status & (SHBT_SWARM_FAULT_X0_PROTECT_LCK
+                         | SHBT_SWARM_FAULT_X1_SAPIENT_LCK
+                         | SHBT_SWARM_FAULT_CAYLEY_HASH
+                         | SHBT_SWARM_FAULT_SUPERHYDRIDE_TETHER_LOSS
+                         | SHBT_SWARM_FAULT_SUGAWARA_CAP_EXCEEDED)) != 0U) {
+        mmio->pcss_crowbar_status = 1U;
+        mmio->bank0.synth.synth_status = prior_status | SHBT_SYNTH_FRAMING_FAULT | SYNTH_STATUS_ERROR_ANOMALY;
+        mmio->dispatch_fsm_state = SHBT_STATE_EMERGENCY_QUENCH;
+        return -7;
+    }
 
     if (mmio->dispatch_fsm_state != SHBT_STATE_TRIGGER_ARMED)
         return -1;
@@ -71,7 +91,8 @@ int32_t shbt_synth_dispatch(void)
         return -2;
     synth_status |= SYNTH_STATUS_FRAMING_CLEAN;
 
-    /* Cryogenic headroom: T_base + excursion must keep >= 11.79 K margin. */
+    /* Cryogenic headroom: T_base + excursion must keep >= 11.79 K margin
+     * (167.65 K headroom on SHBT-MAR-312X LaBeH8-CaH6-12C at 24.850 K <= 192.50 K). */
     if (mmio->cryo_temp_mgb2_mk > SHBT_CRYO_MGB2_BASE_MK
         || (32920U - mmio->cryo_temp_mgb2_mk) < SHBT_CRYO_HEADROOM_MK)
         return -3;
@@ -84,26 +105,49 @@ int32_t shbt_synth_dispatch(void)
     synth_status |= SYNTH_STATUS_DYNKIN_LOCKED;
 
     mmio->bank0.synth.synth_status = synth_status | SYNTH_STATUS_DARK_SINK_ACTIVE;
-    shbt_dispatch_set_state(SHBT_STATE_TRANSMUTATION_BURST);
+    mmio->dispatch_fsm_state = SHBT_STATE_TRANSMUTATION_BURST;
 
-    /* Bipartite Coset Spinor Folding Upgrade (SHBT-RECON-SYNTH-MAR312) */
+    /* Tier III: Universal Arbitrary Matter Folding (R_univ^SWARM[Theta(x), G_space(x)]) */
+    if (mmio->bank0.synth.synth_coset_weight_q16 == SHBT_SYNTH_COSET_WEIGHT_UNIV_DYNAMIC_Q16
+        || (mmio->system_control & SHBT_SWARM_CMD_UNIV_SYNTH_FOLD) != 0U) {
+        /* Space group G_space stored in reserved_c0_0 must be in 0..230, and
+         * Dynamic Sugawara framing residual + metric error must be zero. */
+        if (mmio->reserved_c0_0 > SHBT_MAX_SPACE_GROUP_ID
+            || mmio->bank0.translocator.wzw_framing_defect_raw != 0U
+            || mmio->metric_det_error_fp64 != 0ULL) {
+            mmio->pcss_crowbar_status = 1U;
+            mmio->bank0.synth.synth_status |= (SHBT_SYNTH_FRAMING_FAULT
+                                               | SYNTH_STATUS_ERROR_ANOMALY
+                                               | SHBT_SWARM_FAULT_SUGAWARA_CAP_EXCEEDED);
+            mmio->dispatch_fsm_state = SHBT_STATE_EMERGENCY_QUENCH;
+            return -8;
+        }
+
+        mmio->dispatch_fsm_state = SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD;
+        mmio->bank0.synth.synth_status &= ~SHBT_SYNTH_RG_LOCK_312;
+        mmio->bank0.synth.synth_status |= (SHBT_SYNTH_CBARB_ZERO_VERIFIED | SHBT_SYNTH_BRAID_PARITY_OK);
+        mmio->dispatch_fsm_state = SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION;
+        return 0;
+    }
+
+    /* Tier II: Bipartite Coset Spinor Folding Upgrade (SHBT-RECON-SYNTH-MAR312) */
     if (mmio->bank0.synth.synth_antibaryon_ratio_q16 > 0U) {
         /* In TRANSMUTATION_BURST (0x04), verify coset weight == 0xB400 (45/64) and RG lock 312 */
         if (mmio->bank0.synth.synth_coset_weight_q16 != 0xB400U
             || !(mmio->bank0.synth.synth_status & SHBT_SYNTH_RG_LOCK_312)) {
             mmio->bank0.synth.synth_status |= SHBT_SYNTH_FRAMING_FAULT | SYNTH_STATUS_ERROR_ANOMALY;
-            shbt_dispatch_set_state(SHBT_STATE_EMERGENCY_QUENCH);
+            mmio->dispatch_fsm_state = SHBT_STATE_EMERGENCY_QUENCH;
             return -5;
         }
 
         /* Transition to 0x06 (COSET_ANTIBARYON_FOLD) */
-        shbt_dispatch_set_state(SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD);
+        mmio->dispatch_fsm_state = SHBT_SYNTH_STATE_COSET_ANTIBARYON_FOLD;
 
         /* Verify zero C_bar_B, Delta_fr, and E_munu residual */
         if (mmio->bank0.translocator.wzw_framing_defect_raw != 0U
             || mmio->metric_det_error_fp64 != 0ULL) {
             mmio->bank0.synth.synth_status |= SHBT_SYNTH_FRAMING_FAULT | SYNTH_STATUS_ERROR_ANOMALY;
-            shbt_dispatch_set_state(SHBT_STATE_EMERGENCY_QUENCH);
+            mmio->dispatch_fsm_state = SHBT_STATE_EMERGENCY_QUENCH;
             return -6;
         }
 
@@ -112,10 +156,15 @@ int32_t shbt_synth_dispatch(void)
         mmio->bank0.synth.synth_status |= (SHBT_SYNTH_CBARB_ZERO_VERIFIED | SHBT_SYNTH_BRAID_PARITY_OK);
 
         /* Transition to 0x08 (SYMPLECTIC_CRYSTALLIZATION) */
-        shbt_dispatch_set_state(SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION);
+        mmio->dispatch_fsm_state = SHBT_STATE_SYMPLECTIC_CRYSTALLIZATION;
     }
 
     return 0;
+}
+
+int32_t shbt_synth_dispatch(void)
+{
+    return shbt_synth_dispatch_on(shbt_recon_mmio());
 }
 
 /* --------------------------------------------------------------------------

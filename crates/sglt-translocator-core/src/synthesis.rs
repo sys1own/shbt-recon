@@ -17,6 +17,16 @@
 //!   E_μν ≡ 0                         (zero stress-energy anomaly)
 
 /// Completed affine boundary algebra: ŝu(2)_26 × ŝu(3)_8 × ŝo(10)_312.
+pub use crate::quine_cloner::{
+    compute_direct_bus_ship_replication_time, execute_pathway_a_quine_copy,
+    execute_pathway_b_verlinde_pt_goi, execute_pathway_c_landauer_bio_clone,
+};
+pub use crate::universal_foundry::{
+    DynamicSugawaraCompensator, Dynkin346SlotRouter, KohnShamSpaceGroupProjector,
+    MaterialSynthesisDescriptor, SynthesisHierarchyTier, UniversalMatterCloner,
+    ZeroComputeSimToRenderBridge, MAR312X_EXOTIC_SUBSYSTEM_CATALOG, REPRESENTATIVE_MATERIALS,
+};
+
 pub const AFFINE_LEVEL_SU2: u32 = 26;
 pub const WZW_LEVEL_SU2: u32 = AFFINE_LEVEL_SU2;
 /// Affine level of the ŝu(3) character channel.

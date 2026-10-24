@@ -258,6 +258,8 @@ dependencies = [
  "pyo3",
  "sglt-gst-metamaterial",
  "sglt-lanr-power",
+ "sglt-metrology-causal",
+ "sglt-recon-deconv",
  "sglt-transducer-fea",
  "sglt-translocator-core",
  "shbt-recon-core",

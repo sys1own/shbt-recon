@@ -48,8 +48,12 @@ typedef struct __attribute__((aligned(64))) {
     UnifiedStinespringFrame banks[SHBT_HYPERFRAME_MAX_BANKS];
 } shbt_stinespring_hyperframe_t;
 
+typedef shbt_stinespring_hyperframe_t UnifiedStinespringHyperFrame;
+
 _Static_assert(sizeof(shbt_stinespring_hyperframe_t) == 135168U,
                "C-ABI Invariant Violation: sizeof(shbt_stinespring_hyperframe_t) must equal 135168 bytes");
+_Static_assert(sizeof(UnifiedStinespringHyperFrame) == 135168U,
+               "C-ABI Invariant Violation: sizeof(UnifiedStinespringHyperFrame) must equal 135168 bytes");
 
 /* FSM Dispatch State Bitfields */
 #define SHBT_STATE_STANDBY_STASIS     (0x01U)
@@ -117,6 +121,80 @@ _Static_assert(sizeof(shbt_stinespring_hyperframe_t) == 135168U,
 #define SHBT_MAR312C_SINGLE_FRAME_LIMIT_KG     (16600.00)
 #define SHBT_MAR312C_SINGLE_FRAME_MARGIN_KG    (14342.30)
 #define SHBT_MAR312C_TIER1_MAX_CORES           (38U)
+
+/* Phase 4 5th-Gen SHBT-MAR-312X Exotic-Material Reactor Hardware Constants */
+#define SHBT_MAR312X_NACELLE_MASS_KG        (950U)     /* 950.00 kg (-57.92% vs MAR-312C, -76.81% vs MAR-312) */
+#define SHBT_MAR312X_NACELLE_VOL_ML         (350000U)  /* 0.3500 m^3 = 350,000 mL (-59.25% vs MAR-312C) */
+#define SHBT_MAR312X_MAX_SINGLE_FRAME_CORES (41U)      /* 41 * 376.99 + 950.00 = 16,406.59 kg <= 16,600 kg */
+#define SHBT_MAR312X_SUPERHYDRIDE_FIELD_MT  (48000U)   /* 48.0 T = 48,000 mT */
+#define SHBT_MAR312X_TCRIT_SUPERHYDRIDE_MK  (192500U)  /* 192.50 K = 192,500 mK */
+#define SHBT_MAR312X_DECX_EFF_PPM           (992000U)  /* 99.200% = 992,000 ppm (33.61114 EJ net/core) */
+#define SHBT_MAR312X_DIRECT_BUS_EFF_PPM     (998500U)  /* 99.850% = 998,500 ppm (24.9625 EW at Tier 4) */
+#define SHBT_MAR312X_WEYL_CROWBAR_FS        (1701U)    /* 1.701 ps = 1,701 fs */
+#define SHBT_DYNKIN_WEIGHT_SLOTS            (346U)     /* 27 su(2)_26 + 45 su(3)_8 + 274 so(10)_312 */
+#define SHBT_MERA_MAX_LAYERS                (101U)
+#define SHBT_MAX_SPACE_GROUP_ID             (230U)     /* 0 = Amorphous/Bio, 1..230 = 3D Crystals */
+
+/* Phase 1 + Phase 2 + Phase 3 + Phase 4 Command Opcodes (from sys1own/shbt-swarm) */
+#define SHBT_SWARM_CMD_NOP                      (0x00000000U)
+#define SHBT_SWARM_CMD_TOMITA_QUINE_CPY         (0x00000001U) /* Pathway A: Modular ROM->Synth copy */
+#define SHBT_SWARM_CMD_PT_GOI_PROJECT           (0x00000002U) /* Pathway B: 1.701 ps optical imprint */
+#define SHBT_SWARM_CMD_TOMO_CAPTURE             (0x00000004U) /* Pathway C: 4.2 K Landauer readout */
+#define SHBT_SWARM_CMD_EXEC_CLONE_SHIP          (0x00000008U) /* Phase 1: Synthesize daughter ship */
+#define SHBT_SWARM_CMD_EXEC_CLONE_BIO           (0x00000010U) /* Phase 1: Synthesize CHNOPS payload */
+#define SHBT_SWARM_CMD_LANDAUER_SHUNT           (0x00000020U) /* S = 100/1089 dark-ledger erasure */
+#define SHBT_SWARM_CMD_MERA_PINN_SYNC           (0x00000040U) /* Phase 2: 101-layer MERA-PINN encode/decode */
+#define SHBT_SWARM_CMD_PT_GOI_EQUIL             (0x00000080U) /* Phase 2: 54.432 ps 32-bank GoI policy eq */
+#define SHBT_SWARM_CMD_TOMITA_LEARN             (0x00000100U) /* Phase 2: Zero-heat modular weight flow */
+#define SHBT_SWARM_CMD_VERLINDE_PLAN            (0x00000200U) /* Phase 2: 124-to-1 Fibonacci-Verlinde plan */
+#define SHBT_SWARM_CMD_SP2G_HIVE_SYNC           (0x00000400U) /* Phase 2: Sp(2g,Z) dark-ledger consensus */
+#define SHBT_SWARM_CMD_AP_MPC_ENCLAVE           (0x00000800U) /* Phase 2: Alpha > 1 Pareto re-optimization */
+#define SHBT_SWARM_CMD_XENO_ASSIMILATE          (0x00001000U) /* Phase 2: Class X2 non-ionizing recycling */
+#define SHBT_SWARM_CMD_EXEC_UNIV_SYNTH          (0x00002000U) /* Phase 3: R_univ^SWARM arbitrary matter */
+#define SHBT_SWARM_CMD_UNIV_SYNTH_FOLD          (0x00002000U) /* Phase 3: Alias for universal synthesis fold */
+#define SHBT_SWARM_CMD_ZERO_COMP_DIRECT_RENDER  (0x00004000U) /* Phase 3: Delta C_post-sim = 0 render */
+#define SHBT_SWARM_CMD_MERA_DAG_INSTANCE        (0x00008000U) /* Phase 3: Sp(2g,Z) MERA-DAG tiling */
+#define SHBT_SWARM_CMD_MAR312X_FORGE_TIER4      (0x00010000U) /* Phase 4: Engage 25.00 EW Tier 4 Forge */
+#define SHBT_SWARM_CMD_DIRECT_BOUNDARY_SYNTH    (0x00020000U) /* Phase 4: B_direct^MAR-X (99.85% CFT bus) */
+#define SHBT_SWARM_CMD_AUTOPOIETIC_SELF_HEAL    (0x00040000U) /* Phase 4: A_heal 50.518 kHz ROM scrub */
+#define SHBT_SWARM_CMD_WEYL_EXCITON_CROWBAR     (0x80000000U) /* Phase 4: 1.701 ps Weyl-Exciton abort */
+#define SHBT_SWARM_CMD_PCSS_CROWBAR             (0x80000000U) /* Legacy alias for hardware crowbar */
+
+/* Phase 1 + Phase 2 + Phase 3 + Phase 4 Fault Bitmasks (from sys1own/shbt-swarm) */
+#define SHBT_SWARM_FAULT_NONE                           (0x00000000U)
+#define SHBT_SWARM_FAULT_ADM_IMBALANCE                  (0x00000001U) /* M_feedstock != M_payload */
+#define SHBT_SWARM_FAULT_PARTITION_LOCK                 (0x00000002U) /* eta_A : eta_D != 10 : 23 */
+#define SHBT_SWARM_FAULT_FRAMING_WEYL                   (0x00000004U) /* Delta_fr != 0 or E_munu != 0 */
+#define SHBT_SWARM_FAULT_BL_ANOMALY                     (0x00000008U) /* Delta(B-L)_tot != 0 */
+#define SHBT_SWARM_FAULT_NEUTRINO_LEAK                  (0x00000010U) /* Phi_nu > 0 */
+#define SHBT_SWARM_FAULT_SECDED_UNCORR                  (0x00000020U) /* Double-bit flip in B_3 word */
+#define SHBT_SWARM_FAULT_CAYLEY_HASH                    (0x00000040U) /* Phylogenetic quine / Byzantine mismatch */
+#define SHBT_SWARM_FAULT_THERMAL_CLAMP                  (0x00000080U) /* T_QC > 4.2 K or T_MAR > 192.50 K */
+#define SHBT_SWARM_FAULT_CBF_PHYS_VIOL                  (0x00000100U) /* Phase 2: h_phys(x) < 0 barrier breach */
+#define SHBT_SWARM_FAULT_GREY_GOO_CAP                   (0x00000200U) /* Phase 2: M(t) > M_max population cap */
+#define SHBT_SWARM_FAULT_CLF_DIVERGENCE                 (0x00000400U) /* Phase 2: dV_terra/dt > -kappa * V_terra */
+#define SHBT_SWARM_FAULT_X0_PROTECT_LCK                 (0x00000800U) /* Phase 2: Attempted de-render of Class X0 */
+#define SHBT_SWARM_FAULT_X1_SAPIENT_LCK                 (0x00001000U) /* Phase 2: Attempted de-render of Class X1 */
+#define SHBT_SWARM_FAULT_SUGAWARA_CAP_EXCEEDED          (0x00002000U) /* Phase 3: |Delta h_vis| > 38.196601 nats */
+#define SHBT_SWARM_FAULT_DRIPLINE_UNSTABLE              (0x00004000U) /* Phase 3: Non-integrable / unbound nucleus */
+#define SHBT_SWARM_FAULT_SIM_TO_RENDER_HASH_MISMATCH    (0x00008000U) /* Phase 3: MERA-PINN UV != Synth Frame hash */
+#define SHBT_SWARM_FAULT_HABITAT_GRAV_DEVIATION         (0x00010000U) /* Phase 3: |g_hab - 9.80665 m/s^2| > tol */
+#define SHBT_SWARM_FAULT_SUPERHYDRIDE_TETHER_LOSS       (0x00020000U) /* Phase 4: |delta x| > 10^-4 A or B < 48 T */
+#define SHBT_SWARM_FAULT_PURCELL_BANDGAP_DRIFT          (0x00040000U) /* Phase 4: rho_DOS(w_spont) > 0 or F_P > 0 */
+#define SHBT_SWARM_FAULT_DECX_CHERN_BACKSCATTER         (0x00080000U) /* Phase 4: C_2 == 0 or eta_DEC_X < 99.20% */
+#define SHBT_SWARM_FAULT_FORGE_SHEAR_EXCEEDED           (0x00100000U) /* Phase 4: sigma_max > 4,800.00 MPa */
+
+/* Xenobiological Triage Classification Bitmasks */
+#define SHBT_SWARM_TRIAGE_SHIFT         (28U)
+#define SHBT_SWARM_TRIAGE_MASK          (0xF0000000U)
+#define SHBT_SWARM_TRIAGE_M0_REGOLITH   (0x00000000U) /* D_Cayley > 0, C_MERA == 0 (Barren rock) */
+#define SHBT_SWARM_TRIAGE_X0_PROTECT    (0x10000000U) /* D_Cayley == 0 (Earth-Seeded / Protected) */
+#define SHBT_SWARM_TRIAGE_X1_QUARANTINE (0x20000000U) /* D_Cayley > 0, C_MERA >= C_crit (Sapient) */
+#define SHBT_SWARM_TRIAGE_X2_ASSIMILATE (0x40000000U) /* D_Cayley > 0, 0 < C_MERA < C_crit (Prim) */
+
+/* Dynamic Universal Sugawara Mode Sentinel for synth_coset_weight_q16 (0x3E) */
+#define SHBT_SYNTH_COSET_WEIGHT_MAR312_Q16      (0xB400U) /* 45/64 = 0.703125 fixed MAR-312 benchmark */
+#define SHBT_SYNTH_COSET_WEIGHT_UNIV_DYNAMIC_Q16 (0xFFFFU) /* Continuous Dynamic Sugawara R_univ^SWARM */
 
 #pragma pack(push, 1)
 

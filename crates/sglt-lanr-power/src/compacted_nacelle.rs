@@ -47,6 +47,9 @@ pub enum ReactorNacelleMode {
     CompactedWaferMar312cIbr,
     /// Stationary baseline: 4,096.99 kg dry nacelle, 376.99 kg monolithic core (1.0 CEU).
     StationaryMonolithicMar312,
+    /// 5th-Gen Exotic-Material Autopoietic Reactor: 950.00 kg dry nacelle, 0.3500 m^3,
+    /// 41 single-frame cores (1,378.06 EJ net electric at 99.200% SHBT-DEC-X).
+    ExoticAutopoieticMar312x,
 }
 
 /// Annular Seed Wafer Geometry & Borrmann Parameters
@@ -239,6 +242,38 @@ impl DarkBraidMagazine {
     /// Tier 1 wet mass
     pub fn tier1_wet_mass_kg() -> f64 {
         MAR312C_COMPACTED_NACELLE_MASS_KG + Self::tier1_fuel_mass_kg()
+    }
+
+    /// Initialize Tier 1 5th-Gen SHBT-MAR-312X magazine (41 full 376.99 kg cores, 16,406.59 kg <= 16,600.00 kg, 1,378.06 EJ net electric).
+    pub fn new_tier1_mar312x() -> Self {
+        let max_cores = Self::max_tier1_full_cores_mar312x();
+        Self {
+            tier: 1,
+            banks_used: 1,
+            total_cores_stored: max_cores as f64,
+            micro_refills_remaining: (max_cores * 10) as u64,
+            current_wafer_soc: 1.0,
+            total_reloads: 0,
+            last_reload_latency_s: 0.0,
+        }
+    }
+
+    /// Maximum full cores storable in a single frame with the 950.00 kg SHBT-MAR-312X nacelle (41 cores).
+    pub fn max_tier1_full_cores_mar312x() -> usize {
+        ((STINESPRING_SINGLE_FRAME_LIMIT_KG - crate::mar312x::MAR312X_NACELLE_MASS_KG)
+            / MAR312_BASE_CORE_MASS_KG)
+            .floor() as usize
+    }
+
+    /// Tier 1 wet mass with 41 cores and 950.00 kg SHBT-MAR-312X nacelle (`16,406.59 kg`).
+    pub fn tier1_wet_mass_mar312x_kg() -> f64 {
+        crate::mar312x::MAR312X_NACELLE_MASS_KG
+            + (Self::max_tier1_full_cores_mar312x() as f64) * MAR312_BASE_CORE_MASS_KG
+    }
+
+    /// Tier 1 stored net electrical energy with 41 cores at 99.200% SHBT-DEC-X (`1,378.06 EJ`).
+    pub fn tier1_stored_net_electric_mar312x_ej() -> f64 {
+        (Self::max_tier1_full_cores_mar312x() as f64) * crate::mar312x::MAR312X_CORE_NET_ELECTRIC_EJ
     }
 
     /// Ingest bulk raw mass (tons) into dark ledger

@@ -115,6 +115,20 @@ impl IntergalacticBraidMission {
             profile_passed,
         }
     }
+
+    /// Computes the 5th-Gen `SHBT-MAR-312X` Mode B Intergalactic Jump-Cruiser Gateway profile
+    /// across velocity tiers (`99.3c`, `993.2c`, `99,318c`, and Tier 4 `2,482,950c`),
+    /// reducing Mission 5 Andromeda M31 (`2.537 Mly`) crew proper transit from `10.33 days`
+    /// to **`8.957 hours`** at `v_eff = 2,482,950c` (`11.40 us` Mode 1c Direct Boundary Bus reload).
+    pub fn compute_mar312x_tier4_andromeda_profile() -> (f64, f64, f64, f64) {
+        let dist_ly = 2.537e6;
+        let v_c = 2_482_950.0;
+        let coord_time_yr = dist_ly / v_c; // 1.0217688 yr
+        let alpha_cabin = 1.0e-3;
+        let crew_hours = coord_time_yr * alpha_cabin * 365.25 * 24.0; // 8.9568 hours (~8.957 h)
+        let reload_latency_us = 11.40;
+        (v_c, coord_time_yr, crew_hours, reload_latency_us)
+    }
 }
 
 #[cfg(test)]

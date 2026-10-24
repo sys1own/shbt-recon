@@ -3,7 +3,9 @@
 //! reference, and hardware-enforced causal lightcone interlock.
 
 pub mod pn2;
+pub mod sten_enclave;
 pub mod tmsv_sqz;
+pub use sten_enclave::*;
 
 pub use shbt_recon_metrology::{lightcone, tmsv};
 
