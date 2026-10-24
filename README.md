@@ -366,8 +366,6 @@ The engineering cutaway diagram illustrates the axial propulsion and energy-conv
 
 ### Generational Architecture Comparison: 4th-Gen Compacted SHBT-MAR-312C (2,257.70 kg) vs. 5th-Gen Exotic Autopoietic SHBT-MAR-312X (950.00 kg)
 
-![SHBT-MAR-312C vs SHBT-MAR-312X Generational Reactor Evolution](figures/reactor-comparison.png)
-
 The engineering evolution illustrated across Figure 1 and Figure 2 bridges two distinct technological paradigms within the SHBT mass-annihilation propulsion lineage:
 - **Figure 1 (`figures/shbt_mar312_ibr_cutaway.png`):** Shows the **4th-Gen Compacted `SHBT-MAR-312C` (2,257.70 kg, 0.8589 m³)** nacelle based on sintered ¹⁷⁸ᵐ²HfB₂–¹²C wafers (37.70 kg), 18.5 T REBCO coils (T_crit = 32.92 K), a 5-stage electrostatic DEC duct (720.40 kg, η_DEC = 89.519%), and an 8-layer Diamond-on-GaN symplectic sleeve (384.88 kg).
 - **Figure 2 (`figures/reactor-comparison.png`):** Details the materials-science evolution from `sys1own/shbt-swarm` Phase 4, where R_univ^SWARM 230-space-group universal matter folding replaces each heavy component with topological metamaterials in the **5th-Gen `SHBT-MAR-312X` (950.00 kg, 0.3500 m³)** nacelle (-57.92% mass, -59.25% volume).
