@@ -165,7 +165,7 @@ impl LinearVCbfSafetyShield {
     /// 7. `|s_ddot| <= 5.7735`
     /// 8. `T_QC <= 4.200 K` (`4,200 mK`)
     /// 9. `T_MAR <= T_crit` (`32.92 K` for MAR-312C / `192.50 K` for MAR-312X),
-    /// plus anti-grey-goo fleet cap `h_pop(M) >= 0`, CLF `dV_terra/dt < 0`, and X0/X1 protection interlocks.
+    ///    plus anti-grey-goo fleet cap `h_pop(M) >= 0`, CLF `dV_terra/dt < 0`, and X0/X1 protection interlocks.
     #[allow(clippy::too_many_arguments)]
     pub const fn verify_and_filter_command_with_gen(
         requested_cmd: u32,

@@ -457,7 +457,7 @@ mod tests {
 
     #[test]
     fn test_secded_hamming_and_pathway_a_quine_copy() {
-        assert!(SECDED_PACKED_BRAID_BYTES_PER_BANK <= DARK_LEDGER_BUDGET_BYTES);
+        const { assert!(SECDED_PACKED_BRAID_BYTES_PER_BANK <= DARK_LEDGER_BUDGET_BYTES); }
         let frame = UnifiedStinespringFrame {
             visible_register: [0u8; 640],
             dark_braid_ledger: [0xCAFE_BABE_1234_5678u64; 124],

@@ -55,6 +55,49 @@ _Static_assert(sizeof(shbt_stinespring_hyperframe_t) == 135168U,
 _Static_assert(sizeof(UnifiedStinespringHyperFrame) == 135168U,
                "C-ABI Invariant Violation: sizeof(UnifiedStinespringHyperFrame) must equal 135168 bytes");
 
+/**
+ * @brief Bank View 1: Control & Boundary Operator Actuator Words
+ */
+typedef struct __attribute__((packed, aligned(64))) {
+    uint16_t space_group_id;           /* [0..230] */
+    uint8_t  wyckoff_letter_index;      /* 'a'..'z' mapped to 0..25 */
+    uint8_t  reserved0;
+    uint32_t tether_gain_mantissa;
+    int32_t  tether_gain_exponent;
+    float    acoustic_impedance_mrayl;  /* 1.0 to 100.0 MRayl */
+    float    gst_crystalline_fraction;  /* 0.0 (amorphous) to 1.0 (rocksalt) */
+    uint64_t target_bravais_lattice;
+    uint64_t actuator_mask[4];         /* 256 physical actuator channels */
+    uint8_t  padding[2040];            /* Pads bank to 2112 Bytes */
+} shbt_frame_ctrl_view_t;
+
+_Static_assert(sizeof(shbt_frame_ctrl_view_t) == 2112U,
+               "C-ABI Invariant Violation: sizeof(shbt_frame_ctrl_view_t) must equal 2112 bytes");
+
+/**
+ * @brief Bank View 2: High-Precision MPFR Dual-Wavefunction Storage
+ */
+typedef struct __attribute__((packed, aligned(64))) {
+    double   real_amplitude[132];      /* Continuous field wave component (1056 B) */
+    double   imag_amplitude[132];      /* Continuous field phase component (1056 B) */
+} shbt_frame_mpfr_view_t;
+
+_Static_assert(sizeof(shbt_frame_mpfr_view_t) == 2112U,
+               "C-ABI Invariant Violation: sizeof(shbt_frame_mpfr_view_t) must equal 2112 bytes");
+
+/**
+ * @brief Single Bank Dual-View Union
+ */
+typedef union __attribute__((aligned(64))) {
+    shbt_frame_ctrl_view_t  ctrl;
+    shbt_frame_mpfr_view_t  mpfr;
+    UnifiedStinespringFrame frame;
+    uint8_t                 raw[SHBT_SINGLE_FRAME_BYTES];
+} shbt_hyperframe_bank_t;
+
+_Static_assert(sizeof(shbt_hyperframe_bank_t) == 2112U,
+               "C-ABI Invariant Violation: sizeof(shbt_hyperframe_bank_t) must equal 2112 bytes");
+
 /* FSM Dispatch State Bitfields */
 #define SHBT_STATE_STANDBY_STASIS     (0x01U)
 #define SHBT_STATE_TRIGGER_ARMED      (0x02U)
@@ -368,5 +411,51 @@ void shbt_causal_kernel_tick_50k518(volatile shbt_recon_mmio_t *mmio,
 void shbt_kernel_record_wavefront_jitter(volatile shbt_recon_mmio_t *mmio, uint16_t jitter_as);
 void shbt_kernel_record_tether_displacement(volatile shbt_recon_mmio_t *mmio, uint16_t disp_q16);
 void shbt_kernel_record_dec_margins(volatile shbt_recon_mmio_t *mmio, uint16_t cl_margin_q16, uint32_t quench_margin_q16);
+
+/* Additional Status Register Bit Flags for Translocation & State Folding */
+#define SHBT_STATUS_READY                  (1U << 0)
+#define SHBT_STATUS_BUSY                   (1U << 1)
+#define SHBT_STATUS_QUENCH_ALERT           (1U << 2)
+#define SHBT_STATUS_DISLOCATION_DETECTED   (1U << 3)
+#define SHBT_STATUS_CHIRAL_INVERSION_ERROR (1U << 4)
+#define SHBT_STATUS_DMA_COMPLETE           (1U << 5)
+#define SHBT_STATUS_CBF_TRIP               (1U << 6)
+
+/* Additional Control Register Bit Flags for Spatial Tensor Streaming */
+#define SHBT_CTRL_ENABLE_TRANSLOCATOR      (1U << 0)
+#define SHBT_CTRL_FORCE_CRYSTALLIZATION    (1U << 1)
+#define SHBT_CTRL_ENABLE_DARK_SHUNT        (1U << 2)
+#define SHBT_CTRL_ENABLE_GST_TRACKING      (1U << 3)
+#define SHBT_CTRL_HOMOCHIRAL_LOCK          (1U << 4)
+#define SHBT_CTRL_ZERO_COMPUTE_DIRECT      (1U << 5)
+#define SHBT_CTRL_RESET                    (1U << 7)
+
+#define SHBT_SWARM_FAULT_FRAMING_WEYL      (0x00000004U)
+
+/**
+ * @brief Hardware MMIO Barrier and Memory Flush Primitive
+ */
+static inline void shbt_mmio_write_barrier(void) {
+    #if defined(__x86_64__)
+    __asm__ __volatile__("sfence" ::: "memory");
+    #elif defined(__aarch64__)
+    __asm__ __volatile__("dmb oshst" ::: "memory");
+    #else
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
+    #endif
+}
+
+/**
+ * @brief Flush and invalidate a single 512-bit cache line for spatial tensor streaming
+ */
+static inline void shbt_clwb(const void *addr) {
+    #if defined(__x86_64__)
+    __asm__ __volatile__("clwb %0" : : "m"(*(const char *)addr) : "memory");
+    #elif defined(__aarch64__)
+    __asm__ __volatile__("dc cvac, %0" : : "r"(addr) : "memory");
+    #else
+    (void)addr;
+    #endif
+}
 
 #endif /* SHBT_RECON_MMIO_H */
